@@ -23,7 +23,6 @@ buses/default_bus_layout="res://audiobuslayout.tres"
 
 [autoload]
 
-GlobalReferences="*res://game/scripts/global_references.gd"
 Constants="*res://game/Constants.gd"
 Utils="*res://game/scripts/Utils.gd"
 Scoreboard="*res://game/Scoreboard.gd"

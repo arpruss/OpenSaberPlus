@@ -166,14 +166,8 @@ func _create_cut_rigid_body(cutplane: Plane) -> void:
 	piece_left.mesh.mesh = _mesh
 	piece_right.mesh.mesh = _mesh
 	
-	var left_mat : ShaderMaterial = GlobalReferences.scene_pool.get_pooled_cut_material(_mat)
-	var right_mat : ShaderMaterial = GlobalReferences.scene_pool.get_pooled_cut_material(_mat)
-	for property in _mat.get_property_list():
-		if property.name.begins_with("shader_parameter/"):
-			var value = _mat.get(property.name)
-			left_mat.set(property.name, value)
-			right_mat.set(property.name, value)
-	
+	var left_mat := _mat.duplicate(true) as ShaderMaterial
+	var right_mat := _mat.duplicate(true) as ShaderMaterial
 	left_mat.set_shader_parameter(&"cutted", true)
 	right_mat.set_shader_parameter(&"cutted", true)
 	
