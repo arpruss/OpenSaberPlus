@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=3 uid="uid://dqb3ybvpsfcbw"]
+[gd_scene load_steps=44 format=3 uid="uid://dqb3ybvpsfcbw"]
 
 [ext_resource type="PackedScene" uid="uid://cs8e62lsifik5" path="res://game/floor.tscn" id="1"]
 [ext_resource type="PackedScene" uid="uid://d04fmtjhjx4oy" path="res://OQ_Toolkit/OQ_UI2D/OQ_UI2DLabel.tscn" id="2"]
@@ -33,6 +33,8 @@
 [ext_resource type="PackedScene" uid="uid://cbbovki8xp6e2" path="res://game/GodotSplash.tscn" id="29_vrn2v"]
 [ext_resource type="PackedScene" uid="uid://cgfj82g2xp1ne" path="res://OQ_Toolkit/OQ_UI2D/OQ_UI2DLogWindow.tscn" id="31"]
 [ext_resource type="Script" path="res://game/scripts/song_uploader.gd" id="33_l0uxg"]
+[ext_resource type="PackedScene" uid="uid://dvj8dorx2l7s0" path="res://game/BeepCube/BeepCube.tscn" id="33_nc705"]
+[ext_resource type="PackedScene" uid="uid://b62c3hkjmky75" path="res://game/Chain/ChainLink.tscn" id="34_tsovg"]
 
 [sub_resource type="Environment" id="1"]
 background_mode = 2
@@ -272,6 +274,10 @@ update_only_on_input = false
 mouse_filter = 1
 
 [node name="BeepCubePool" parent="." instance=ExtResource("27")]
+scene = ExtResource("33_nc705")
+
+[node name="ChainLinkPool" parent="." instance=ExtResource("27")]
+scene = ExtResource("34_tsovg")
 
 [node name="Keyboard_highscore" parent="." instance=ExtResource("21")]
 transform = Transform3D(2.40442, 0, 0, 0, 2.37659, 0.364816, 0, -0.364816, 2.37659, -0.00735812, 0.350501, -0.67319)
@@ -297,5 +303,6 @@ main_menu_ref = NodePath("../MainMenu_OQ_UI2DCanvas/BeepSaberMainMenu")
 [connection signal="restart_button" from="PauseMenu_canvas/Pause_Panel" to="." method="_restart_button"]
 [connection signal="apply" from="Settings_canvas/settings_Panel" to="." method="_on_settings_Panel_apply"]
 [connection signal="name_selected" from="NameSelector_Canvas/NameSelector" to="." method="_submit_highscore"]
-[connection signal="scene_instanced" from="BeepCubePool" to="." method="_on_BeepCubePool_scene_instanced"]
+[connection signal="new_scene_instanced" from="BeepCubePool" to="." method="_on_ScenePool_new_scene_instanced"]
+[connection signal="new_scene_instanced" from="ChainLinkPool" to="." method="_on_ScenePool_new_scene_instanced"]
 [connection signal="text_input_enter" from="Keyboard_highscore" to="." method="_submit_highscore"]

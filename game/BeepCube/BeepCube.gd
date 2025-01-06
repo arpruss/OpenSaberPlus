@@ -2,10 +2,6 @@
 extends Cuttable
 class_name BeepCube
 
-# emitted when the cube is 'destroyed'. this signal is required by ScenePool to
-# manage when an instanced scene is free again.
-signal scene_released(this: BeepCube)
-
 # emitted when the cube gets cutted, correct_saber is true if the right saber was used
 signal cutted(correct_saber: bool)
 
@@ -17,54 +13,6 @@ var which_saber: int
 var is_dot: bool
 
 static var particles_scene := load("res://game/BeepCube/BeepCube_SliceParticles.tscn") as PackedScene
-# structure of nodes that represent a cut piece of a cube (ie. one half)
-class CutPiece extends RigidBody3D:
-	static var cube_phys_mat := load("res://game/BeepCube/BeepCube_Cut.phymat") as PhysicsMaterial
-	var mesh := MeshInstance3D.new()
-	var coll := CollisionShape3D.new()
-	var lifetime: float = 0.0
-	
-	func _init(mesh_in: Mesh, mat_in: ShaderMaterial) -> void:
-		add_to_group(&"cutted_cube")
-		mat_in.set_shader_parameter(&"cutted", true)
-		collision_layer = 0
-		collision_mask = CollisionLayerConstants.Floor_mask
-		gravity_scale = 1
-		# set a phyiscs material for some more bouncy behaviour
-		physics_material_override = cube_phys_mat
-		
-		mesh.mesh = mesh_in
-		mesh.layers = 3 # visible to both spectator and player
-		mesh.material_override = mat_in
-		
-		var shape := BoxShape3D.new()
-		shape.size = Vector3(0.25, 0.25, 0.125)
-		coll.shape = shape
-		
-		add_child(coll)
-		add_child(mesh)
-	
-	func setup_cut(dist_from_center, angle) -> void:
-		lifetime = 0.0
-		angular_velocity = Vector3()
-		linear_velocity = Vector3()
-		mesh.material_override.set_shader_parameter(&"cut_dist_from_center", dist_from_center)
-		mesh.material_override.set_shader_parameter(&"cut_angle", angle)
-	
-	func set_color(new_color: Color) -> void:
-		mesh.material_override.set_shader_parameter(&"color", new_color)
-		
-	func set_chain_head(is_chain_head: bool) -> void:
-		mesh.material_override.set_shader_parameter(&"is_chain_head", is_chain_head)
-	
-	func _physics_process(delta: float) -> void:
-		lifetime += delta
-		if lifetime > 0.3:
-			get_parent().remove_child(self)
-		else:
-			var f := lifetime*(1.0/0.3)
-			mesh.material_override.set_shader_parameter(&"cut_vanish",ease(f,2)*0.5)
-
 
 # we store the mesh here as part of the BeepCube for easier access because we will
 # reuse it when we create the cut cube pieces
@@ -80,11 +28,13 @@ func _ready() -> void:
 	_mat = mi.material_override as ShaderMaterial
 	_mesh = mi.mesh
 	
-	# init our cut pieces with unique copies of our own material for reference
-	piece_left = CutPiece.new(_mesh, _mat.duplicate(true) as ShaderMaterial)
-	piece_right = CutPiece.new(_mesh, _mat.duplicate(true) as ShaderMaterial)
+	# init our cut pieces with unique copies of our own material for reference,
+	# and enable "bouncy" physics behavior
+	piece_left = CutPiece.new(_mesh, _mat.duplicate(true) as ShaderMaterial, true)
+	piece_right = CutPiece.new(_mesh, _mat.duplicate(true) as ShaderMaterial, true)
 	
-func spawn(note_info: ColorNoteInfo, current_beat: float, color: Color) -> void:
+func spawn(note_info: ColorNoteInfo, current_beat: float) -> void:
+	var color := Map.color_left if note_info.color == 0 else Map.color_right
 	speed = Constants.BEAT_DISTANCE * Map.current_info.beats_per_minute * 0.016666666666666667
 	beat = note_info.beat
 	which_saber = note_info.color
@@ -134,9 +84,9 @@ func spawn(note_info: ColorNoteInfo, current_beat: float, color: Color) -> void:
 	anim.play(&"Spawn")
 
 func release() -> void:
+	super() # call PooledNode3D's release()
 	visible = false
 	set_collision_disabled(true)
-	scene_released.emit(self)
 
 func make_chain_head() -> void:
 	_mat.set_shader_parameter(&"is_chain_head", true)
@@ -152,8 +102,6 @@ func set_collision_disabled(value: bool) -> void:
 	collision_small.disabled = value
 
 func cut(saber_type: int, cut_speed: Vector3, cut_plane: Plane, controller: BeepSaberController) -> void:
-	set_collision_disabled(true)
-	
 	# compute the angle between the cube orientation and the cut direction
 	var cut_direction_xy := -Vector3(cut_speed.x, cut_speed.y, 0.0).normalized()
 	var base_cut_angle_accuracy := global_transform.basis.y.dot(cut_direction_xy)

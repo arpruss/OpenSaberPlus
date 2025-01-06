@@ -39,7 +39,6 @@ var gamestate: GameState = gamestate_bootup
 
 @onready var points_label_driver := $Points_label_driver as PointsLabelDriver
 @onready var event_driver := $event_driver as EventDriver
-@onready var cube_pool := $BeepCubePool as BeepCubePool
 
 @onready var multiplier_label := $Multiplier_Label as MeshInstance3D
 @onready var point_label := $Point_Label as MeshInstance3D
@@ -171,6 +170,12 @@ func _enter_tree() -> void:
 	Settings.changed.connect(on_settings_changed)
 
 func _ready() -> void:
+	# pre-allocate scenes in our scene pools
+	GlobalReferences.cube_pool = $BeepCubePool
+	GlobalReferences.link_pool = $ChainLinkPool
+	GlobalReferences.cube_pool.presize(100)
+	GlobalReferences.link_pool.presize(100)
+	
 	var xr_camera := $XROrigin3D/XRCamera3D as XRCamera3D
 	vr.initialize(
 		xr_origin,
@@ -232,7 +237,6 @@ func update_left_color(color: Color) -> void:
 	left_saber.set_color(color)
 	Arc.left_material.set_shader_parameter(&"color", color)
 	Arc.left_material_magnet.set_shader_parameter(&"color", color)
-	ChainLink.left_material.set_shader_parameter(&"color", color)
 	goggles_shader.set_shader_parameter(&"left_color", color)
 	event_driver.update_left_color(color)
 	standing_ground.update_left_color(color)
@@ -243,7 +247,6 @@ func update_right_color(color: Color) -> void:
 	right_saber.set_color(color)
 	Arc.right_material.set_shader_parameter(&"color", color)
 	Arc.right_material_magnet.set_shader_parameter(&"color", color)
-	ChainLink.right_material.set_shader_parameter(&"color", color)
 	goggles_shader.set_shader_parameter(&"right_color", color)
 	event_driver.update_right_color(color)
 	standing_ground.update_right_color(color)
@@ -257,10 +260,9 @@ func disable_events(disabled: bool) -> void:
 
 func _clear_track() -> void:
 	for c in track.get_children():
-		if c is BeepCube:
-			var b := c as BeepCube
-			if b.visible:
-				b.release()
+		if c is PooledNode3D:
+			if ! c.is_released():
+				c.release()
 		else:
 			track.remove_child(c)
 			c.queue_free()
@@ -365,10 +367,18 @@ func _on_settings_Panel_apply() -> void:
 	set_colors_from_settings()
 	_transition_game_state(gamestate_mapselection)
 
-func _on_BeepCubePool_scene_instanced(cube: BeepCube) -> void:
-	cube.visible = false
-	track.add_child(cube)
-
+func _on_ScenePool_new_scene_instanced(obj: Node3D, during_presizing: bool) -> void:
+	# add obj to the track. it will reside inside the track for eternity, only
+	# to be reposition and made visible again when it is acquired and spawned.
+	track.add_child(obj)
+	
+	# make obj visible and wait for a frame to be processed. this tricks
+	# shaders to be loaded at startup time.
+	if during_presizing:
+		obj.visible = true
+		obj.position.z = -2.0
+		await get_tree().process_frame
+		obj.visible = false
 
 func recenter():
 	var xr_camera := $XROrigin3D/XRCamera3D as XRCamera3D

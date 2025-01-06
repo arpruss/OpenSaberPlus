@@ -1,4 +1,4 @@
-extends Node3D
+extends PooledNode3D
 class_name Cuttable
 
 var speed: float
@@ -22,7 +22,7 @@ func _physics_process(delta: float) -> void:
 	if Scoreboard.paused or not is_visible_in_tree() or not Map.current_info: return
 	transform.origin.z += speed * delta
 	
-	# enable bomb/cube collision when it gets closer enough to player
+	# enable collisions when cuttable gets close enough to player
 	if global_transform.origin.z > -3.0:
 		set_collision_disabled(false)
 	

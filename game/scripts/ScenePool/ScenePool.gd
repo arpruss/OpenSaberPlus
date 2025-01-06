@@ -1,37 +1,34 @@
 extends Node
-class_name BeepCubePool
+class_name ScenePool
 
-# emitted when the pool intances a scene for the first time
-signal scene_instanced(cube: BeepCube)
+# emitted when the ScenePool intances a new scene for the first time
+# obj - the reference to the newly instanced scene
+# during_presizing - true if the obj was created during a presize() call
+#             false if the obj was created during an acquire() call due to the
+#             pool being completly exhausted.
+signal new_scene_instanced(obj: Node3D, during_presizing: bool)
 
-var scene := load("res://game/BeepCube/BeepCube.tscn") as PackedScene
-var _free_list: Array[BeepCube] = []
+@export var scene : PackedScene = null
+var _free_list: Array[PooledNode3D] = []
 
-func _ready() -> void:
-	print("creating initial cube pool")
-	await get_tree().process_frame
-	var init_cubes: Array[BeepCube] = []
-	const pre_pool := 100
-	for pp in pre_pool:
-		var cube := acquire()
-		cube.visible = true
-		cube.position.z = -2
-		init_cubes.append(cube)
-		if pp%4 == 0:
-			await get_tree().process_frame
-	#this forces the game to render all of the cubes in a couple of frames to prevent slow downs in the first pool cycle
-	for cube in init_cubes:
-		cube.release()
-	print("cubes in pool: ",_free_list.size())
+# adds 'new_size' # of nodes to the pool to allow for initialization at startup
+func presize(new_size: int):
+	for nn in new_size:
+		_free_list.push_back(_instance_new_scene(true))
+	vr.log_info("%s - size = %d" % [name, _free_list.size()])
 
-func acquire() -> BeepCube:
-	var cube := _free_list.pop_front() as BeepCube
-	if not cube:
-		var new_cube := scene.instantiate() as BeepCube
-		new_cube.scene_released.connect(_on_scene_released)
-		scene_instanced.emit(new_cube)
-		cube = new_cube
-	return cube
+func acquire() -> PooledNode3D:
+	var node = _free_list.pop_front() as PooledNode3D
+	if not node:
+		node = _instance_new_scene(false)
+	node._is_released = false
+	return node
 
-func _on_scene_released(cube: BeepCube) -> void:
-	_free_list.push_back(cube)
+func _instance_new_scene(during_presizing: bool) -> Node3D:
+	var new_node := scene.instantiate() as PooledNode3D
+	new_node._parent_pool = self
+	new_scene_instanced.emit(new_node, during_presizing)
+	return new_node
+
+func _on_scene_released(node: PooledNode3D) -> void:
+	_free_list.push_back(node)
