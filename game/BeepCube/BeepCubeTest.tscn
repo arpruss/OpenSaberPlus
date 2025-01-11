@@ -1,0 +1,126 @@
+[gd_scene load_steps=5 format=3 uid="uid://cs4lqw0fmwcqy"]
+
+[ext_resource type="PackedScene" uid="uid://dvj8dorx2l7s0" path="res://game/BeepCube/BeepCube.tscn" id="1_o0b4s"]
+[ext_resource type="Script" path="res://game/scripts/BeepSaberController.gd" id="3_3o1m2"]
+[ext_resource type="PackedScene" uid="uid://bw3rjal5qlu0p" path="res://game/sabers/default/default_saber.tscn" id="3_s14uu"]
+
+[sub_resource type="GDScript" id="GDScript_u17fx"]
+script/source = "extends Node3D
+
+const TEST_BPM : float = 120.0
+const TEST_LOOK_AHEAD : float = 4.0 # beats
+
+@onready var cube := $BeepCube as BeepCube
+@onready var timer := $Timer as Timer
+@onready var controller := $XRController3D as BeepSaberController
+
+enum TestOperation {
+	Idle, Hide, Spawn, Cut, Miss
+}
+
+class TestStep:
+	var op : TestOperation = TestOperation.Idle
+	var duration : float = 0.0
+	
+	func _init(operation: TestOperation, duration: float) -> void:
+		self.op = operation
+		self.duration = duration
+
+# compute time it takes the note to spawn and make it's way down the track
+const SPAWN_DURATION := TEST_LOOK_AHEAD / (TEST_BPM / 60.0)
+
+var _test_sequence : Array[TestStep] = [
+	TestStep.new(TestOperation.Hide, 1.0),
+	TestStep.new(TestOperation.Spawn, SPAWN_DURATION),
+	TestStep.new(TestOperation.Cut, 1.0),
+	TestStep.new(TestOperation.Spawn, SPAWN_DURATION),
+	TestStep.new(TestOperation.Miss, 1.0)
+]
+
+var _curr_step : TestStep = TestStep.new(TestOperation.Idle, 0.0)
+
+func _ready() -> void:
+	Map.current_info = MapInfo.new(
+		\"1.0\",
+		\"SongName\",
+		\"SongSubName\",
+		\"SongAuthor\",
+		\"LevelAuthor\",
+		TEST_BPM, # BPM
+		0.0,      # preview start time
+		0.0,      # preview duration
+		\"NoSongFilename.ogg\",
+		\"NoCoverImage.jpg\",
+		\"NoEnv\",
+		0.0,
+		{},
+		\"NoFilePath\",
+		[])
+	
+	Map.color_left = Color(1.0, 0.0, 0.0)
+	Map.color_right = Color(0.0, 0.0, 1.0)
+	Map.current_difficulty = DifficultyInfo.new(
+		\"Hard\",
+		0,
+		\"Hard.dat\",
+		4.0, # note_jump_movement_speed
+		0.0, # beat_start_offset
+		{},   # custom_data
+		\"NoCustomName\"
+	)
+
+func _on_timer_timeout() -> void:
+	if _test_sequence.is_empty():
+		print(\"Test complete!\")
+		return
+	
+	_curr_step = _test_sequence.pop_front() as TestStep
+	var op_name := TestOperation.find_key(_curr_step.op) as String
+	print(\"===== %s =====\" % [op_name])
+	match _curr_step.op:
+		TestOperation.Idle:
+			pass
+		TestOperation.Hide:
+			cube.hide_cube()
+		TestOperation.Spawn:
+			var info := ColorNoteInfo.new(
+				TEST_LOOK_AHEAD, # beat
+				1,               # line_index
+				0,               # line_layer
+				0,               # color
+				1,               # cut_direction
+				0)               # angle_offset
+			cube.spawn(info, 0.0)
+		TestOperation.Cut:
+			var cut_plane := Plane(
+				Vector3.RIGHT,         # normal
+				cube.global_position)  # origin point
+			cube.cut(0, Vector3.DOWN, cut_plane, controller)
+		TestOperation.Miss:
+			pass # nothing to do just let cube pass behind the \"player\"
+		_:
+			print(\"unsupported TestOperation!\")
+	
+	timer.start(_curr_step.duration)
+"
+
+[node name="BeepCubeTest" type="Node3D"]
+script = SubResource("GDScript_u17fx")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3.34241)
+
+[node name="BeepCube" parent="." instance=ExtResource("1_o0b4s")]
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
+autostart = true
+
+[node name="XRController3D" type="XRController3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, 0)
+tracker = &"left_hand"
+script = ExtResource("3_3o1m2")
+
+[node name="default_saber" parent="XRController3D" instance=ExtResource("3_s14uu")]
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
