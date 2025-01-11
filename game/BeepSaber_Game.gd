@@ -24,7 +24,7 @@ var gamestate: GameState = gamestate_bootup
 @onready var left_ui_raycast := $XROrigin3D/LeftController/UIRaycast as UIRaycast
 @onready var right_ui_raycast := $XROrigin3D/RightController/UIRaycast as UIRaycast
 @onready var goggles_shader := ($XROrigin3D/XRCamera3D/VRGoggles as MeshInstance3D).material_override as ShaderMaterial
-@onready var fps_label := $XROrigin3D/XRCamera3D/PlayerHead/FPS_Label as MeshInstance3D
+@onready var debug_info_label := $XROrigin3D/XRCamera3D/PlayerHead/DebugInfoLabel as MeshInstance3D
 
 @onready var main_menu := $MainMenu_OQ_UI2DCanvas as OQ_UI2DCanvas
 @onready var pause_menu := $PauseMenu_canvas as OQ_UI2DCanvas
@@ -155,8 +155,12 @@ func _check_and_update_saber(controller: BeepSaberController, saber: LightSaber)
 
 
 func _physics_process(_dt: float) -> void:
-	if fps_label.visible:
-		(fps_label.mesh as TextMesh).text = "FPS: %d" % Engine.get_frames_per_second()
+	if debug_info_label.visible:
+		var dbg_text := "FPS: %d\nCube Pool: %d free of %d\nLink Pool: %d free of %d" % [
+			Engine.get_frames_per_second(),
+			GlobalReferences.cube_pool.free_count(), GlobalReferences.cube_pool.total_count(),
+			GlobalReferences.link_pool.free_count(), GlobalReferences.link_pool.total_count()]
+		(debug_info_label.mesh as TextMesh).text = dbg_text
 	
 	gamestate._physics_process(self)
 	
@@ -184,7 +188,7 @@ func _ready() -> void:
 		right_controller
 	)
 	
-	fps_label.visible = Settings.show_fps
+	debug_info_label.visible = Settings.show_debug_info
 	set_colors_from_settings()
 	($WorldEnvironment as WorldEnvironment).environment.glow_enabled = Settings.glare
 	
@@ -220,8 +224,8 @@ func on_settings_changed(key: StringName) -> void:
 			update_right_color(Settings.color_right)
 		&"events":
 			disable_events(not Settings.events)
-		&"show_fps":
-			fps_label.visible = Settings.show_fps
+		&"show_debug_info":
+			debug_info_label.visible = Settings.show_debug_info
 		&"glare":
 			($WorldEnvironment as WorldEnvironment).environment.glow_enabled = Settings.glare
 		&"player_height_offset":
@@ -260,9 +264,8 @@ func disable_events(disabled: bool) -> void:
 
 func _clear_track() -> void:
 	for c in track.get_children():
-		if c is PooledNode3D:
-			if ! c.is_released():
-				c.release()
+		if c.has_method("clear_from_track"):
+			c.clear_from_track()
 		else:
 			track.remove_child(c)
 			c.queue_free()
@@ -375,10 +378,15 @@ func _on_ScenePool_new_scene_instanced(obj: Node3D, during_presizing: bool) -> v
 	# make obj visible and wait for a frame to be processed. this tricks
 	# shaders to be loaded at startup time.
 	if during_presizing:
-		obj.visible = true
 		obj.position.z = -2.0
 		await get_tree().process_frame
-		obj.visible = false
+		
+		if obj is BeepCube:
+			obj.hide_cube()
+		elif obj is ChainLink:
+			obj.hide_cube()
+		else:
+			obj.visible = false
 
 func recenter():
 	var xr_camera := $XROrigin3D/XRCamera3D as XRCamera3D

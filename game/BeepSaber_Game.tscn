@@ -58,6 +58,7 @@ radius = 0.07
 [sub_resource type="TextMesh" id="TextMesh_p7n0m"]
 text = "FPS:"
 font_size = 7
+horizontal_alignment = 0
 depth = 0.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0pkk4"]
@@ -125,7 +126,7 @@ far = 1024.0
 [node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/XRCamera3D/PlayerHead"]
 shape = SubResource("2")
 
-[node name="FPS_Label" type="MeshInstance3D" parent="XROrigin3D/XRCamera3D/PlayerHead"]
+[node name="DebugInfoLabel" type="MeshInstance3D" parent="XROrigin3D/XRCamera3D/PlayerHead"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.778996, 0.48322, -1.51666)
 material_override = ExtResource("13_3xkki")
 mesh = SubResource("TextMesh_p7n0m")

@@ -5,7 +5,7 @@ class_name BeepCube
 # emitted when the cube gets cutted, correct_saber is true if the right saber was used
 signal cutted(correct_saber: bool)
 
-# the animation player contains the span animation that is applied to the CubeMeshAnimation node
+@onready var mi := $BeepCubeMesh as MeshInstance3D
 @onready var collision_big := $BeepCube_Big/CollisionBig as CollisionShape3D
 @onready var collision_small := $BeepCube_Small/CollisionSmall as CollisionShape3D
 
@@ -24,16 +24,19 @@ var piece_left : CutPiece = null
 var piece_right : CutPiece = null
 
 func _ready() -> void:
-	var mi := $BeepCubeMesh as MeshInstance3D
 	_mat = mi.material_override as ShaderMaterial
 	_mesh = mi.mesh
 	
 	# init our cut pieces with unique copies of our own material for reference,
 	# and enable "bouncy" physics behavior
-	piece_left = CutPiece.new(_mesh, _mat.duplicate(true) as ShaderMaterial, true)
-	piece_right = CutPiece.new(_mesh, _mat.duplicate(true) as ShaderMaterial, true)
+	piece_left = CutPiece.new(self, _mesh, _mat.duplicate(true) as ShaderMaterial, true)
+	piece_right = CutPiece.new(self, _mesh, _mat.duplicate(true) as ShaderMaterial, true)
 	
 func spawn(note_info: ColorNoteInfo, current_beat: float) -> void:
+	# re-enable our process_mode first otherwise it seems like Godot-internals
+	# can behave weirdly (ex. AnimationPlayer won't always play correctly)
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	
 	var color := Map.color_left if note_info.color == 0 else Map.color_right
 	speed = Constants.BEAT_DISTANCE * Map.current_info.beats_per_minute * 0.016666666666666667
 	beat = note_info.beat
@@ -75,18 +78,27 @@ func spawn(note_info: ColorNoteInfo, current_beat: float) -> void:
 	small_coll_area.set_collision_layer_value(CollisionLayerConstants.LeftNote_bit, not is_left_note)
 	small_coll_area.set_collision_layer_value(CollisionLayerConstants.RightNote_bit, is_left_note)
 	
-	visible = true
-	
 	# play the spawn animation when this cube enters the scene
 	var anim := $AnimationPlayer as AnimationPlayer
 	var anim_speed := Map.current_difficulty.note_jump_movement_speed / 9.0
 	anim.speed_scale = maxf(min_speed,anim_speed)
 	anim.play(&"Spawn")
+	
+	mi.visible = true
 
-func release() -> void:
-	super() # call PooledNode3D's release()
-	visible = false
+# call this when clearing the track
+func clear_from_track() -> void:
+	hide_cube()
+	piece_left.hide_piece()
+	piece_right.hide_piece()
+	if ! is_released():
+		release()
+
+func hide_cube() -> void:
+	mi.visible = false
 	set_collision_disabled(true)
+	# disable processing on this node and all children to help with performance
+	process_mode = Node.PROCESS_MODE_DISABLED
 
 func make_chain_head() -> void:
 	_mat.set_shader_parameter(&"is_chain_head", true)
@@ -95,6 +107,7 @@ func make_chain_head() -> void:
 
 func on_miss() -> void:
 	Scoreboard.reset_combo()
+	hide_cube()
 	release()
 
 func set_collision_disabled(value: bool) -> void:
@@ -106,9 +119,6 @@ func cut(saber_type: int, cut_speed: Vector3, cut_plane: Plane, controller: Beep
 	var cut_direction_xy := -Vector3(cut_speed.x, cut_speed.y, 0.0).normalized()
 	var base_cut_angle_accuracy := global_transform.basis.y.dot(cut_direction_xy)
 	var cut_distance := cut_plane.distance_to(global_transform.origin)
-	
-	if Settings.cube_cuts_falloff:
-		_create_cut_rigid_body(cut_plane)
 	
 	if saber_type == which_saber:
 		var cut_angle_accuracy := clampf((base_cut_angle_accuracy-0.7)/0.3, 0.0, 1.0)
@@ -128,11 +138,16 @@ func cut(saber_type: int, cut_speed: Vector3, cut_plane: Plane, controller: Beep
 	# reset the movement tracking volume for the next cut
 	controller.reset_movement_aabb()
 	
-	release()
+	hide_cube()
+	if Settings.cube_cuts_falloff:
+		_start_cut_pieces(cut_plane)
+		# release() will be called by Cuttable class when it sees both pieces die
+	else:
+		release() # release now instead of waiting for cut pieces to die off
 
 # cut the cube by creating two rigid bodies and using a CSGBox to create
 # the cut plane
-func _create_cut_rigid_body(cutplane: Plane) -> void:
+func _start_cut_pieces(cutplane: Plane) -> void:
 	piece_left.global_transform = global_transform
 	piece_right.global_transform = global_transform
 	
@@ -141,25 +156,15 @@ func _create_cut_rigid_body(cutplane: Plane) -> void:
 	var cut_dist_from_center := cutplane.distance_to(global_transform.origin)
 	var cut_angle_rel := cut_angle_abs - global_rotation.z
 	
-	piece_left.setup_cut(-cut_dist_from_center, cut_angle_rel + PI)
-	piece_right.setup_cut(cut_dist_from_center, cut_angle_rel)
-	
-	# transform the normal into the orientation of the actual cube mesh
-	var normal := piece_left.mesh.transform.basis.inverse() * cutplane.normal
-	
-	# Next we are adding a simple collision cube to the rigid body. Note that
-	# his is really just a very crude approximation of the actual cut geometry
-	# but for now it's enough to give them some physics behaviour
-	piece_left.coll.look_at_from_position(cutplane.normal*0.125, cutplane.normal, Vector3(0,1,0))
-	piece_right.coll.look_at_from_position(-cutplane.normal*0.125, cutplane.normal, Vector3(0,1,0))
+	_piece_death_count = 0
+	piece_left.start_cut(-cut_dist_from_center, cut_angle_rel + PI)
+	piece_right.start_cut(cut_dist_from_center, cut_angle_rel)
 	
 	# some impulse so the cube half moves
 	var split_vector := cutplane.normal * 2.0
 	piece_left.apply_central_impulse(-split_vector)
 	piece_right.apply_central_impulse(split_vector)
 	
-	get_parent().add_child(piece_left)
-	get_parent().add_child(piece_right)
 	var particles := particles_scene.instantiate() as BeepCubeSliceParticles
 	get_parent().add_child(particles)
 	particles.global_transform.origin = global_transform.origin

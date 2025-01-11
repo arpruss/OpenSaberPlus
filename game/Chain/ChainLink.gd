@@ -6,18 +6,19 @@ var _mesh: Mesh
 var _mat: ShaderMaterial
 @export var min_speed := 0.5
 
+@onready var mi := $Mesh as MeshInstance3D
+
 var piece_left : CutPiece = null
 var piece_right : CutPiece = null
 
 func _ready() -> void:
-	var mi := $Mesh as MeshInstance3D
 	_mat = mi.material_override as ShaderMaterial
 	_mesh = mi.mesh
 	
 	# init our cut pieces with unique copies of our own material for reference,
 	# and disable "bouncy" physics behavior
-	piece_left = CutPiece.new(_mesh, _mat.duplicate(true) as ShaderMaterial, false)
-	piece_right = CutPiece.new(_mesh, _mat.duplicate(true) as ShaderMaterial, false)
+	piece_left = CutPiece.new(self, _mesh, _mat.duplicate(true) as ShaderMaterial, false)
+	piece_right = CutPiece.new(self, _mesh, _mat.duplicate(true) as ShaderMaterial, false)
 	piece_left.set_chain_head(false)
 	piece_right.set_chain_head(false)
 
@@ -61,6 +62,10 @@ static func construct_chain(chain_info: ChainInfo, current_beat: float, note_inf
 		i += 1
 
 func spawn(chain_info: ChainInfo, current_beat: float, head_pos: Vector2, tail_pos: Vector2, mid_pos: Vector2, link_index: int) -> void:
+	# re-enable our process_mode first otherwise it seems like Godot-internals
+	# can behave weirdly (ex. AnimationPlayer won't always play correctly)
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	
 	var color := Map.color_left if chain_info.color == 0 else Map.color_right
 	speed = Constants.BEAT_DISTANCE * Map.current_info.beats_per_minute * 0.016666666666666667
 	which_saber = chain_info.color
@@ -96,30 +101,45 @@ func spawn(chain_info: ChainInfo, current_beat: float, head_pos: Vector2, tail_p
 	var anim_speed := Map.current_difficulty.note_jump_movement_speed / 9.0
 	anim.speed_scale = maxf(min_speed,anim_speed)
 	anim.play(&"Spawn")
-	visible = true
+	
+	mi.visible = true
 
-func release() -> void:
-	super() # call PooledNode3D's release()
-	visible = false
+# call this when clearing the track
+func clear_from_track() -> void:
+	hide_cube()
+	piece_left.hide_piece()
+	piece_right.hide_piece()
+	if ! is_released():
+		release()
+
+func hide_cube() -> void:
+	mi.visible = false
 	set_collision_disabled(true)
+	# disable processing on this node and all children to help with performance
+	process_mode = Node.PROCESS_MODE_DISABLED # disable to help with performance
 
 func cut(saber_type: int, _cut_speed: Vector3, cut_plane: Plane, _controller: BeepSaberController) -> void:
-	if Settings.cube_cuts_falloff:
-		_create_cut_rigid_body(cut_plane)
 	if saber_type == which_saber:
 		Scoreboard.chain_link_cut(transform.origin)
 	else:
 		Scoreboard.bad_cut(transform.origin)
-	release()
+	
+	hide_cube()
+	if Settings.cube_cuts_falloff:
+		_start_cut_pieces(cut_plane)
+		# release() will be called by Cuttable class when it sees both pieces die
+	else:
+		release()# release now instead of waiting for cut pieces to die off
 
 func on_miss() -> void:
 	Scoreboard.reset_combo()
+	hide_cube()
 	release()
 
 func set_collision_disabled(value: bool) -> void:
 	($Area3D/CollisionShape3D as CollisionShape3D).disabled = value
 
-func _create_cut_rigid_body(cutplane: Plane) -> void:
+func _start_cut_pieces(cutplane: Plane) -> void:
 	piece_left.global_transform = global_transform
 	piece_right.global_transform = global_transform
 	
@@ -128,13 +148,11 @@ func _create_cut_rigid_body(cutplane: Plane) -> void:
 	var cut_dist_from_center := cutplane.distance_to(transform.origin)
 	var cut_angle_rel := cut_angle_abs - global_rotation.z
 	
-	piece_left.setup_cut(-cut_dist_from_center, cut_angle_rel + PI)
-	piece_right.setup_cut(cut_dist_from_center, cut_angle_rel)
+	_piece_death_count = 0
+	piece_left.start_cut(-cut_dist_from_center, cut_angle_rel + PI)
+	piece_right.start_cut(cut_dist_from_center, cut_angle_rel)
 	
 	# some impulse so the cube half moves
 	var split_vector := cutplane.normal * 2.0
 	piece_left.apply_central_impulse(-split_vector)
 	piece_right.apply_central_impulse(split_vector)
-	
-	get_parent().add_child(piece_left)
-	get_parent().add_child(piece_right)

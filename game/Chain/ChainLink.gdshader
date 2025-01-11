@@ -38,7 +38,7 @@ void fragment() {
 	if (cut_interp < 0.0) {
 		discard;
 	}
-	
+
 	ALBEDO = color.rgb;
 	METALLIC = 0.3;
 	ROUGHNESS = 0.2;

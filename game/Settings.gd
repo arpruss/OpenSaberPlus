@@ -60,10 +60,10 @@ var glare: bool:
 	set(value):
 		glare = value
 		set_and_emit(&"glare", value)
-var show_fps: bool:
+var show_debug_info: bool:
 	set(value):
-		show_fps = value
-		set_and_emit(&"show_fps", value)
+		show_debug_info = value
+		set_and_emit(&"show_debug_info", value)
 var bombs_enabled: bool:
 	set(value):
 		bombs_enabled = value
@@ -139,7 +139,7 @@ var default_values = {
 	color_right = Color("1a1aff"),
 	saber_tail = true,
 	glare = true,
-	show_fps = false,
+	show_debug_info = false,
 	bombs_enabled = true,
 	events = true,
 	saber_visual = 0,
@@ -227,7 +227,7 @@ func load_old_config() -> void:
 	cube_cuts_falloff = Utils.get_bool(settings_dict, "cube_cuts_falloff", true, {"Web": false})
 	saber_tail = Utils.get_bool(settings_dict, "saber_tail", true, {"Web": false})
 	glare = Utils.get_bool(settings_dict, "glare", true, {"Android": false, "Web": false})
-	show_fps = Utils.get_bool(settings_dict, "show_fps", false)
+	show_debug_info = Utils.get_bool(settings_dict, "show_debug_info", false)
 	bombs_enabled = Utils.get_bool(settings_dict, "bombs_enabled", true)
 	events = Utils.get_bool(settings_dict, "events", true, {"Web": false})
 	disable_map_color = Utils.get_bool(settings_dict, "disable_map_color", false)
