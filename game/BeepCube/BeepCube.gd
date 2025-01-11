@@ -8,11 +8,10 @@ signal cutted(correct_saber: bool)
 @onready var mi := $BeepCubeMesh as MeshInstance3D
 @onready var collision_big := $BeepCube_Big/CollisionBig as CollisionShape3D
 @onready var collision_small := $BeepCube_Small/CollisionSmall as CollisionShape3D
+@onready var slice_particles := $SliceParticles as BeepCubeSliceParticles
 
 var which_saber: int
 var is_dot: bool
-
-static var particles_scene := load("res://game/BeepCube/BeepCube_SliceParticles.tscn") as PackedScene
 
 # we store the mesh here as part of the BeepCube for easier access because we will
 # reuse it when we create the cut cube pieces
@@ -31,6 +30,9 @@ func _ready() -> void:
 	# and enable "bouncy" physics behavior
 	piece_left = CutPiece.new(self, _mesh, _mat.duplicate(true) as ShaderMaterial, true)
 	piece_right = CutPiece.new(self, _mesh, _mat.duplicate(true) as ShaderMaterial, true)
+	
+	# slice_particles are within cube's tree, but want then to move in global space
+	slice_particles.top_level = true
 	
 func spawn(note_info: ColorNoteInfo, current_beat: float) -> void:
 	# re-enable our process_mode first otherwise it seems like Godot-internals
@@ -84,6 +86,7 @@ func spawn(note_info: ColorNoteInfo, current_beat: float) -> void:
 	anim.speed_scale = maxf(min_speed,anim_speed)
 	anim.play(&"Spawn")
 	
+	slice_particles.reset()
 	mi.visible = true
 
 # call this when clearing the track
@@ -165,8 +168,6 @@ func _start_cut_pieces(cutplane: Plane) -> void:
 	piece_left.apply_central_impulse(-split_vector)
 	piece_right.apply_central_impulse(split_vector)
 	
-	var particles := particles_scene.instantiate() as BeepCubeSliceParticles
-	get_parent().add_child(particles)
-	particles.global_transform.origin = global_transform.origin
-	particles.rotation.z = cut_angle_abs+TAU*0.25
-	particles.fire()
+	slice_particles.global_transform.origin = global_transform.origin
+	slice_particles.rotation.z = cut_angle_abs+TAU*0.25
+	slice_particles.fire()
