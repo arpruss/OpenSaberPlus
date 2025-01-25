@@ -143,11 +143,11 @@ script = ExtResource("8_5lcn1")
 [node name="LeftLightSaber" parent="XROrigin3D/LeftController" node_paths=PackedStringArray("song_player_ref") instance=ExtResource("10")]
 song_player_ref = NodePath("../../../SongPlayer")
 
-[node name="UIRaycast" parent="XROrigin3D/LeftController" node_paths=PackedStringArray("controller") instance=ExtResource("12")]
-transform = Transform3D(1, 0, 0, 0, 0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 0, 0)
+[node name="UIRaycast" parent="XROrigin3D/LeftController/LeftLightSaber" node_paths=PackedStringArray("controller") instance=ExtResource("12")]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
 active = false
 ui_raycast_length = 5.0
-controller = NodePath("..")
+controller = NodePath("../..")
 
 [node name="RightController" type="XRController3D" parent="XROrigin3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 1.5, -0.5)
@@ -158,10 +158,10 @@ script = ExtResource("8_5lcn1")
 type = 1
 song_player_ref = NodePath("../../../SongPlayer")
 
-[node name="UIRaycast" parent="XROrigin3D/RightController" node_paths=PackedStringArray("controller") instance=ExtResource("12")]
-transform = Transform3D(1, 0, 0, 0, 0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 0, 0)
+[node name="UIRaycast" parent="XROrigin3D/RightController/RightLightSaber" node_paths=PackedStringArray("controller") instance=ExtResource("12")]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
 ui_raycast_length = 5.0
-controller = NodePath("..")
+controller = NodePath("../..")
 
 [node name="Track" type="Node3D" parent="."]
 

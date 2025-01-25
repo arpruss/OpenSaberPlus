@@ -21,8 +21,8 @@ var gamestate: GameState = gamestate_bootup
 @onready var right_controller := $XROrigin3D/RightController as BeepSaberController
 @onready var left_saber := $XROrigin3D/LeftController/LeftLightSaber as LightSaber
 @onready var right_saber := $XROrigin3D/RightController/RightLightSaber as LightSaber
-@onready var left_ui_raycast := $XROrigin3D/LeftController/UIRaycast as UIRaycast
-@onready var right_ui_raycast := $XROrigin3D/RightController/UIRaycast as UIRaycast
+@onready var left_ui_raycast := $XROrigin3D/LeftController/LeftLightSaber/UIRaycast as UIRaycast
+@onready var right_ui_raycast := $XROrigin3D/RightController/RightLightSaber/UIRaycast as UIRaycast
 @onready var goggles_shader := ($XROrigin3D/XRCamera3D/VRGoggles as MeshInstance3D).material_override as ShaderMaterial
 @onready var debug_info_label := $XROrigin3D/XRCamera3D/PlayerHead/DebugInfoLabel as MeshInstance3D
 
