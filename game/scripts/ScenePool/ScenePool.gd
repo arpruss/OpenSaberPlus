@@ -30,7 +30,7 @@ func presize(new_size: int):
 	vr.log_info("%s - size = %d" % [name, _free_list.size()])
 
 func acquire() -> PooledNode3D:
-	var node = _free_list.pop_front() as PooledNode3D
+	var node = _free_list.pop_back() as PooledNode3D
 	if not node:
 		node = _instance_new_scene(false)
 	node._is_released = false
