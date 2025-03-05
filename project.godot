@@ -23,7 +23,6 @@ buses/default_bus_layout="res://audiobuslayout.tres"
 
 [autoload]
 
-GlobalReferences="*res://game/scripts/global_references.gd"
 Constants="*res://game/Constants.gd"
 Utils="*res://game/scripts/Utils.gd"
 Scoreboard="*res://game/Scoreboard.gd"
@@ -33,6 +32,7 @@ Highscores="*res://game/scripts/HighscoreTable/HighscoreTable.gd"
 PlayCount="*res://game/scripts/PlayCountTable.gd"
 StopwatchFactory="*res://addons/stopwatch/public/StopwatchFactory.gd"
 UI_AudioEngine="*res://game/ui/UI_AudioEngine/UI_AudioEngine.tscn"
+GlobalReferences="*res://game/scripts/global_references.gd"
 
 [debug]
 
@@ -141,7 +141,6 @@ common/physics_fps=72
 [rendering]
 
 renderer/rendering_method="mobile"
-renderer/rendering_method.mobile="gl_compatibility"
 textures/vram_compression/import_etc2_astc=true
 shading/overrides/force_vertex_shading.mobile=false
 shading/overrides/force_lambert_over_burley=true
@@ -171,5 +170,6 @@ right_saber={
 [xr]
 
 openxr/enabled=true
+openxr/reference_space=2
 openxr/startup_alert=false
 shaders/enabled=true

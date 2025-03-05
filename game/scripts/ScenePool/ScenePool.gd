@@ -1,63 +1,47 @@
 extends Node
-class_name BeepCubePool
+class_name ScenePool
 
-# emitted when the pool intances a scene for the first time
-signal scene_instanced(cube: BeepCube)
+# emitted when the ScenePool intances a new scene for the first time
+# obj - the reference to the newly instanced scene
+# during_presizing - true if the obj was created during a presize() call
+#             false if the obj was created during an acquire() call due to the
+#             pool being completly exhausted.
+signal new_scene_instanced(obj: Node3D, during_presizing: bool)
 
-var scene := load("res://game/BeepCube/BeepCube.tscn") as PackedScene
-var _free_list: Array[BeepCube] = []
+@export var scene : PackedScene = null
 
-func _enter_tree() -> void:
-	GlobalReferences.scene_pool = self
+var _total_objs := 0
+var _free_list: Array[PooledNode3D] = []
 
-func _ready() -> void:
-	print("creating initial cube pool")
-	await get_tree().process_frame
-	var init_cubes: Array[BeepCube] = []
-	const pre_pool := 100
-	for pp in pre_pool:
-		var cube := acquire()
-		cube.visible = true
-		cube.position.z = -2
-		init_cubes.append(cube)
-		if pp%4 == 0:
-			await get_tree().process_frame
-	#this forces the game to render all of the cubes in a couple of frames to prevent slow downs in the first pool cycle
-	for cube in init_cubes:
-		cube.release()
-	print("cubes in pool: ",_free_list.size())
+func total_count() -> int:
+	return _total_objs
 
-func acquire() -> BeepCube:
-	var cube := _free_list.pop_back() as BeepCube
-	if not cube:
-		var new_cube := scene.instantiate() as BeepCube
-		new_cube.scene_released.connect(_on_scene_released)
-		scene_instanced.emit(new_cube)
-		cube = new_cube
-	return cube
+func free_count() -> int:
+	return _free_list.size()
 
-func _on_scene_released(cube: BeepCube) -> void:
-	cube.scene_released.disconnect(_on_scene_released)
-	_free_list.push_back(cube)
+# adds 'new_size' # of nodes to the pool to allow for initialization at startup
+func presize(new_size: int):
+	if _total_objs > 0:
+		vr.log_warning("pool already has objects. ignoring presize request.")
+		return
+	
+	for nn in new_size:
+		_free_list.push_back(_instance_new_scene(true))
+	vr.log_info("%s - size = %d" % [name, _free_list.size()])
 
+func acquire() -> PooledNode3D:
+	var node = _free_list.pop_back() as PooledNode3D
+	if not node:
+		node = _instance_new_scene(false)
+	node._is_released = false
+	return node
 
-## cutted cube material pool:
+func _instance_new_scene(during_presizing: bool) -> Node3D:
+	_total_objs += 1
+	var new_node := scene.instantiate() as PooledNode3D
+	new_node._parent_pool = self
+	new_scene_instanced.emit(new_node, during_presizing)
+	return new_node
 
-var cut_material_pool: Array[Material] = []
-
-func generate_cut_material_pool(og_material_rev : Material = null, expected_pool_size := 10):
-	if og_material_rev and cut_material_pool.size() < expected_pool_size:
-		while cut_material_pool.size() < expected_pool_size:
-			cut_material_pool.append(og_material_rev.duplicate())
-
-func get_pooled_cut_material(og_material_rev : Material = null, expected_pool_size := 10):
-	if cut_material_pool.is_empty():
-		if og_material_rev:
-			generate_cut_material_pool(og_material_rev, expected_pool_size)
-		else:
-			return null
-	if cut_material_pool.size() < expected_pool_size:
-		generate_cut_material_pool(og_material_rev, expected_pool_size)
-	var to_Return = cut_material_pool.pop_front()
-	cut_material_pool.push_back(to_Return)
-	return to_Return
+func _on_scene_released(node: PooledNode3D) -> void:
+	_free_list.push_back(node)

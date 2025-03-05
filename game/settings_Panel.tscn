@@ -363,10 +363,10 @@ tooltip_text = "High Performance impact*"
 theme = SubResource("3")
 text = "*Saber Tail: "
 
-[node name="show_fps" type="CheckButton" parent="ScrollContainer/VBox"]
+[node name="show_debug" type="CheckButton" parent="ScrollContainer/VBox"]
 layout_mode = 2
 theme = SubResource("3")
-text = "Show FPS:"
+text = "Show Debug Info:"
 
 [node name="show_collisions" type="CheckButton" parent="ScrollContainer/VBox"]
 layout_mode = 2
@@ -637,7 +637,7 @@ scroll_node_path = NodePath("../ScrollContainer")
 [connection signal="toggled" from="ScrollContainer/VBox/cut_blocks" to="." method="_on_cut_blocks_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/glare" to="." method="_on_glare_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/saber_tail" to="." method="_on_saber_tail_toggled"]
-[connection signal="toggled" from="ScrollContainer/VBox/show_fps" to="." method="_on_show_fps_toggled"]
+[connection signal="toggled" from="ScrollContainer/VBox/show_debug" to="." method="_on_show_debug_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/show_collisions" to="." method="_on_show_collisions_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/bombs_enabled" to="." method="_on_bombs_enabled_toggled"]
 [connection signal="value_changed" from="ScrollContainer/VBox/SaberThicknessRow/saber_thickness" to="." method="_on_thickness_value_changed"]
