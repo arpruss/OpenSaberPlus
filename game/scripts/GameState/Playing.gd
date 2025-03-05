@@ -56,10 +56,9 @@ func _process_map(game: BeepSaber_Game) -> void:
 	
 	# spawn notes
 	while not Map.note_stack.is_empty() and Map.note_stack[-1].beat <= look_ahead:
-		var note := game.cube_pool.acquire()
+		var note := GlobalReferences.cube_pool.acquire() as BeepCube
 		var note_info := Map.note_stack.pop_back() as ColorNoteInfo
-		var color := Map.color_left if note_info.color == 0 else Map.color_right
-		note.spawn(note_info, current_beat, color)
+		note.spawn(note_info, current_beat)
 		note_info_refs.append(note_info)
 		cube_refs.append(note)
 	
@@ -97,7 +96,7 @@ func _process_map(game: BeepSaber_Game) -> void:
 	while not Map.chain_stack.is_empty() and Map.chain_stack[-1].head_beat <= look_ahead:
 		var chain_info := Map.chain_stack.pop_back() as ChainInfo
 		if chain_info.slice_count > 1: # skip if the chain doesn't have any links
-			ChainLink.construct_chain(chain_info, game.track, current_beat, note_info_refs, cube_refs)
+			ChainLink.construct_chain(chain_info, current_beat, note_info_refs, cube_refs)
 	
 	while not Map.event_stack.is_empty() and Map.event_stack[-1].beat <= current_beat:
 		game.event_driver.process_event(Map.event_stack.pop_back() as EventInfo)

@@ -12,7 +12,7 @@ signal apply()
 @onready var d_background := $ScrollContainer/VBox/d_background as CheckButton
 @onready var left_saber_col := $ScrollContainer/VBox/SaberColorsRow/left_saber_col as ColorPickerButton
 @onready var right_saber_col := $ScrollContainer/VBox/SaberColorsRow/right_saber_col as ColorPickerButton
-@onready var show_fps_control := $ScrollContainer/VBox/show_fps as CheckButton
+@onready var show_debug_control := $ScrollContainer/VBox/show_debug as CheckButton
 @onready var show_collisions := $ScrollContainer/VBox/show_collisions as CheckButton
 @onready var bombs_enabled_control := $ScrollContainer/VBox/bombs_enabled as CheckButton
 @onready var ui_volume_slider := $ScrollContainer/VBox/UI_VolumeRow/ui_volume_slider as HSlider
@@ -66,7 +66,7 @@ func set_controls_from_settings() -> void:
 	glare_control.button_pressed = Settings.glare
 	d_background.button_pressed = Settings.events
 	saber_control.select(Settings.saber_visual)
-	show_fps_control.button_pressed = Settings.show_fps
+	show_debug_control.button_pressed = Settings.show_debug_info
 	bombs_enabled_control.button_pressed = Settings.bombs_enabled
 	ui_volume_slider.value = Settings.ui_volume
 	disable_map_color_control.button_pressed = Settings.disable_map_color
@@ -118,8 +118,8 @@ func _on_d_background_toggled(button_pressed: bool) -> void:
 func _on_saber_item_selected(index: int) -> void:
 	Settings.saber_visual = index
 
-func _on_show_fps_toggled(button_pressed: bool) -> void:
-	Settings.show_fps = button_pressed
+func _on_show_debug_toggled(button_pressed: bool) -> void:
+	Settings.show_debug_info = button_pressed
 
 func _on_bombs_enabled_toggled(button_pressed: bool) -> void:
 	Settings.bombs_enabled = button_pressed

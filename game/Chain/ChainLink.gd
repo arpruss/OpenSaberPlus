@@ -1,52 +1,28 @@
 extends Cuttable
 class_name ChainLink
 
-# unfortunately, doing this instead of creating a .tscn file for pieces is much,
-# much faster.  repeatedly instantiating a packed scene every time a single link
-# gets cut leads to noticeable stutter.
-class CutPiece extends RigidBody3D:
-	var mesh := MeshInstance3D.new()
-	var coll := CollisionShape3D.new()
-	var lifetime: float = 0.0
-	
-	func _init() -> void:
-		collision_layer = 0
-		collision_mask = CollisionLayerConstants.Floor_mask
-		gravity_scale = 1
-		
-		var shape := BoxShape3D.new()
-		shape.size = Vector3(0.25, 0.25, 0.125)
-		coll.shape = shape
-		
-		add_child(coll)
-		add_child(mesh)
-	
-	func _physics_process(delta: float) -> void:
-		lifetime += delta
-		if lifetime > 0.3:
-			queue_free()
-		else:
-			# copied from cube code.  the "cut_vanish" shader parameter controls
-			# how faded-out the piece is.  0.0 is not faded out at all, and
-			# higher numbers make it more faded.
-			# other than that, not sure exactly what's going on here.
-			# todo: figure that out and document it.
-			# todo: figure out a better variable name than f.
-			# todo: once figured out, do these todos in BeepCube.gd too
-			# - steve hocktail
-			var f := lifetime*(1.0/0.3)
-			(mesh.material_override as ShaderMaterial).set_shader_parameter(&"cut_vanish",ease(f,2)*0.5)
-
 var which_saber: int
+var _mesh: Mesh
+var _mat: ShaderMaterial
 @export var min_speed := 0.5
 
-# do not make this a preload.  doing so will make the scene show up as corrupt
-# in the editor.
-static var CHAIN_LINK_TEMPLATE := load("res://game/Chain/ChainLink.tscn") as PackedScene
-static var left_material := load("res://game/Chain/ChainLink.material").duplicate() as ShaderMaterial
-static var right_material := left_material.duplicate() as ShaderMaterial
+@onready var mi := $Mesh as MeshInstance3D
 
-static func construct_chain(chain_info: ChainInfo, track_ref: Node3D, current_beat: float, note_info_refs: Array[ColorNoteInfo], cube_refs: Array[BeepCube]) -> void:
+var piece_left : CutPiece = null
+var piece_right : CutPiece = null
+
+func _ready() -> void:
+	_mat = mi.material_override as ShaderMaterial
+	_mesh = mi.mesh
+	
+	# init our cut pieces with unique copies of our own material for reference,
+	# and disable "bouncy" physics behavior
+	piece_left = CutPiece.new(self, _mesh, _mat.duplicate(true) as ShaderMaterial, false)
+	piece_right = CutPiece.new(self, _mesh, _mat.duplicate(true) as ShaderMaterial, false)
+	piece_left.set_chain_head(false)
+	piece_right.set_chain_head(false)
+
+static func construct_chain(chain_info: ChainInfo, current_beat: float, note_info_refs: Array[ColorNoteInfo], cube_refs: Array[BeepCube]) -> void:
 	# instead of just making a new note head for a new chain, beat saber
 	# modifies an already-existing note to be the head, which is why we have to
 	# do all this garbage with keeping references to other notes that were
@@ -81,12 +57,16 @@ static func construct_chain(chain_info: ChainInfo, track_ref: Node3D, current_be
 	var mid_pos := head_pos + (Constants.ROTATION_UNIT_VECTORS[chain_info.head_cut_direction] * head_pos.distance_to(tail_pos) * 0.5)
 	i = 1
 	while i < chain_info.slice_count:
-		var chain_link := CHAIN_LINK_TEMPLATE.instantiate() as ChainLink
+		var chain_link := GlobalReferences.link_pool.acquire() as ChainLink
 		chain_link.spawn(chain_info, current_beat, head_pos, tail_pos, mid_pos, i)
-		track_ref.add_child(chain_link)
 		i += 1
 
 func spawn(chain_info: ChainInfo, current_beat: float, head_pos: Vector2, tail_pos: Vector2, mid_pos: Vector2, link_index: int) -> void:
+	# re-enable our process_mode first otherwise it seems like Godot-internals
+	# can behave weirdly (ex. AnimationPlayer won't always play correctly)
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	
+	var color := Map.color_left if chain_info.color == 0 else Map.color_right
 	speed = Constants.BEAT_DISTANCE * Map.current_info.beats_per_minute * 0.016666666666666667
 	which_saber = chain_info.color
 	
@@ -113,69 +93,66 @@ func spawn(chain_info: ChainInfo, current_beat: float, head_pos: Vector2, tail_p
 		(collision.shape as BoxShape3D).size.z = new_size
 		collision.transform.origin.z = new_size * 0.5 - 0.25
 	
-	($Mesh as MeshInstance3D).material_override = left_material if which_saber == 0 else right_material
+	piece_left.set_color(color)
+	piece_right.set_color(color)
+	_mat.set_shader_parameter(&"color", color)
 	
 	var anim := $AnimationPlayer as AnimationPlayer
 	var anim_speed := Map.current_difficulty.note_jump_movement_speed / 9.0
 	anim.speed_scale = maxf(min_speed,anim_speed)
 	anim.play(&"Spawn")
-	visible = true
+	
+	mi.visible = true
+
+# call this when clearing the track
+func clear_from_track() -> void:
+	hide_cube()
+	piece_left.hide_piece()
+	piece_right.hide_piece()
+	if ! is_released():
+		release()
+
+func hide_cube() -> void:
+	mi.visible = false
+	set_collision_disabled(true)
+	# disable processing on this node and all children to help with performance
+	process_mode = Node.PROCESS_MODE_DISABLED # disable to help with performance
 
 func cut(saber_type: int, _cut_speed: Vector3, cut_plane: Plane, _controller: BeepSaberController) -> void:
-	set_collision_disabled(true)
-	_create_cut_rigid_body(cut_plane)
 	if saber_type == which_saber:
 		Scoreboard.chain_link_cut(transform.origin)
 	else:
 		Scoreboard.bad_cut(transform.origin)
-	queue_free()
+	
+	hide_cube()
+	if Settings.cube_cuts_falloff:
+		_start_cut_pieces(cut_plane)
+		# release() will be called by Cuttable class when it sees both pieces die
+	else:
+		release()# release now instead of waiting for cut pieces to die off
 
 func on_miss() -> void:
 	Scoreboard.reset_combo()
-	queue_free()
+	hide_cube()
+	release()
 
 func set_collision_disabled(value: bool) -> void:
 	($Area3D/CollisionShape3D as CollisionShape3D).disabled = value
 
-func _create_cut_rigid_body(cutplane: Plane) -> void:
-	if !Settings.cube_cuts_falloff:
-		return
-	var piece_left := CutPiece.new()
-	var piece_right := CutPiece.new()
-	var mesh_ref := ($Mesh as MeshInstance3D)
-	piece_left.mesh.mesh = mesh_ref.mesh
-	piece_right.mesh.mesh = mesh_ref.mesh
-	piece_left.transform = transform
-	piece_right.transform = transform
-	
-	var left_mat : ShaderMaterial = GlobalReferences.scene_pool.get_pooled_cut_material(mesh_ref.material_override)
-	var right_mat : ShaderMaterial = GlobalReferences.scene_pool.get_pooled_cut_material(mesh_ref.material_override)
-	for property in mesh_ref.material_override.get_property_list():
-		if property.name.begins_with("shader_parameter/"):
-			var value = mesh_ref.material_override.get(property.name)
-			left_mat.set(property.name, value)
-			right_mat.set(property.name, value)
-			
-	left_mat.set_shader_parameter(&"cutted", true)
-	right_mat.set_shader_parameter(&"cutted", true)
+func _start_cut_pieces(cutplane: Plane) -> void:
+	piece_left.global_transform = global_transform
+	piece_right.global_transform = global_transform
 	
 	# calculate angle and position of the cut
 	var cut_angle_abs := Vector2(cutplane.normal.x, cutplane.normal.y).angle()
 	var cut_dist_from_center := cutplane.distance_to(transform.origin)
 	var cut_angle_rel := cut_angle_abs - global_rotation.z
 	
-	left_mat.set_shader_parameter(&"cut_dist_from_center", -cut_dist_from_center)
-	right_mat.set_shader_parameter(&"cut_dist_from_center", cut_dist_from_center)
-	left_mat.set_shader_parameter(&"cut_angle", cut_angle_rel + PI)
-	right_mat.set_shader_parameter(&"cut_angle", cut_angle_rel)
-	piece_left.mesh.material_override = left_mat
-	piece_right.mesh.material_override = right_mat
+	_piece_death_count = 0
+	piece_left.start_cut(-cut_dist_from_center, cut_angle_rel + PI)
+	piece_right.start_cut(cut_dist_from_center, cut_angle_rel)
 	
 	# some impulse so the cube half moves
-	var cutplane_2d := Vector3(cutplane.x, cutplane.y, 0.0)
-	var splitplane_2d := cutplane_2d.cross(piece_left.transform.basis.z)
-	piece_left.apply_central_impulse(-splitplane_2d)
-	piece_right.apply_central_impulse(splitplane_2d)
-	
-	get_parent().add_child(piece_left)
-	get_parent().add_child(piece_right)
+	var split_vector := cutplane.normal * 2.0
+	piece_left.apply_central_impulse(-split_vector)
+	piece_right.apply_central_impulse(split_vector)
