@@ -32,7 +32,7 @@
 [ext_resource type="PackedScene" uid="uid://bmdbiqndkvcm6" path="res://game/ui/BeatSageUI/BeatSageUI.tscn" id="29"]
 [ext_resource type="PackedScene" uid="uid://cbbovki8xp6e2" path="res://game/GodotSplash.tscn" id="29_vrn2v"]
 [ext_resource type="PackedScene" uid="uid://cgfj82g2xp1ne" path="res://OQ_Toolkit/OQ_UI2D/OQ_UI2DLogWindow.tscn" id="31"]
-[ext_resource type="Script" path="res://game/scripts/song_uploader.gd" id="33_l0uxg"]
+[ext_resource type="Script" path="res://game/scripts/SongUploader/song_uploader.gd" id="33_l0uxg"]
 [ext_resource type="PackedScene" uid="uid://dvj8dorx2l7s0" path="res://game/BeepCube/BeepCube.tscn" id="33_nc705"]
 [ext_resource type="PackedScene" uid="uid://b62c3hkjmky75" path="res://game/Chain/ChainLink.tscn" id="34_tsovg"]
 
