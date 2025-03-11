@@ -19,8 +19,10 @@ var is_disabled := false
 
 func _ready() -> void:
 	var material := ($Node3D/cutFloor as MeshInstance3D).material_override as StandardMaterial3D
+	sub_viewport.transparent_bg = Settings.mixed_reality
 	material.albedo_texture = sub_viewport.get_texture()
 	material.emission_texture = sub_viewport.get_texture()
+	material.transparency = 1 if Settings.mixed_reality else 0
 	
 	if OS.get_name() == &"Web":
 		sub_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE

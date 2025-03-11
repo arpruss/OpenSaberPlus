@@ -146,7 +146,7 @@ func _check_and_update_saber(controller: BeepSaberController, saber: LightSaber)
 	if not controller.is_simple_rumbling(): 
 		if _in_wall:
 			# weak rumble on both controllers when player is inside wall
-			controller.simple_rumble(0.1, 0.1)
+			controller.simple_rumble(0.3, 0.3)
 		elif saber.get_overlapping_areas().size() > 0 or saber.get_overlapping_bodies().size() > 0:
 			# strong rumble when saber is cutting into wall or other saber
 			controller.simple_rumble(0.5, 0.1)
@@ -289,11 +289,14 @@ func _on_PlayerHead_area_entered(area: Area3D) -> void:
 	if area.is_in_group(&"wall"):
 		song_player.volume_db = -15.0
 		_in_wall = true
+		Input.vibrate_handheld()
+		Scoreboard.enter_wall()
 
 func _on_PlayerHead_area_exited(area: Area3D) -> void:
 	if area.is_in_group(&"wall"):
 		song_player.volume_db = 0.0
 		_in_wall = false
+		Scoreboard.exit_wall()
 
 # when the song ended we want to display the current score and
 # the high score

@@ -6,6 +6,7 @@ signal points_awarded(position: Vector3, amount: String)
 var points: int
 var combo: int
 var multiplier: int
+var in_wall: bool
 var right_notes: float
 var wrong_notes: float
 var full_combo: bool
@@ -18,6 +19,7 @@ func restart() -> void:
 	right_notes = 0.0
 	wrong_notes = 0.0
 	full_combo = true
+	in_wall = false
 	score_changed.emit()
 
 func reset_combo() -> void:
@@ -26,11 +28,19 @@ func reset_combo() -> void:
 	wrong_notes += 1.0
 	full_combo = false
 	score_changed.emit()
+	
+func enter_wall() -> void:
+	in_wall = true
+	reset_combo()
+
+func exit_wall() -> void:
+	in_wall = false
 
 func add_points(position: Vector3, amount: int) -> void:
-	combo += 1
-	@warning_ignore("integer_division")
-	multiplier = 1 + mini(combo / 10, 7)
+	if not in_wall:
+		combo += 1
+		@warning_ignore("integer_division")
+		multiplier = 1 + mini(combo / 10, 7)
 	points += amount * multiplier
 	
 	points_awarded.emit(position, str(amount))
@@ -56,5 +66,6 @@ func note_cut(position: Vector3, beat_accuracy: float, cut_angle_accuracy: float
 	add_points(position, int(points_new))
 
 func bad_cut(position: Vector3) -> void:
+	vr.log_info("ARP bad cut")
 	reset_combo()
 	points_awarded.emit(position, "x")
