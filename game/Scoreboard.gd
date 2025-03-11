@@ -66,6 +66,5 @@ func note_cut(position: Vector3, beat_accuracy: float, cut_angle_accuracy: float
 	add_points(position, int(points_new))
 
 func bad_cut(position: Vector3) -> void:
-	vr.log_info("ARP bad cut")
 	reset_combo()
 	points_awarded.emit(position, "x")
