@@ -11,4 +11,4 @@ var ROTATION_UNIT_VECTORS := PackedVector2Array([
 	Vector2(-0.70710678, 0.70710678), Vector2(0.70710678, 0.70710678),
 	Vector2(-0.70710678, -0.70710678), Vector2(0.70710678, -0.70710678), Vector2(0,1)
 ])
-const APPDATA_PATH := "user://OpenSaber/"
+var APPDATA_PATH :=  "user://OpenSaber/" if OS.get_name() != "Android" else "/sdcard/Android/data/org.godotengine.open_saber/files/"

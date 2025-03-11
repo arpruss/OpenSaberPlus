@@ -5,7 +5,7 @@ class_name SongUploader
 
 var server := TCPServer.new()
 @export var PORT := 45800
-const UPLOAD_DIR := Constants.APPDATA_PATH+"temp/"
+static var UPLOAD_DIR := Constants.APPDATA_PATH+"temp/"
 const CRLF := "\r\n"
 const CRLFCRLF := "\r\n\r\n"
 const GET := "GET "

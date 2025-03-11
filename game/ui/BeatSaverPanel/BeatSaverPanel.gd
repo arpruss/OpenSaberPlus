@@ -249,6 +249,7 @@ func _on_HTTPRequest_download_completed(result: int, response_code: int, headers
 	if result == 0:
 		var has_error := false
 		var tempdir := Constants.APPDATA_PATH+"temp"
+		DirAccess.remove_absolute(tempdir)
 		var error := DirAccess.make_dir_recursive_absolute(tempdir)
 		if error != OK: 
 			vr.log_error(
@@ -271,6 +272,7 @@ func _on_HTTPRequest_download_completed(result: int, response_code: int, headers
 		
 		var song_out_dir := Constants.APPDATA_PATH+("Songs/%s/"%song_dir_name)
 		if not has_error:
+			DirAccess.remove_absolute(song_out_dir)
 			error = DirAccess.make_dir_recursive_absolute(song_out_dir)
 			if error != OK: 
 				vr.log_error(

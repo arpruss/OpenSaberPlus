@@ -1,0 +1,3 @@
+Put godotopenxrvendors (for Godot 4.3) in BeepSaber/addons
+
+In the Export window, under Resources, add *.html and *.css to "Filters to export..."

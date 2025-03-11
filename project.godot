@@ -25,6 +25,7 @@ buses/default_bus_layout="res://audiobuslayout.tres"
 
 Constants="*res://game/Constants.gd"
 Utils="*res://game/scripts/Utils.gd"
+MixedReality="*res://game/scripts/MixedReality.gd"
 Scoreboard="*res://game/Scoreboard.gd"
 Settings="*res://game/Settings.gd"
 vr="*res://OQ_Toolkit/vr_autoload.gd"

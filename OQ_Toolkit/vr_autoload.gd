@@ -200,12 +200,15 @@ func initialize(origin: XROrigin3D, camera: XRCamera3D, left_hand: BeepSaberCont
 					xr_interface.set_display_refresh_rate(max_fps as float)
 					Engine.set_physics_ticks_per_second(max_fps as int)
 		
+		
 		# Turn off v-sync!
 		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 		
 		# Change our main viewport to output to the HMD
 		get_viewport().use_xr = true
 		inVR = true
+		MixedReality.set_mixed_reality()
+
 	else:
 		log_info("OpenXR not initialized, please check if your headset is connected")
 		inVR = false

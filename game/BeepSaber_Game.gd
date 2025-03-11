@@ -213,7 +213,7 @@ func _ready() -> void:
 	($pre_renderer as Node3D).queue_free()
 	
 	recenter()
-
+	
 func on_settings_changed(key: StringName) -> void:
 	# ensures proper initialization of tree for proper first frame setting loading
 	await get_tree().process_frame
