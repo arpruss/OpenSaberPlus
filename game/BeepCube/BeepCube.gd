@@ -109,7 +109,10 @@ func make_chain_head() -> void:
 	piece_right.set_chain_head(true)
 
 func on_miss() -> void:
-	Scoreboard.reset_combo()
+	if Settings.explain:		
+		Scoreboard.bad_cut(global_transform.origin+Vector3(0,0,-3.5), "miss")
+	else:
+		Scoreboard.reset_combo()
 	hide_cube()
 	release()
 
@@ -135,7 +138,7 @@ func cut(saber_type: int, cut_speed: Vector3, cut_plane: Plane, controller: Beep
 		Scoreboard.note_cut(transform.origin, beat_accuracy, cut_angle_accuracy, cut_distance_accuracy, travel_distance_factor)
 		cutted.emit(true)
 	else:
-		Scoreboard.bad_cut(transform.origin)
+		Scoreboard.bad_cut(transform.origin, "wrong saber")
 		cutted.emit(false)
 	
 	# reset the movement tracking volume for the next cut

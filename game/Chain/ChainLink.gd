@@ -122,7 +122,7 @@ func cut(saber_type: int, _cut_speed: Vector3, cut_plane: Plane, _controller: Be
 	if saber_type == which_saber:
 		Scoreboard.chain_link_cut(transform.origin)
 	else:
-		Scoreboard.bad_cut(transform.origin)
+		Scoreboard.bad_cut(transform.origin, "wrong saber")
 	
 	hide_cube()
 	if Settings.cube_cuts_falloff:

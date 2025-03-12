@@ -62,9 +62,15 @@ func note_cut(position: Vector3, beat_accuracy: float, cut_angle_accuracy: float
 		points_new += cut_distance_accuracy * 50.0
 		points_new += points_new * travel_distance_factor
 		points_new = roundf(points_new)
+		add_points(position, int(points_new))
+	else:
+		if cut_angle_accuracy < 1e-10 and cut_distance_accuracy >= 1e-10:
+			bad_cut(position, "bad angle")
+		elif cut_angle_accuracy >= 1e-10 and cut_distance_accuracy < 1e-10:
+			bad_cut(position, "too far")
+		else:
+			bad_cut(position, "bad angle, too far")
 
-	add_points(position, int(points_new))
-
-func bad_cut(position: Vector3) -> void:
+func bad_cut(position: Vector3, description: String) -> void:
 	reset_combo()
-	points_awarded.emit(position, "x")
+	points_awarded.emit(position, description if Settings.explain else "x")

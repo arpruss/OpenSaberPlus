@@ -14,6 +14,7 @@ signal apply()
 @onready var right_saber_col := $ScrollContainer/VBox/SaberColorsRow/right_saber_col as ColorPickerButton
 @onready var show_debug_control := $ScrollContainer/VBox/show_debug as CheckButton
 @onready var mixed_reality_control := $ScrollContainer/VBox/mixed_reality as CheckButton
+@onready var explain_control := $ScrollContainer/VBox/explain as CheckButton
 @onready var show_collisions := $ScrollContainer/VBox/show_collisions as CheckButton
 @onready var bombs_enabled_control := $ScrollContainer/VBox/bombs_enabled as CheckButton
 @onready var ui_volume_slider := $ScrollContainer/VBox/UI_VolumeRow/ui_volume_slider as HSlider
@@ -69,6 +70,7 @@ func set_controls_from_settings() -> void:
 	saber_control.select(Settings.saber_visual)
 	show_debug_control.button_pressed = Settings.show_debug_info
 	mixed_reality_control.button_pressed = Settings.mixed_reality
+	explain_control.button_pressed = Settings.explain
 	bombs_enabled_control.button_pressed = Settings.bombs_enabled
 	ui_volume_slider.value = Settings.ui_volume
 	disable_map_color_control.button_pressed = Settings.disable_map_color
@@ -126,6 +128,9 @@ func _on_show_debug_toggled(button_pressed: bool) -> void:
 func _on_mixed_reality_toggled(button_pressed: bool) -> void:
 	Settings.mixed_reality = button_pressed
 	MixedReality.set_mixed_reality()
+
+func _on_explain_toggled(button_pressed: bool) -> void:
+	Settings.explain = button_pressed
 
 func _on_bombs_enabled_toggled(button_pressed: bool) -> void:
 	Settings.bombs_enabled = button_pressed
