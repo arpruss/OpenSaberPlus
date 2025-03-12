@@ -289,7 +289,6 @@ func _on_PlayerHead_area_entered(area: Area3D) -> void:
 	if area.is_in_group(&"wall"):
 		song_player.volume_db = -15.0
 		_in_wall = true
-		Input.vibrate_handheld()
 		Scoreboard.enter_wall()
 
 func _on_PlayerHead_area_exited(area: Area3D) -> void:
