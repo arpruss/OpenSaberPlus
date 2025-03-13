@@ -70,14 +70,14 @@ shader_parameter/right_color = Color(0, 0, 1, 1)
 [sub_resource type="TextMesh" id="TextMesh_cx1im"]
 text = "x 0
 Combo 000"
-font_size = 6
+font_size = 10
 horizontal_alignment = 0
 vertical_alignment = 0
 depth = 0.0
 
 [sub_resource type="TextMesh" id="TextMesh_0bbpk"]
 text = "Score: 000000"
-font_size = 6
+font_size = 10
 vertical_alignment = 0
 depth = 0.0
 
