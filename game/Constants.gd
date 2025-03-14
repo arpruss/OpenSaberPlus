@@ -11,4 +11,19 @@ var ROTATION_UNIT_VECTORS := PackedVector2Array([
 	Vector2(-0.70710678, 0.70710678), Vector2(0.70710678, 0.70710678),
 	Vector2(-0.70710678, -0.70710678), Vector2(0.70710678, -0.70710678), Vector2(0,1)
 ])
-var APPDATA_PATH :=  "user://OpenSaber/" if OS.get_name() != "Android" else "/sdcard/Android/data/org.godotengine.open_saber/files/"
+var _global_path := ProjectSettings.globalize_path("user://")
+var APPDATA_PATH := ( "user://OpenSaber/" if (OS.get_name() != "Android" or 
+	  not _global_path.begins_with("/data/data/")) else "/sdcard/Android/data"+_global_path.substr(10) )
+const OPENSABER_BEAT_ACCURACY_SCORE := 50.
+const OPENSABER_ANGLE_ACCURACY_SCORE := 50.
+const OPENSABER_DISTANCE_ACCURACY_SCORE := 50.
+const OPENSABER_GOOD_SCORE := 88.
+const OPENSABER_CHAIN_LINK_SCORE := 20
+const SWING_CHAIN_HEAD_SCORE = 90
+const SWING_ACCURACY_SCORE = 50.
+const SWING_PRESWING_SCORE = 62.
+const SWING_FOLLOWTHROUGH_SCORE = 38.
+const TARGET_PRESWING_ANGLE = 100.
+const TARGET_FOLLOWTHROUGH_ANGLE = 60.
+const SWING_GOOD_SCORE := 88.
+const SWING_CHAIN_LINK_SCORE := 26

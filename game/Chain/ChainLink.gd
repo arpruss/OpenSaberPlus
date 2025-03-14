@@ -118,8 +118,8 @@ func hide_cube() -> void:
 	# disable processing on this node and all children to help with performance
 	process_mode = Node.PROCESS_MODE_DISABLED # disable to help with performance
 
-func cut(saber_type: int, _cut_speed: Vector3, cut_plane: Plane, _controller: BeepSaberController) -> void:
-	if saber_type == which_saber:
+func cut(saber: LightSaber, _cut_speed: Vector3, cut_plane: Plane, _controller: BeepSaberController) -> void:
+	if saber.type == which_saber:
 		Scoreboard.chain_link_cut(transform.origin)
 	else:
 		Scoreboard.bad_cut(transform.origin, "wrong saber")

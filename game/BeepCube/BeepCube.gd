@@ -21,6 +21,9 @@ var _mat: ShaderMaterial
 
 var piece_left : CutPiece = null
 var piece_right : CutPiece = null
+var arc_head = false
+var arc_tail = false
+var chain_head = false
 
 func _ready() -> void:
 	_mat = mi.material_override as ShaderMaterial
@@ -107,6 +110,7 @@ func make_chain_head() -> void:
 	_mat.set_shader_parameter(&"is_chain_head", true)
 	piece_left.set_chain_head(true)
 	piece_right.set_chain_head(true)
+	chain_head = true
 
 func on_miss() -> void:
 	if Settings.explain:		
@@ -119,14 +123,20 @@ func on_miss() -> void:
 func set_collision_disabled(value: bool) -> void:
 	collision_big.disabled = value
 	collision_small.disabled = value
+	
+func set_arc_head() -> void:
+	arc_head = true
 
-func cut(saber_type: int, cut_speed: Vector3, cut_plane: Plane, controller: BeepSaberController) -> void:
+func set_arc_tail() -> void:
+	arc_tail = true
+
+func cut(saber: LightSaber, cut_speed: Vector3, cut_plane: Plane, controller: BeepSaberController) -> void:
 	# compute the angle between the cube orientation and the cut direction
 	var cut_direction_xy := -Vector3(cut_speed.x, cut_speed.y, 0.0).normalized()
 	var base_cut_angle_accuracy := global_transform.basis.y.dot(cut_direction_xy)
 	var cut_distance := cut_plane.distance_to(global_transform.origin)
 	
-	if saber_type == which_saber:
+	if saber.type == which_saber:
 		var cut_angle_accuracy := clampf((base_cut_angle_accuracy-0.7)/0.3, 0.0, 1.0)
 		if is_dot: #ignore angle if is a dot
 			cut_angle_accuracy = 1.0
@@ -135,7 +145,7 @@ func cut(saber_type: int, cut_speed: Vector3, cut_plane: Plane, controller: Beep
 		travel_distance_factor = clampf((travel_distance_factor-0.5)/0.5, 0.0, 1.0)
 		# allows a bit of save margin where the beat is considered 100% correct
 		var beat_accuracy := clampf((1.0 - absf(global_transform.origin.z)) / 0.5, 0.0, 1.0)
-		Scoreboard.note_cut(transform.origin, beat_accuracy, cut_angle_accuracy, cut_distance_accuracy, travel_distance_factor)
+		Scoreboard.note_cut(saber, transform.origin, beat_accuracy, cut_angle_accuracy, cut_distance_accuracy, travel_distance_factor, arc_head, arc_tail, chain_head)
 		cutted.emit(true)
 	else:
 		Scoreboard.bad_cut(transform.origin, "wrong saber")

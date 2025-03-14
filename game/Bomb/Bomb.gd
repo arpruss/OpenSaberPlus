@@ -8,7 +8,7 @@ func set_collision_disabled(value: bool) -> void:
 	collision_shape.disabled = value
 
 @warning_ignore("unused_parameter")
-func cut(saber_type: int, cut_speed: Vector3, cut_plane: Plane, controller: BeepSaberController) -> void:
+func cut(saber: LightSaber, cut_speed: Vector3, cut_plane: Plane, controller: BeepSaberController) -> void:
 	Scoreboard.bad_cut(transform.origin, "bomb")
 	queue_free()
 

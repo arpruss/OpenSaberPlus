@@ -83,12 +83,13 @@ func _process_map(game: BeepSaber_Game) -> void:
 		var cube_id := cube_refs.size()-1
 		while cube_id >= 0:
 			var current_cube : BeepCube = cube_refs[cube_id]
-			if (current_cube.beat == arc_info.head_beat
-				and current_cube.which_saber == arc_info.color
-				):
+			if current_cube.which_saber == arc_info.color:
+				if current_cube.beat == arc_info.head_beat:
 					cube = current_cube
-					break
-			cube_id -= 1
+					cube.set_arc_head()
+				if current_cube.beat == arc_info.tail_beat:
+					cube.set_arc_tail()
+				cube_id -= 1
 		
 		arc.spawn(arc_info, current_beat, cube)
 		game.track.add_child(arc)

@@ -24,6 +24,15 @@ var saber_end := Vector3.ZERO
 var saber_end_past := Vector3.ZERO
 var last_dt := 0.0
 
+var history := Array()
+const history_size := 300
+const preswing_time := 200
+const followthrough_time := 200
+var history_tail := history_size - 1
+
+# entry: [time,position,pointing,preswing_angle,accuracy]
+var score_queue := Array() 
+
 func _show() -> void:
 	if not is_extended():
 		_anim.play(&"Show")
@@ -86,12 +95,75 @@ func _ready() -> void:
 	else:
 		_swing_cast._set_collision_mask_value(CollisionLayerConstants.RightNote_bit, true)
 	_swing_cast._set_collision_mask_value(CollisionLayerConstants.Bombs_bit, true)
-
+	
+func get_pointing() -> Vector3:
+	return (saber_end-global_transform.origin).normalized()
+	
+func _update_history(time: int) -> void:
+	history_tail = (history_tail + 1) % history_size
+	if history_tail >= history.size():
+		history.append([time, get_pointing()])
+	else:
+		history[history_tail] = [time, get_pointing()]
+	
+func add_score(position: Vector3, accuracy: float, arc_head: bool, arc_tail: bool) -> void:
+	var time = Time.get_ticks_msec()
+	var pointing := get_pointing()
+	var preswing := get_preswing_angle(time, pointing) if not arc_head else Constants.TARGET_PRESWING_ANGLE
+	if arc_tail:
+		Scoreboard.add_swing_score(position, accuracy, preswing, Constants.TARGET_FOLLOWTHROUGH_ANGLE)
+	else:
+		score_queue.append([Time.get_ticks_msec(), position, get_pointing(), preswing, accuracy])
+	
+func get_preswing_angle(time: int, pointing: Vector3) -> float:
+	if history[history_tail].size() == 0:
+		return 0.
+	var start_time := time - preswing_time
+	var i := (history_tail - 1 + history_size) % history_size
+	var smallest_dot_product := 1.
+	while i != history_tail and history[i].size() > 0 and history[i][0] >= start_time:
+		var dot := pointing.dot(history[i][1])
+		if dot < smallest_dot_product:
+			smallest_dot_product = dot
+		i = (i - 1 + history_size) % history_size
+	return 180. / PI * acos(smallest_dot_product)
+	
+func get_followthrough_angle(time: int, pointing: Vector3) -> float:
+	if history[history_tail].size() == 0:
+		return 0.
+	var smallest_dot_product := pointing.dot(history[history_tail][1])
+	var i := (history_tail - 1 + history_size) % history_size
+	while i != history_tail and history[i].size() > 0 and history[i][0] > time:
+		var dot := pointing.dot(history[i][1])
+		if dot < smallest_dot_product:
+			smallest_dot_product = dot
+		i = (i - 1 + history_size) % history_size
+	return 180. / PI * acos(smallest_dot_product)
+	
+func _update_score(score_entry) -> void:
+	var position := score_entry[1] as Vector3
+	var pointing := score_entry[2] as Vector3
+	var preswing := score_entry[3] as float
+	var other_component := score_entry[4] as float
+	var followthrough := get_followthrough_angle(score_entry[0], pointing)
+	Scoreboard.add_swing_score(position, other_component, preswing, followthrough)
+	
+func _update_scores() -> void:
+	var start_time = Time.get_ticks_msec() - followthrough_time
+	for i in range(score_queue.size()-1,-1,-1):
+		if score_queue[i][0] <= start_time:
+			_update_score(score_queue[i])
+			score_queue.remove_at(i)
+			
 func _physics_process(delta: float) -> void:
 	position = offset_pos + extra_offset_pos
 	rotation_degrees = offset_rot + extra_offset_rot
 	saber_end_past = saber_end
 	saber_end = saber_visual.tip.global_transform.origin
+	var time := Time.get_ticks_msec()
+	if Settings.swing_scoring:
+		_update_history(time)
+		_update_scores()
 	
 	last_dt = delta
 	if is_extended():
@@ -135,7 +207,7 @@ func _handle_area_collided(area: Area3D) -> void:
 	var controller_speed: Vector3 = (saber_end - saber_end_past) / last_dt
 	const BEAT_DISTANCE := 4.0
 	var cutplane := Plane(o, saber_end, saber_end_past + Vector3(0, 0, BEAT_DISTANCE * Map.current_info.beats_per_minute * last_dt / 30)) # Account for relative position to track speed
-	note.cut(type, controller_speed, cutplane, controller)
+	note.cut(self, controller_speed, cutplane, controller)
 
 func _on_AnimationPlayer_animation_started(_anim_name: StringName) -> void:
 	_swing_cast.adjust_segments = true
