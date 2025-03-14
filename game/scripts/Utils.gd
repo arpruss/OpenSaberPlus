@@ -39,6 +39,12 @@ func get_dict(dict: Dictionary, key: String, default: Dictionary, platform_defau
 	if OS.get_name() in platform_defaults.keys():
 		return platform_defaults[OS.get_name()]
 	return default
+	
+func ends_in(name: String, exts: Array) -> bool:
+	for ext in exts:
+		if name.to_lower().ends_with(ext.to_lower()):
+			return true
+	return false
 
 func unzip(zip_file: String, destination: String) -> void:
 	var zreader := ZIPReader.new()
@@ -46,11 +52,12 @@ func unzip(zip_file: String, destination: String) -> void:
 		vr.log_warning("unable to open zip file %s" % zip_file)
 		return
 	for file in zreader.get_files():
-		var buffer := zreader.read_file(file)
-		if buffer:
-			var filea := FileAccess.open(destination+"/"+file, FileAccess.WRITE)
-			filea.store_buffer(buffer)
-			filea.close()
+		if Settings.music_dl or not ends_in(file, [".ogg", ".egg"]):
+			var buffer := zreader.read_file(file)
+			if buffer:
+				var filea := FileAccess.open(destination+"/"+file, FileAccess.WRITE)
+				filea.store_buffer(buffer)
+				filea.close()
 	@warning_ignore("return_value_discarded")
 	zreader.close()
 

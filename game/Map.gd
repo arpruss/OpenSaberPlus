@@ -17,6 +17,7 @@ static var event_stack: Array[EventInfo]
 
 static var color_left: Color
 static var color_right: Color
+static var last_beat := 0.
 
 # some simple multithreading, since larger maps can take a very long time to
 # load.  one particulary notable outlier is the beatmap of shrek, which took
@@ -288,6 +289,19 @@ static func load_event_stack_v3(event_data: Array) -> void:
 	load_range.bind(midpoint, event_data.size()).call()
 	#event_thread_1.wait_to_finish()
 	Utils.custom_thread_wait_to_finish(event_thread_1)
+	
+static func get_last_beat() -> void:
+	current_info.last_beat = 0.
+	for note_info in note_stack:
+		if note_info.beat + 0.5 > current_info.last_beat:
+			current_info.last_beat = note_info.beat + 0.5
+	for obstacle in obstacle_stack:
+		var beat := obstacle.beat + obstacle.duration
+		if beat > current_info.last_beat:
+			current_info.last_beat = beat
+	for bomb in bomb_stack:
+		if bomb.beat > current_info.last_beat:
+			current_info.last_beat = bomb.beat
 
 static func load_beatmap(info: MapInfo, difficulty: DifficultyInfo, map_data: Dictionary) -> bool:
 	# Ensures the map_data dict has a version (some maps include the version only on info but not in the data)
@@ -318,6 +332,7 @@ static func load_beatmap(info: MapInfo, difficulty: DifficultyInfo, map_data: Di
 		Utils.custom_thread_wait_to_finish(event_thread_0)
 		#arc_thread_0.wait_to_finish()
 		Utils.custom_thread_wait_to_finish(arc_thread_0)
+		get_last_beat()
 		return true
 	elif map_data.has("version"):
 		var version := Utils.get_str(map_data, "version", "")
@@ -349,6 +364,7 @@ static func load_beatmap(info: MapInfo, difficulty: DifficultyInfo, map_data: Di
 			Utils.custom_thread_wait_to_finish(chain_thread_0)
 			#event_thread_0.wait_to_finish()
 			Utils.custom_thread_wait_to_finish(event_thread_0)
+			get_last_beat()
 			return true
 	vr.log_warning("selected map is an unsupported version")
 	return false

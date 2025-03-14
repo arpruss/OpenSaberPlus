@@ -72,6 +72,10 @@ var explain: bool:
 	set(value):
 		explain = value
 		set_and_emit(&"explain", value)
+var music_dl: bool:
+	set(value):
+		music_dl = value
+		set_and_emit(&"music_dl", value)
 var swing_scoring: bool:
 	set(value):
 		swing_scoring = value
@@ -154,6 +158,7 @@ var default_values = {
 	show_debug_info = false,
 	mixed_reality = false,
 	explain = false,
+	music_dl = true,
 	swing_scoring = true,
 	bombs_enabled = true,
 	events = true,
@@ -245,6 +250,7 @@ func load_old_config() -> void:
 	show_debug_info = Utils.get_bool(settings_dict, "show_debug_info", false)
 	mixed_reality = Utils.get_bool(settings_dict, "mixed_reality", false)
 	explain = Utils.got_bool(settings_dict, "explain", false)
+	music_dl = Utils.got_bool(settings_dict, "music_dl", true)
 	swing_scoring = Utils.get_bool(settings_dict, "swing_scoring", true)
 	bombs_enabled = Utils.get_bool(settings_dict, "bombs_enabled", true)
 	events = Utils.get_bool(settings_dict, "events", true, {"Web": false})

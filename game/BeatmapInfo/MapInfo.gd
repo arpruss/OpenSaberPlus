@@ -16,6 +16,7 @@ var cover_image_filename: String
 var environment_name: String
 var song_time_offset: float
 var custom_data: Dictionary
+var last_beat: float
 
 var filepath: String
 var difficulty_beatmaps: Array[DifficultyInfo]

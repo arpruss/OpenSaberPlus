@@ -90,8 +90,21 @@ func start_map(info: MapInfo, map_difficulty: DifficultyInfo) -> void:
 	else:
 		event_driver.set_all_off()
 	
-	vr.log_info("loading: " + info.filepath + info.song_filename)
-	song_player.stream = AudioStreamOggVorbis.load_from_file(info.filepath + info.song_filename)
+	var filename := info.filepath + info.song_filename
+	vr.log_info("loading: " + filename)
+	if FileAccess.file_exists(filename):
+		song_player.stream = AudioStreamOggVorbis.load_from_file(filename)
+	else:
+		var wav := AudioStreamWAV.new()
+		wav.stereo = false
+		wav.format = AudioStreamWAV.FORMAT_8_BITS
+		wav.mix_rate = 11025
+		var length := ceili((Map.current_info.last_beat / Map.current_info.beats_per_minute * 60. + 2) * wav.mix_rate)
+		var data := PackedByteArray()
+		data.resize(length) 
+		data.fill(0)
+		wav.data = data
+		song_player.stream = wav
 	
 	_audio_synced_after_restart = false
 	song_player.play(0.0)

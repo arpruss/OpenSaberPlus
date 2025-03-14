@@ -15,6 +15,7 @@ signal apply()
 @onready var show_debug_control := $ScrollContainer/VBox/show_debug as CheckButton
 @onready var mixed_reality_control := $ScrollContainer/VBox/mixed_reality as CheckButton
 @onready var explain_control := $ScrollContainer/VBox/explain as CheckButton
+@onready var music_dl_control := $ScrollContainer/VBox/music_dl as CheckButton
 @onready var swing_scoring_control := $ScrollContainer/VBox/swing_scoring as CheckButton
 @onready var show_collisions := $ScrollContainer/VBox/show_collisions as CheckButton
 @onready var bombs_enabled_control := $ScrollContainer/VBox/bombs_enabled as CheckButton
@@ -72,6 +73,7 @@ func set_controls_from_settings() -> void:
 	show_debug_control.button_pressed = Settings.show_debug_info
 	mixed_reality_control.button_pressed = Settings.mixed_reality
 	explain_control.button_pressed = Settings.explain
+	music_dl_control.button_pressed = Settings.music_dl
 	swing_scoring_control.button_pressed = Settings.swing_scoring
 	bombs_enabled_control.button_pressed = Settings.bombs_enabled
 	ui_volume_slider.value = Settings.ui_volume
@@ -243,3 +245,7 @@ func _on_recenter_button_up() -> void:
 	recenter_button.text = "Recenter"
 	recenter_button.disabled = false
 	beepsaber_game.recenter()
+
+
+func _on_music_dl_toggled(button_pressed: bool) -> void:
+	Settings.music_dl = button_pressed

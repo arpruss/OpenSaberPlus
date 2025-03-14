@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=3 uid="uid://dqb3ybvpsfcbw"]
+[gd_scene load_steps=43 format=3 uid="uid://dqb3ybvpsfcbw"]
 
 [ext_resource type="PackedScene" uid="uid://cs8e62lsifik5" path="res://game/floor.tscn" id="1"]
 [ext_resource type="PackedScene" uid="uid://d04fmtjhjx4oy" path="res://OQ_Toolkit/OQ_UI2D/OQ_UI2DLabel.tscn" id="2"]
@@ -285,6 +285,7 @@ is_name_input = true
 
 [node name="SongUploader" type="Node" parent="." node_paths=PackedStringArray("main_menu_ref")]
 script = ExtResource("33_l0uxg")
+PORT = null
 main_menu_ref = NodePath("../MainMenu_OQ_UI2DCanvas/BeepSaberMainMenu")
 
 [connection signal="finished" from="SongPlayer" to="." method="_on_song_ended"]
