@@ -96,14 +96,14 @@ func start_map(info: MapInfo, map_difficulty: DifficultyInfo) -> void:
 		song_player.stream = AudioStreamOggVorbis.load_from_file(filename)
 	else:
 		var wav := AudioStreamWAV.new()
-		wav.stereo = false
-		wav.format = AudioStreamWAV.FORMAT_8_BITS
-		wav.mix_rate = 11025
+		wav.set_stereo(false)
+		wav.set_format(AudioStreamWAV.FORMAT_8_BITS)
+		wav.set_mix_rate(11025)
 		var length := ceili((Map.current_info.last_beat / Map.current_info.beats_per_minute * 60. + 2) * wav.mix_rate)
 		var data := PackedByteArray()
 		data.resize(length) 
 		data.fill(0)
-		wav.data = data
+		wav.set_data(data)
 		song_player.stream = wav
 	
 	_audio_synced_after_restart = false

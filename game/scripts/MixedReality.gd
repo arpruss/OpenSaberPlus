@@ -5,10 +5,13 @@ const to_hide := [ "/root/BeepSaber/event_driver/Level/Sphere",
 const make_transparent := [ "/root/BeepSaber/StandingGround/Node3D/cutFloor" ]
 
 func set_mixed_reality():
+	vr.log_info("ARP set mixed "+("yes" if Settings.mixed_reality else "no"))
 	var xr_interface := XRServer.find_interface("OpenXR") as XRInterface
 	if xr_interface and xr_interface.is_passthrough_supported():
 		if Settings.mixed_reality:
+			vr.log_info("ARP start mxied")
 			if xr_interface.start_passthrough():
+				vr.log_info("ARP started mxied")
 				get_viewport().transparent_bg = true
 				#var environment : Environment = $WorldEnvironment.environment
 				#environment.background_mode = Environment.BG_COLOR
