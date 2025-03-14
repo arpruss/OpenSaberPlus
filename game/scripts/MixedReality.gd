@@ -2,8 +2,7 @@ extends Node
 
 func set_mixed_reality():
 	const to_hide := [ "/root/BeepSaber/event_driver/Level/Sphere", 
-		"/root/BeepSaber/event_driver/Level/floor" ] #, 
-		#"/root/BeepSaber/StandingGround/Node3D/cutFloor" ]
+		"/root/BeepSaber/event_driver/Level/floor" ]
 	var xr_interface := XRServer.find_interface("OpenXR") as XRInterface
 	if xr_interface and xr_interface.is_passthrough_supported():
 		if Settings.mixed_reality:

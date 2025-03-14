@@ -55,7 +55,7 @@ func add_swing_score(position: Vector3, accuracy: float, preswing: float, follow
 	var score := int(roundf(accuracy + 
 					clampf(preswing/Constants.TARGET_PRESWING_ANGLE,0,1.)*Constants.SWING_PRESWING_SCORE + 
 					clampf(followthrough/Constants.TARGET_FOLLOWTHROUGH_ANGLE,0.,1.)*Constants.SWING_FOLLOWTHROUGH_SCORE))
-	add_points(position, score, "  (%.1f+%.1f)" % [preswing,followthrough])
+	add_points(position, score, "  (%d %d %d)" % [int(roundf(accuracy)),int(roundf(preswing)),int(roundf(followthrough))])
 
 func chain_link_cut(position: Vector3) -> void:
 	add_points(position, Constants.SWING_CHAIN_LINK_SCORE if Settings.swing_scoring else Constants.OPENSABER_CHAIN_LINK_SCORE)

@@ -68,6 +68,7 @@ func spawn(note_info: ColorNoteInfo, current_beat: float) -> void:
 	_mat.set_shader_parameter(&"is_chain_head", false)
 	piece_left.set_chain_head(false)
 	piece_right.set_chain_head(false)
+	chain_head = false
 	
 	# separate cube collision layers to allow a diferent collider on right/wrong cuts.
 	# opposing collision layers (ie. right note & left saber) will be placed on the
