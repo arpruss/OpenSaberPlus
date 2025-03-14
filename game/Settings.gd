@@ -154,7 +154,7 @@ var default_values = {
 	show_debug_info = false,
 	mixed_reality = false,
 	explain = false,
-	swing_scoring = false,
+	swing_scoring = true,
 	bombs_enabled = true,
 	events = true,
 	saber_visual = 0,
@@ -245,7 +245,7 @@ func load_old_config() -> void:
 	show_debug_info = Utils.get_bool(settings_dict, "show_debug_info", false)
 	mixed_reality = Utils.get_bool(settings_dict, "mixed_reality", false)
 	explain = Utils.got_bool(settings_dict, "explain", false)
-	swing_scoring = Utils.get_bool(settings_dict, "swing_scoring", false)
+	swing_scoring = Utils.get_bool(settings_dict, "swing_scoring", true)
 	bombs_enabled = Utils.get_bool(settings_dict, "bombs_enabled", true)
 	events = Utils.get_bool(settings_dict, "events", true, {"Web": false})
 	disable_map_color = Utils.get_bool(settings_dict, "disable_map_color", false)

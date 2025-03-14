@@ -391,7 +391,7 @@ text = "Explain Scores:"
 [node name="swing_scoring" type="CheckButton" parent="ScrollContainer/VBox"]
 layout_mode = 2
 theme = SubResource("3")
-text = "Swing-Based Scoring:"
+text = "Score by Swing and Distance:"
 
 [node name="SaberThicknessRow" type="HBoxContainer" parent="ScrollContainer/VBox"]
 layout_mode = 2

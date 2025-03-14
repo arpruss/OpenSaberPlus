@@ -13,7 +13,7 @@ config_version=5
 config/name="Open Saber"
 run/main_scene="res://game/BeepSaber_Game.tscn"
 config/features=PackedStringArray("4.3")
-boot_splash/bg_color=Color(0, 0, 0, 1)
+boot_splash/bg_color=Color(0, 0, 0, 0)
 boot_splash/image="res://game/data/beepsaber_logo.png"
 config/icon="res://icon.png"
 
