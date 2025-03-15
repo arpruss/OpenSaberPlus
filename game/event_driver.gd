@@ -32,8 +32,9 @@ var right_color: Color
 func _ready() -> void:
 	# get_rendering_device() returns null in opengl, meaning this block is skipped in vulkan
 	
-	#var ring_mat := ($Level/rings/ring as MeshInstance3D).material_override as StandardMaterial3D
-	#ring_mat.albedo_color = Color(0.0941176, 0.0941176, 0.0941176, 0.25 if Settings.mixed_reality else 1)
+	var ring_mat := ($Level/rings/ring as MeshInstance3D).material_override as StandardMaterial3D
+	ring_mat.transparency = 1 if Settings.mixed_reality else 0
+	ring_mat.albedo_color = Color(0.0941176, 0.0941176, 0.0941176, 0.25 if Settings.mixed_reality else 1)
 	
 	if not RenderingServer.get_rendering_device():
 		sphere_material.set_shader_parameter("contrast", 1)
