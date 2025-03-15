@@ -335,6 +335,26 @@ value = 0.8
 tick_count = 2
 ticks_on_borders = true
 
+[node name="music_preview" type="VBoxContainer" parent="ScrollContainer/VBox/audio"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="music_preview_label" type="Label" parent="ScrollContainer/VBox/audio/music_preview"]
+layout_mode = 2
+theme = SubResource("3")
+text = "Music Preview
+"
+
+[node name="music_preview_slider" type="HSlider" parent="ScrollContainer/VBox/audio/music_preview"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+max_value = 1.0
+step = 0.01
+value = 0.8
+tick_count = 2
+ticks_on_borders = true
+
 [node name="recenter" type="Button" parent="ScrollContainer/VBox"]
 layout_mode = 2
 text = "Recenter"
@@ -652,6 +672,7 @@ scroll_node_path = NodePath("../ScrollContainer")
 [connection signal="value_changed" from="ScrollContainer/VBox/audio/master/master_slider" to="." method="_on_master_slider_value_changed"]
 [connection signal="value_changed" from="ScrollContainer/VBox/audio/sfx/sfx_slider" to="." method="_on_sfx_slider_value_changed"]
 [connection signal="value_changed" from="ScrollContainer/VBox/audio/music/music_slider" to="." method="_on_music_slider_value_changed"]
+[connection signal="value_changed" from="ScrollContainer/VBox/audio/music_preview/music_preview_slider" to="." method="_on_music_preview_slider_value_changed"]
 [connection signal="button_up" from="ScrollContainer/VBox/recenter" to="." method="_on_recenter_button_up"]
 [connection signal="toggled" from="ScrollContainer/VBox/d_background" to="." method="_on_d_background_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/cut_blocks" to="." method="_on_cut_blocks_toggled"]

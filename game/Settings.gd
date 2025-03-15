@@ -106,6 +106,11 @@ var audio_music: float:
 		audio_music = value
 		AudioServer.set_bus_volume_db(AudioServer.get_bus_index(&"Music"), linear_to_db(value))
 		set_and_emit(&"audio_music", value)
+var audio_music_preview: float:
+	set(value):
+		audio_music_preview = value
+		AudioServer.set_bus_volume_db(AudioServer.get_bus_index(&"MusicPreview"), linear_to_db(value))
+		set_and_emit(&"audio_music_preview", value)
 var audio_sfx: float:
 	set(value):
 		audio_sfx = value
@@ -172,6 +177,7 @@ var default_values = {
 	player_height_offset = 0.0,
 	audio_master = 0.8,
 	audio_music = 0.8,
+	audio_music_preview = 0.6,
 	audio_sfx = 0.8,
 	spectator_view = false,
 	spectator_hud = true

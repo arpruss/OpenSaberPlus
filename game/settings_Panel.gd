@@ -36,6 +36,7 @@ signal apply()
 @onready var player_height_offset_control := $ScrollContainer/VBox/player_height_offset/pos as SpinBox
 @onready var audio_master_control := $ScrollContainer/VBox/audio/master/master_slider as HSlider
 @onready var audio_music_control := $ScrollContainer/VBox/audio/music/music_slider as HSlider
+@onready var audio_music_preview_control := $ScrollContainer/VBox/audio/music_preview/music_preview_slider as HSlider
 @onready var audio_sfx_control := $ScrollContainer/VBox/audio/sfx/sfx_slider as HSlider
 @onready var spectator_view_control := $ScrollContainer/VBox/spectator_view as CheckButton
 @onready var spectator_hud_control := $ScrollContainer/VBox/spectator_hud as CheckButton
@@ -93,6 +94,7 @@ func set_controls_from_settings() -> void:
 	player_height_offset_control.value = Settings.player_height_offset
 	audio_master_control.value = Settings.audio_master
 	audio_music_control.value = Settings.audio_music
+	audio_music_preview_control.value = Settings.audio_music_preview
 	audio_sfx_control.value = Settings.audio_sfx
 	spectator_view_control.button_pressed = Settings.spectator_view
 	spectator_hud_control.button_pressed = Settings.spectator_hud
@@ -222,6 +224,9 @@ func _on_master_slider_value_changed(value: float) -> void:
 
 func _on_music_slider_value_changed(value: float) -> void:
 	Settings.audio_music = value
+
+func _on_music_preview_slider_value_changed(value: float) -> void:
+	Settings.audio_music_preview = value
 
 func _on_sfx_slider_value_changed(value: float) -> void:
 	Settings.audio_sfx = value

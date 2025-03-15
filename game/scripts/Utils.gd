@@ -52,7 +52,7 @@ func unzip(zip_file: String, destination: String) -> void:
 		vr.log_warning("unable to open zip file %s" % zip_file)
 		return
 	for file in zreader.get_files():
-		if Settings.music_dl or not ends_in(file, [".ogg", ".egg"]):
+		if Settings.music_dl or not ends_in(file, [".ogg", ".egg", ".mp3"]):
 			var buffer := zreader.read_file(file)
 			if buffer:
 				var filea := FileAccess.open(destination+"/"+file, FileAccess.WRITE)
