@@ -388,7 +388,7 @@ func _on_Search_Button_button_up() -> void:
 	keyboard.visible=true
 	keyboard._text_edit.grab_focus()
 
-func _text_input_enter(_text: String) -> void:
+func _text_input_enter(_text:String = "") -> void:
 	keyboard.visible=false
 
 func _text_input_cancel() -> void:

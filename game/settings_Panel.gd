@@ -42,12 +42,20 @@ signal apply()
 @onready var spectator_hud_control := $ScrollContainer/VBox/spectator_hud as CheckButton
 
 var _play_ui_sound_demo := false
+var left_saber_col_state := false
+var right_saber_col_state := false
 
 func _ready() -> void:
 	UI_AudioEngine.attach_children(self)
 	
 	set_controls_from_settings()
 	_play_ui_sound_demo = true
+	for picker in [left_saber_col.get_picker(),right_saber_col.get_picker()]:
+		picker.sampler_visible = false
+		picker.presets_visible = true
+		picker.picker_shape = ColorPicker.SHAPE_NONE
+		picker.add_recent_preset(Color("ff1a1a"))
+		picker.add_recent_preset(Color("1a1aff"))
 	
 	if OS.get_name() == &"Web":
 		# way too heavy for webxr
@@ -217,7 +225,8 @@ func _on_apply_pressed() -> void:
 	apply.emit()
 	left_saber_col.get_popup().hide()
 	right_saber_col.get_popup().hide()
-
+	left_saber_col_state = false
+	right_saber_col_state = false
 
 func _on_master_slider_value_changed(value: float) -> void:
 	Settings.audio_master = value
@@ -251,6 +260,15 @@ func _on_recenter_button_up() -> void:
 	recenter_button.disabled = false
 	beepsaber_game.recenter()
 
+func _on_left_saber_col_pressed() -> void:
+	if left_saber_col_state:
+		left_saber_col.get_popup().hide()
+	left_saber_col_state = not left_saber_col_state
+
+func _on_right_saber_col_pressed() -> void:
+	if right_saber_col_state:
+		right_saber_col.get_popup().hide()
+	right_saber_col_state = not right_saber_col_state
 
 func _on_music_dl_toggled(button_pressed: bool) -> void:
 	Settings.music_dl = button_pressed

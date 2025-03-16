@@ -228,7 +228,7 @@ border_color = Color(1, 1, 1, 1)
 
 [node name="settings_Panel" type="Panel"]
 offset_right = 896.0
-offset_bottom = 576.0
+offset_bottom = 656.0
 mouse_filter = 1
 theme_override_styles/panel = SubResource("1")
 script = ExtResource("2")
@@ -266,7 +266,7 @@ layout_mode = 0
 offset_left = 27.0
 offset_top = 54.0
 offset_right = 867.0
-offset_bottom = 481.0
+offset_bottom = 561.0
 
 [node name="VBox" type="VBoxContainer" parent="ScrollContainer"]
 layout_mode = 2
@@ -463,7 +463,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Left saber"
 flat = true
-color = Color(1, 0.101961, 0.101961, 1)
+color = Color(0.101961, 0.101961, 1, 1)
 edit_alpha = false
 
 [node name="right_saber_col" type="ColorPickerButton" parent="ScrollContainer/VBox/SaberColorsRow"]
@@ -471,7 +471,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Right saber"
 flat = true
-color = Color(0.101961, 0.101961, 1, 1)
+color = Color(1, 0.101961, 0.101961, 1)
 edit_alpha = false
 
 [node name="UI_VolumeRow" type="HBoxContainer" parent="ScrollContainer/VBox"]
@@ -644,10 +644,10 @@ text = "Spectator HUD:"
 
 [node name="defaults" type="Button" parent="."]
 layout_mode = 0
-offset_left = 546.283
-offset_top = 496.0
+offset_left = 526.283
+offset_top = 596.0
 offset_right = 692.283
-offset_bottom = 556.0
+offset_bottom = 636.0
 theme = SubResource("7")
 theme_override_styles/hover = SubResource("8")
 theme_override_styles/pressed = SubResource("9")
@@ -657,9 +657,9 @@ text = "Default"
 [node name="apply" type="Button" parent="."]
 layout_mode = 0
 offset_left = 719.136
-offset_top = 496.0
+offset_top = 596.0
 offset_right = 865.136
-offset_bottom = 556.0
+offset_bottom = 636.0
 theme = SubResource("7")
 theme_override_styles/hover = SubResource("8")
 theme_override_styles/pressed = SubResource("9")
@@ -688,7 +688,9 @@ scroll_node_path = NodePath("../ScrollContainer")
 [connection signal="value_changed" from="ScrollContainer/VBox/SaberThicknessRow/saber_thickness" to="." method="_on_thickness_value_changed"]
 [connection signal="item_selected" from="ScrollContainer/VBox/SaberTypeRow/saber" to="." method="_on_saber_item_selected"]
 [connection signal="color_changed" from="ScrollContainer/VBox/SaberColorsRow/left_saber_col" to="." method="_on_left_saber_color_changed"]
+[connection signal="pressed" from="ScrollContainer/VBox/SaberColorsRow/left_saber_col" to="." method="_on_left_saber_col_pressed"]
 [connection signal="color_changed" from="ScrollContainer/VBox/SaberColorsRow/right_saber_col" to="." method="_on_right_saber_color_changed"]
+[connection signal="pressed" from="ScrollContainer/VBox/SaberColorsRow/right_saber_col" to="." method="_on_right_saber_col_pressed"]
 [connection signal="value_changed" from="ScrollContainer/VBox/UI_VolumeRow/ui_volume_slider" to="." method="_on_ui_volume_slider_value_changed"]
 [connection signal="value_changed" from="ScrollContainer/VBox/left_saber_offset/posx" to="." method="_on_left_saber_pos_x_changed"]
 [connection signal="value_changed" from="ScrollContainer/VBox/left_saber_offset/posy" to="." method="_on_left_saber_pos_y_changed"]
