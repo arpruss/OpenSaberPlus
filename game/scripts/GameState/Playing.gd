@@ -24,7 +24,7 @@ func _ready(game: BeepSaber_Game) -> void:
 	Scoreboard.paused = false
 
 func _physics_process(game: BeepSaber_Game) -> void:
-	if game.left_controller.by_just_pressed():
+	if game.left_controller.by_just_pressed() or game.left_controller.menu_just_pressed():
 		game._transition_game_state(game.gamestate_paused)
 	if game._audio_synced_after_restart:
 		_process_map(game)
