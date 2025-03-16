@@ -227,7 +227,8 @@ Difficulties:%s
 	
 	($TextureRect as TextureRect).texture = item_list.get_item_icon(index)
 
-	httppreviewdownload.request(version['previewURL'])
+	if Settings.audio_master > 0 and Settings.audio_music_preview > 0:
+		httppreviewdownload.request(version['previewURL'])
 
 func _on_download_button_up() -> void:
 	OS.request_permissions()

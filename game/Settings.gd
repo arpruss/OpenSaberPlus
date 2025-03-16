@@ -156,8 +156,8 @@ const platform_default_values = {
 var default_values = {
 	thickness = 1.0,
 	cube_cuts_falloff = true,
-	color_left = Color("ff1a1a"),
-	color_right = Color("1a1aff"),
+	color_left = Color("1a1aff"),
+	color_right = Color("ff1a1a"),
 	saber_tail = true,
 	glare = true,
 	show_debug_info = false,
@@ -218,12 +218,12 @@ func load_old_config() -> void:
 		@warning_ignore("unsafe_cast")
 		color_left = settings_dict["COLOR_LEFT"] as Color
 	else:
-		color_left = Color("ff1a1a")
+		color_left = Color("1a1aff")
 	if settings_dict.has("COLOR_RIGHT") and settings_dict["COLOR_RIGHT"] is Color:
 		@warning_ignore("unsafe_cast")
 		color_right = settings_dict["COLOR_RIGHT"] as Color
 	else:
-		color_right = Color("1a1aff")
+		color_right = Color("ff1a1a")
 	saber_visual = int(Utils.get_float(settings_dict, "saber", 0))
 	ui_volume = Utils.get_float(settings_dict, "ui_volume", 10.0)
 	left_saber_offset_pos = Vector3.ZERO
