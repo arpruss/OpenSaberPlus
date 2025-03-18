@@ -222,10 +222,12 @@ func _select_song(id: int) -> void:
 	_bg_img_loader.load_texture(map.filepath + map.cover_image_filename, _on_cover_loaded, true, -1)
 	
 	# preview song
-	play_preview(FileAccess.get_file_as_bytes(map.filepath + map.song_filename), map.preview_start_time, map.preview_duration)
-	var result := FileAccess.get_open_error()
-	if result != OK:
-		vr.log_file_error(result, map.filepath + map.song_filename, "BeepSaberMainMenu.gd at line 223 ")
+	var filename := map.filepath + map.song_filename
+	if Settings.audio_music_preview > 0 and FileAccess.file_exists(filename):
+		play_preview(FileAccess.get_file_as_bytes(filename), map.preview_start_time, map.preview_duration)
+		var result := FileAccess.get_open_error()
+		if result != OK:
+			vr.log_file_error(result, map.filepath + map.song_filename, "BeepSaberMainMenu.gd at line 223 ")
 	
 	diff_menu.clear()
 	for diff in map.difficulty_beatmaps:

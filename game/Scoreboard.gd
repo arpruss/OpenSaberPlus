@@ -66,7 +66,7 @@ func note_cut(saber: LightSaber, position: Vector3, beat_accuracy: float, cut_an
 	if cut_angle_accuracy >= 1e-10: # and cut_distance_accuracy >= 1e-10:
 		if Settings.swing_scoring:
 			if chain_head:
-				add_points(position, Constants.SWING_CHAIN_HEAD_SCORE)
+				saber.add_chain_head_score(position, cut_distance_accuracy * Constants.SWING_ACCURACY_SCORE)
 			else:
 				# unless we have arc_head, we need to wait for followthrough to finish scoring
 				saber.add_score(position, cut_distance_accuracy * Constants.SWING_ACCURACY_SCORE, arc_head, arc_tail)

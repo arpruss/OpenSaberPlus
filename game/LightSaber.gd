@@ -115,6 +115,12 @@ func add_score(position: Vector3, accuracy: float, arc_head: bool, arc_tail: boo
 	else:
 		score_queue.append([Time.get_ticks_msec(), position, get_pointing(), preswing, accuracy])
 	
+func add_chain_head_score(position: Vector3, accuracy: float) -> void:
+	var time = Time.get_ticks_msec()
+	var pointing := get_pointing()
+	var preswing := get_preswing_angle(time, pointing)
+	Scoreboard.add_swing_score(position, accuracy, preswing, 0.)
+	
 func get_preswing_angle(time: int, pointing: Vector3) -> float:
 	if history[history_tail].size() == 0:
 		return 0.

@@ -89,7 +89,7 @@ func _process_map(game: BeepSaber_Game) -> void:
 					cube.set_arc_head()
 				if current_cube.beat == arc_info.tail_beat:
 					cube.set_arc_tail()
-				cube_id -= 1
+			cube_id -= 1
 		
 		arc.spawn(arc_info, current_beat, cube)
 		game.track.add_child(arc)
