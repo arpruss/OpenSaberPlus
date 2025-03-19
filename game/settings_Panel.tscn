@@ -403,6 +403,11 @@ layout_mode = 2
 theme = SubResource("3")
 text = "Bombs Enabled:"
 
+[node name="calm" type="CheckButton" parent="ScrollContainer/VBox"]
+layout_mode = 2
+theme = SubResource("3")
+text = "Calm Mode:"
+
 [node name="explain" type="CheckButton" parent="ScrollContainer/VBox"]
 layout_mode = 2
 theme = SubResource("3")
@@ -413,10 +418,10 @@ layout_mode = 2
 theme = SubResource("3")
 text = "Score by Swing and Distance:"
 
-[node name="music_dl" type="CheckButton" parent="ScrollContainer/VBox"]
+[node name="not_music_dl" type="CheckButton" parent="ScrollContainer/VBox"]
 layout_mode = 2
 theme = SubResource("3")
-text = "Include Music in Download:"
+text = "Omit Music from Map Download/Upload:"
 
 [node name="SaberThicknessRow" type="HBoxContainer" parent="ScrollContainer/VBox"]
 layout_mode = 2
@@ -682,9 +687,10 @@ scroll_node_path = NodePath("../ScrollContainer")
 [connection signal="toggled" from="ScrollContainer/VBox/show_collisions" to="." method="_on_show_collisions_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/mixed_reality" to="." method="_on_mixed_reality_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/bombs_enabled" to="." method="_on_bombs_enabled_toggled"]
+[connection signal="toggled" from="ScrollContainer/VBox/calm" to="." method="_on_calm_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/explain" to="." method="_on_explain_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/swing_scoring" to="." method="_on_swing_scoring_toggled"]
-[connection signal="toggled" from="ScrollContainer/VBox/music_dl" to="." method="_on_music_dl_toggled"]
+[connection signal="toggled" from="ScrollContainer/VBox/not_music_dl" to="." method="_on_not_music_dl_toggled"]
 [connection signal="value_changed" from="ScrollContainer/VBox/SaberThicknessRow/saber_thickness" to="." method="_on_thickness_value_changed"]
 [connection signal="item_selected" from="ScrollContainer/VBox/SaberTypeRow/saber" to="." method="_on_saber_item_selected"]
 [connection signal="color_changed" from="ScrollContainer/VBox/SaberColorsRow/left_saber_col" to="." method="_on_left_saber_color_changed"]

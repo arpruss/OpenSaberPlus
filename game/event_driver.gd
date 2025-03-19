@@ -30,11 +30,11 @@ var right_color: Color
 @export var disabled := false
 
 func _ready() -> void:
+	track_lights_holder.hide()
+	
 	# get_rendering_device() returns null in opengl, meaning this block is skipped in vulkan
 	
-	#var ring_mat := ($Level/rings/ring as MeshInstance3D).material_override as StandardMaterial3D
-	#ring_mat.transparency = 1 if Settings.mixed_reality else 0
-	#ring_mat.albedo_color = Color(0.0941176, 0.0941176, 0.0941176, 0.25 if Settings.mixed_reality else 1)
+	set_calm()
 	
 	if not RenderingServer.get_rendering_device():
 		sphere_material.set_shader_parameter("contrast", 1)
@@ -44,6 +44,52 @@ func _ready() -> void:
 				shader_param,
 				(sphere_material.get_shader_parameter(shader_param) as float) * 2.2
 			)
+
+func set_calm() -> void:
+	if Settings.calm:
+		ring_holder.hide()
+		diagonal_lasers_holder.hide()
+		square_lasers_holder.hide()
+		left_waving_lasers_holder.hide()
+		right_waving_lasers_holder.hide()
+		#($Level/floor/line0).hide()
+		#($Level/floor/line1).hide()
+		#($Level/floor/line2).hide()
+		#($Level/floor/line3).hide()
+		#($Level/floor/line4).hide()
+		($Level/DiagonalLasers/laser1).hide()
+		($Level/DiagonalLasers/laser2).hide()
+		($Level/DiagonalLasers/laser3).hide()
+		($Level/DiagonalLasers/laser4).hide()
+		($Level/DiagonalLasers/laser5).hide()
+		($Level/DiagonalLasers/laser6).hide()
+		($Level/DiagonalLasers/laser7).hide()
+		($Level/DiagonalLasers/laser8).hide()
+		($Level/DiagonalLasers/laser9).hide()
+		($Level/DiagonalLasers/laser10).hide()
+		track_lights_holder.hide()
+	else:
+		ring_holder.show()
+		diagonal_lasers_holder.show()
+		square_lasers_holder.show()
+		left_waving_lasers_holder.show()
+		right_waving_lasers_holder.show()
+		#($Level/floor/line0).show()
+		#($Level/floor/line1).show()
+		#($Level/floor/line2).show()
+		#($Level/floor/line3).show()
+		#($Level/floor/line4).show()
+		($Level/DiagonalLasers/laser1).show()
+		($Level/DiagonalLasers/laser2).show()
+		($Level/DiagonalLasers/laser3).show()
+		($Level/DiagonalLasers/laser4).show()
+		($Level/DiagonalLasers/laser5).show()
+		($Level/DiagonalLasers/laser6).show()
+		($Level/DiagonalLasers/laser7).show()
+		($Level/DiagonalLasers/laser8).show()
+		($Level/DiagonalLasers/laser9).show()
+		($Level/DiagonalLasers/laser10).show()
+		track_lights_holder.hide()
 
 func _process(delta: float) -> void:
 	# update the level animations
@@ -160,7 +206,7 @@ func turn_light_off(type: int) -> void:
 			track_lights_holder.visible = false
 			track_lights_material.albedo_color = Color.BLACK
 			floor_material.albedo_color = Color.BLACK
-
+	
 func turn_light_on(type: int, color: Color) -> void:
 	sphere_material.set_shader_parameter("bg_%d_tint"%type, color)
 	stop_prev_tween(type)

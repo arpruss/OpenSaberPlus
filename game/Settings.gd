@@ -72,10 +72,10 @@ var explain: bool:
 	set(value):
 		explain = value
 		set_and_emit(&"explain", value)
-var music_dl: bool:
+var not_music_dl: bool:
 	set(value):
-		music_dl = value
-		set_and_emit(&"music_dl", value)
+		not_music_dl = value
+		set_and_emit(&"not_music_dl", value)
 var swing_scoring: bool:
 	set(value):
 		swing_scoring = value
@@ -125,6 +125,10 @@ var spectator_hud: bool:
 	set(value):
 		spectator_hud = value
 		set_and_emit(&"spectator_hud", value)
+var calm: bool:
+	set(value):
+		calm = value
+		set_and_emit(&"calm", value)
 
 
 
@@ -163,7 +167,7 @@ var default_values = {
 	show_debug_info = false,
 	mixed_reality = false,
 	explain = false,
-	music_dl = true,
+	not_music_dl = false,
 	swing_scoring = true,
 	bombs_enabled = true,
 	events = true,
@@ -180,7 +184,8 @@ var default_values = {
 	audio_music_preview = 0.6,
 	audio_sfx = 0.8,
 	spectator_view = false,
-	spectator_hud = true
+	spectator_hud = true,
+	calm = false
 }
 
 func cast_or_default(key: String, to_type: int = -1) -> Variant:
@@ -256,12 +261,13 @@ func load_old_config() -> void:
 	show_debug_info = Utils.get_bool(settings_dict, "show_debug_info", false)
 	mixed_reality = Utils.get_bool(settings_dict, "mixed_reality", false)
 	explain = Utils.got_bool(settings_dict, "explain", false)
-	music_dl = Utils.got_bool(settings_dict, "music_dl", true)
+	not_music_dl = Utils.got_bool(settings_dict, "not_music_dl", false)
 	swing_scoring = Utils.get_bool(settings_dict, "swing_scoring", true)
 	bombs_enabled = Utils.get_bool(settings_dict, "bombs_enabled", true)
 	events = Utils.get_bool(settings_dict, "events", true, {"Web": false})
 	disable_map_color = Utils.get_bool(settings_dict, "disable_map_color", false)
 	player_height_offset = Utils.get_float(settings_dict, "player_height_offset", 0.0)
+	calm = Utils.get_bool(settings_dict, "calm", false)
 
 func save() -> void:
 	var error := config.save(CONFIG_PATH)

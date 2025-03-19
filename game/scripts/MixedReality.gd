@@ -1,8 +1,11 @@
 extends Node
 
 const to_hide := [ "/root/BeepSaber/event_driver/Level/Sphere", 
-	"/root/BeepSaber/event_driver/Level/floor" ]
-const make_transparent := [ "/root/BeepSaber/StandingGround/Node3D/cutFloor" ]
+	"/root/BeepSaber/event_driver/Level/floor" 
+	]
+const make_transparent := [ "/root/BeepSaber/StandingGround/Node3D/cutFloor",
+	#"/root/BeepSaber/event_driver/Level/floor" 
+	]
 
 func set_mixed_reality():
 	var xr_interface := XRServer.find_interface("OpenXR") as XRInterface

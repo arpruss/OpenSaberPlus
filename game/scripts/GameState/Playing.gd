@@ -78,21 +78,30 @@ func _process_map(game: BeepSaber_Game) -> void:
 		var arc := arc_template.instantiate() as Arc
 		var arc_info := Map.arc_stack.pop_back() as ArcInfo
 		
-		# find starting cube to use as magnet trigger
-		var cube : BeepCube
+		# find starting cube to use as magnet trigger and mark start and end cubes as arc head/tail
+		var head_cube : BeepCube
 		var cube_id := cube_refs.size()-1
+		var have_head := false
+		var have_tail := false
 		while cube_id >= 0:
 			var current_cube : BeepCube = cube_refs[cube_id]
 			if current_cube.which_saber == arc_info.color:
 				if current_cube.beat == arc_info.head_beat:
-					cube = current_cube
-					cube.set_arc_head()
+					current_cube.set_arc_head()
+					head_cube = current_cube
+					if have_tail:
+						break
+					have_head = true
 				if current_cube.beat == arc_info.tail_beat:
-					cube.set_arc_tail()
+					current_cube.set_arc_tail()
+					if have_head:
+						break
+					have_tail = true
 			cube_id -= 1
 		
-		arc.spawn(arc_info, current_beat, cube)
-		game.track.add_child(arc)
+		if have_head:
+			arc.spawn(arc_info, current_beat, head_cube)
+			game.track.add_child(arc)
 	
 	while not Map.chain_stack.is_empty() and Map.chain_stack[-1].head_beat <= look_ahead:
 		var chain_info := Map.chain_stack.pop_back() as ChainInfo

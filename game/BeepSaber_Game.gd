@@ -82,6 +82,8 @@ func start_map(info: MapInfo, map_difficulty: DifficultyInfo) -> void:
 		vr.log_error("Could not read map data from " + map_filename)
 	if not Map.load_beatmap(info, map_difficulty, map_data):
 		return
+		
+	event_driver.set_calm()
 	
 	update_left_color(Map.color_left)
 	update_right_color(Map.color_right)
@@ -201,8 +203,6 @@ func _ready() -> void:
 		right_controller
 	)
 	
-	MixedReality.set_mixed_reality()
-	
 	debug_info_label.visible = Settings.show_debug_info
 	set_colors_from_settings()
 	($WorldEnvironment as WorldEnvironment).environment.glow_enabled = Settings.glare
@@ -238,7 +238,9 @@ func on_settings_changed(key: StringName) -> void:
 		&"color_right":
 			update_right_color(Settings.color_right)
 		&"events":
-			disable_events(not Settings.events)
+			disable_events(not Settings.events or Settings.calm)
+		&"calm":
+			event_driver.set_calm()
 		&"show_debug_info":
 			debug_info_label.visible = Settings.show_debug_info
 		&"glare":

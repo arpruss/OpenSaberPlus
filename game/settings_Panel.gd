@@ -15,7 +15,7 @@ signal apply()
 @onready var show_debug_control := $ScrollContainer/VBox/show_debug as CheckButton
 @onready var mixed_reality_control := $ScrollContainer/VBox/mixed_reality as CheckButton
 @onready var explain_control := $ScrollContainer/VBox/explain as CheckButton
-@onready var music_dl_control := $ScrollContainer/VBox/music_dl as CheckButton
+@onready var not_music_dl_control := $ScrollContainer/VBox/not_music_dl as CheckButton
 @onready var swing_scoring_control := $ScrollContainer/VBox/swing_scoring as CheckButton
 @onready var show_collisions := $ScrollContainer/VBox/show_collisions as CheckButton
 @onready var bombs_enabled_control := $ScrollContainer/VBox/bombs_enabled as CheckButton
@@ -40,6 +40,7 @@ signal apply()
 @onready var audio_sfx_control := $ScrollContainer/VBox/audio/sfx/sfx_slider as HSlider
 @onready var spectator_view_control := $ScrollContainer/VBox/spectator_view as CheckButton
 @onready var spectator_hud_control := $ScrollContainer/VBox/spectator_hud as CheckButton
+@onready var calm_control := $ScrollContainer/VBox/calm as CheckButton
 
 var _play_ui_sound_demo := false
 var left_saber_col_state := false
@@ -82,7 +83,7 @@ func set_controls_from_settings() -> void:
 	show_debug_control.button_pressed = Settings.show_debug_info
 	mixed_reality_control.button_pressed = Settings.mixed_reality
 	explain_control.button_pressed = Settings.explain
-	music_dl_control.button_pressed = Settings.music_dl
+	not_music_dl_control.button_pressed = Settings.not_music_dl
 	swing_scoring_control.button_pressed = Settings.swing_scoring
 	bombs_enabled_control.button_pressed = Settings.bombs_enabled
 	ui_volume_slider.value = Settings.ui_volume
@@ -106,6 +107,7 @@ func set_controls_from_settings() -> void:
 	audio_sfx_control.value = Settings.audio_sfx
 	spectator_view_control.button_pressed = Settings.spectator_view
 	spectator_hud_control.button_pressed = Settings.spectator_hud
+	calm_control.button_pressed = Settings.calm
 
 func _restore_defaults() -> void:
 	Settings.restore_defaults()
@@ -270,5 +272,8 @@ func _on_right_saber_col_pressed() -> void:
 		right_saber_col.get_popup().hide()
 	right_saber_col_state = not right_saber_col_state
 
-func _on_music_dl_toggled(button_pressed: bool) -> void:
-	Settings.music_dl = button_pressed
+func _on_not_music_dl_toggled(button_pressed: bool) -> void:
+	Settings.not_music_dl = button_pressed
+
+func _on_calm_toggled(button_pressed: bool) -> void:
+	Settings.calm = button_pressed
