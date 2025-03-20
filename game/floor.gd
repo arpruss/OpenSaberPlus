@@ -30,10 +30,14 @@ func _ready() -> void:
 func update_left_color(color: Color) -> void:
 	C_LEFT = color
 	burn_l.modulate = color*6
+	if Settings.mixed_reality:
+		burn_l.modulate.a = 0.08
 
 func update_right_color(color: Color) -> void:
 	C_RIGHT = color
 	burn_r.modulate = color*6
+	if Settings.mixed_reality:
+		burn_r.modulate.a = 0.08
 
 var left_is_out := false
 var right_is_out := false

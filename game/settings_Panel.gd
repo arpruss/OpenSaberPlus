@@ -15,7 +15,6 @@ signal apply()
 @onready var mixed_reality_control := $ScrollContainer/VBox/mixed_reality as CheckButton
 @onready var explain_control := $ScrollContainer/VBox/explain as CheckButton
 @onready var not_music_dl_control := $ScrollContainer/VBox/not_music_dl as CheckButton
-@onready var background_control := $ScrollContainer/VBox/background as NameSelector
 @onready var swing_scoring_control := $ScrollContainer/VBox/swing_scoring as CheckButton
 @onready var show_collisions := $ScrollContainer/VBox/show_collisions as CheckButton
 @onready var bombs_enabled_control := $ScrollContainer/VBox/bombs_enabled as CheckButton
