@@ -34,7 +34,7 @@ func _ready() -> void:
 	
 	# get_rendering_device() returns null in opengl, meaning this block is skipped in vulkan
 	
-	set_calm()
+	set_background()
 	
 	if not RenderingServer.get_rendering_device():
 		sphere_material.set_shader_parameter("contrast", 1)
@@ -45,8 +45,8 @@ func _ready() -> void:
 				(sphere_material.get_shader_parameter(shader_param) as float) * 2.2
 			)
 
-func set_calm() -> void:
-	if Settings.calm:
+func set_background() -> void:
+	if Settings.background == "simple":
 		ring_holder.hide()
 		diagonal_lasers_holder.hide()
 		square_lasers_holder.hide()
@@ -68,6 +68,8 @@ func set_calm() -> void:
 		($Level/DiagonalLasers/laser9).hide()
 		($Level/DiagonalLasers/laser10).hide()
 		track_lights_holder.hide()
+		set_all_off()
+		disabled = true
 	else:
 		ring_holder.show()
 		diagonal_lasers_holder.show()
@@ -90,6 +92,12 @@ func set_calm() -> void:
 		($Level/DiagonalLasers/laser9).show()
 		($Level/DiagonalLasers/laser10).show()
 		track_lights_holder.hide()
+		if Settings.background == "dynamic":
+			disabled = false
+			set_all_on(Settings.color_left, Settings.color_right)
+		else:
+			disabled = true
+			set_all_off()
 
 func _process(delta: float) -> void:
 	# update the level animations

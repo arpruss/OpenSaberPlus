@@ -5,7 +5,7 @@
 extends Node3D
 class_name BeepSaber_Game
 
-var version := "0.6.4"
+var version := "0.6.5"
 
 var gamestate_bootup := GameState.new()
 var gamestate_mapcomplete := GameStateMapComplete.new()
@@ -83,7 +83,7 @@ func start_map(info: MapInfo, map_difficulty: DifficultyInfo) -> void:
 	if not Map.load_beatmap(info, map_difficulty, map_data):
 		return
 		
-	event_driver.set_calm()
+	event_driver.set_background()
 	
 	update_left_color(Map.color_left)
 	update_right_color(Map.color_right)
@@ -237,10 +237,9 @@ func on_settings_changed(key: StringName) -> void:
 			update_left_color(Settings.color_left)
 		&"color_right":
 			update_right_color(Settings.color_right)
-		&"events":
-			disable_events(not Settings.events or Settings.calm)
-		&"calm":
-			event_driver.set_calm()
+		&"background":
+#			disable_events(Settings.background != "dynamic")
+			event_driver.set_background()
 		&"show_debug_info":
 			debug_info_label.visible = Settings.show_debug_info
 		&"glare":
@@ -272,12 +271,12 @@ func update_right_color(color: Color) -> void:
 	event_driver.update_right_color(color)
 	standing_ground.update_right_color(color)
 
-func disable_events(disabled: bool) -> void:
-	event_driver.disabled = disabled
-	if disabled:
-		event_driver.set_all_off()
-	else:
-		event_driver.set_all_on(Settings.color_left, Settings.color_right)
+#func disable_events(disabled: bool) -> void:
+#	event_driver.disabled = disabled
+#	if disabled:
+#		event_driver.set_all_off()
+#	else:
+#		event_driver.set_all_on(Settings.color_left, Settings.color_right)
 
 func _clear_track() -> void:
 	for c in track.get_children():

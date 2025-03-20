@@ -125,11 +125,10 @@ var spectator_hud: bool:
 	set(value):
 		spectator_hud = value
 		set_and_emit(&"spectator_hud", value)
-var calm: bool:
+var background: String:
 	set(value):
-		calm = value
-		set_and_emit(&"calm", value)
-
+		background = value
+		set_and_emit(&"background", value)
 
 
 func _ready() -> void:
@@ -185,7 +184,7 @@ var default_values = {
 	audio_sfx = 0.8,
 	spectator_view = false,
 	spectator_hud = true,
-	calm = false
+	background = "dynamic"
 }
 
 func cast_or_default(key: String, to_type: int = -1) -> Variant:
@@ -267,7 +266,7 @@ func load_old_config() -> void:
 	events = Utils.get_bool(settings_dict, "events", true, {"Web": false})
 	disable_map_color = Utils.get_bool(settings_dict, "disable_map_color", false)
 	player_height_offset = Utils.get_float(settings_dict, "player_height_offset", 0.0)
-	calm = Utils.get_bool(settings_dict, "calm", false)
+	background = Utils.get_str(settings_dict, "background", "dynamic")
 
 func save() -> void:
 	var error := config.save(CONFIG_PATH)

@@ -9,13 +9,13 @@ signal apply()
 @onready var saber_tail_control := $ScrollContainer/VBox/saber_tail as CheckButton
 @onready var saber_thickness := $ScrollContainer/VBox/SaberThicknessRow/saber_thickness as HSlider
 @onready var cut_blocks := $ScrollContainer/VBox/cut_blocks as CheckButton
-@onready var d_background := $ScrollContainer/VBox/d_background as CheckButton
 @onready var left_saber_col := $ScrollContainer/VBox/SaberColorsRow/left_saber_col as ColorPickerButton
 @onready var right_saber_col := $ScrollContainer/VBox/SaberColorsRow/right_saber_col as ColorPickerButton
 @onready var show_debug_control := $ScrollContainer/VBox/show_debug as CheckButton
 @onready var mixed_reality_control := $ScrollContainer/VBox/mixed_reality as CheckButton
 @onready var explain_control := $ScrollContainer/VBox/explain as CheckButton
 @onready var not_music_dl_control := $ScrollContainer/VBox/not_music_dl as CheckButton
+@onready var background_control := $ScrollContainer/VBox/background as NameSelector
 @onready var swing_scoring_control := $ScrollContainer/VBox/swing_scoring as CheckButton
 @onready var show_collisions := $ScrollContainer/VBox/show_collisions as CheckButton
 @onready var bombs_enabled_control := $ScrollContainer/VBox/bombs_enabled as CheckButton
@@ -40,7 +40,9 @@ signal apply()
 @onready var audio_sfx_control := $ScrollContainer/VBox/audio/sfx/sfx_slider as HSlider
 @onready var spectator_view_control := $ScrollContainer/VBox/spectator_view as CheckButton
 @onready var spectator_hud_control := $ScrollContainer/VBox/spectator_hud as CheckButton
-@onready var calm_control := $ScrollContainer/VBox/calm as CheckButton
+@onready var simple_control := $ScrollContainer/VBox/simple as CheckBox
+@onready var static_control := $ScrollContainer/VBox/static as CheckBox
+@onready var dynamic_control := $ScrollContainer/VBox/dynamic as CheckBox
 
 var _play_ui_sound_demo := false
 var left_saber_col_state := false
@@ -57,7 +59,7 @@ func _ready() -> void:
 		picker.picker_shape = ColorPicker.SHAPE_NONE
 		picker.add_recent_preset(Color("ff1a1a"))
 		picker.add_recent_preset(Color("1a1aff"))
-	
+			
 	if OS.get_name() == &"Web":
 		# way too heavy for webxr
 		$ScrollContainer/VBox/glare.hide()
@@ -78,7 +80,6 @@ func set_controls_from_settings() -> void:
 	right_saber_col.color = Settings.color_right
 	saber_tail_control.button_pressed = Settings.saber_tail
 	glare_control.button_pressed = Settings.glare
-	d_background.button_pressed = Settings.events
 	saber_control.select(Settings.saber_visual)
 	show_debug_control.button_pressed = Settings.show_debug_info
 	mixed_reality_control.button_pressed = Settings.mixed_reality
@@ -107,7 +108,9 @@ func set_controls_from_settings() -> void:
 	audio_sfx_control.value = Settings.audio_sfx
 	spectator_view_control.button_pressed = Settings.spectator_view
 	spectator_hud_control.button_pressed = Settings.spectator_hud
-	calm_control.button_pressed = Settings.calm
+	simple_control.button_pressed = Settings.background == "simple"
+	static_control.button_pressed = Settings.background == "static"
+	dynamic_control.button_pressed = Settings.background == "dynamic"
 
 func _restore_defaults() -> void:
 	Settings.restore_defaults()
@@ -131,9 +134,6 @@ func _on_saber_tail_toggled(button_pressed: bool) -> void:
 
 func _on_glare_toggled(button_pressed: bool) -> void:
 	Settings.glare = button_pressed
-
-func _on_d_background_toggled(button_pressed: bool) -> void:
-	Settings.events = button_pressed
 
 func _on_saber_item_selected(index: int) -> void:
 	Settings.saber_visual = index
@@ -202,6 +202,9 @@ func _on_player_height_offset_changed(value: float) -> void:
 
 func _on_disable_map_color_toggled(toggled_on: bool) -> void:
 	Settings.disable_map_color = toggled_on
+	
+func _on_background_selected(value: String) -> void:
+	Settings.background = value
 
 func _force_update_show_coll_shapes(node: Node) -> void:
 	# toggle enable to make engine show collision shapes
@@ -275,5 +278,14 @@ func _on_right_saber_col_pressed() -> void:
 func _on_not_music_dl_toggled(button_pressed: bool) -> void:
 	Settings.not_music_dl = button_pressed
 
-func _on_calm_toggled(button_pressed: bool) -> void:
-	Settings.calm = button_pressed
+func _on_simple_toggled(button_pressed: bool) -> void:
+	if button_pressed:
+		Settings.background = "simple"
+
+func _on_dynamic_toggled(button_pressed: bool) -> void:
+	if button_pressed:
+		Settings.background = "dynamic"
+
+func _on_static_toggled(button_pressed: bool) -> void:
+	if button_pressed:
+		Settings.background = "static"
