@@ -238,7 +238,6 @@ func on_settings_changed(key: StringName) -> void:
 		&"color_right":
 			update_right_color(Settings.color_right)
 		&"background":
-#			disable_events(Settings.background != "dynamic")
 			event_driver.set_background()
 		&"show_debug_info":
 			debug_info_label.visible = Settings.show_debug_info
@@ -248,6 +247,7 @@ func on_settings_changed(key: StringName) -> void:
 			xr_origin.transform.origin.y = Settings.player_height_offset
 
 func set_colors_from_settings() -> void:
+	event_driver.set_background()
 	update_left_color(Settings.color_left)
 	update_right_color(Settings.color_right)
 
@@ -270,13 +270,6 @@ func update_right_color(color: Color) -> void:
 	goggles_shader.set_shader_parameter(&"right_color", color)
 	event_driver.update_right_color(color)
 	standing_ground.update_right_color(color)
-
-#func disable_events(disabled: bool) -> void:
-#	event_driver.disabled = disabled
-#	if disabled:
-#		event_driver.set_all_off()
-#	else:
-#		event_driver.set_all_on(Settings.color_left, Settings.color_right)
 
 func _clear_track() -> void:
 	for c in track.get_children():

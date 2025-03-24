@@ -35,7 +35,6 @@ func update_left_color(color: Color) -> void:
 		burn_l.modulate.a = mixed_reality_burn_alpha
 
 func update_right_color(color: Color) -> void:
-	vr.log_info("ARP update right color")
 	C_RIGHT = color
 	burn_r.modulate = color*6
 	if Settings.mixed_reality:
