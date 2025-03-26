@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://biylg2wsontn3"]
+[gd_scene load_steps=17 format=3 uid="uid://biylg2wsontn3"]
 
 [ext_resource type="FontFile" uid="uid://01k27lk2a4bw" path="res://OQ_Toolkit/OQ_UI2D/theme/RobotoMono-Medium.ttf" id="1"]
 [ext_resource type="Script" path="res://game/settings_Panel.gd" id="2"]
@@ -174,6 +174,9 @@ default_font = SubResource("2")
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_1ith5"]
 resource_name = "background"
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_3ge45"]
+resource_name = "background_texture"
 
 [sub_resource type="FontFile" id="4"]
 fallbacks = Array[Font]([ExtResource("3")])
@@ -404,40 +407,52 @@ theme = SubResource("3")
 button_group = SubResource("ButtonGroup_1ith5")
 text = "Simple Background"
 
-[node name="show_debug" type="CheckButton" parent="ScrollContainer/VBox"]
-layout_mode = 2
-theme = SubResource("3")
-text = "Show Debug Info:"
-
-[node name="show_collisions" type="CheckButton" parent="ScrollContainer/VBox"]
-layout_mode = 2
-theme = SubResource("3")
-text = "Show Collision Shapes:"
-
 [node name="mixed_reality" type="CheckButton" parent="ScrollContainer/VBox"]
 layout_mode = 2
 theme = SubResource("3")
 text = "Mixed Reality:"
+
+[node name="nightsky" type="CheckBox" parent="ScrollContainer/VBox"]
+layout_mode = 2
+theme = SubResource("3")
+button_group = SubResource("ButtonGroup_3ge45")
+text = "Night Sky Background (ESA/S. Brunier)"
+
+[node name="original" type="CheckBox" parent="ScrollContainer/VBox"]
+layout_mode = 2
+theme = SubResource("3")
+button_group = SubResource("ButtonGroup_3ge45")
+text = "Original Background"
 
 [node name="bombs_enabled" type="CheckButton" parent="ScrollContainer/VBox"]
 layout_mode = 2
 theme = SubResource("3")
 text = "Bombs Enabled:"
 
-[node name="explain" type="CheckButton" parent="ScrollContainer/VBox"]
-layout_mode = 2
-theme = SubResource("3")
-text = "Explain Scores:"
-
 [node name="swing_scoring" type="CheckButton" parent="ScrollContainer/VBox"]
 layout_mode = 2
 theme = SubResource("3")
 text = "Score by Swing and Distance:"
 
+[node name="explain" type="CheckButton" parent="ScrollContainer/VBox"]
+layout_mode = 2
+theme = SubResource("3")
+text = "Explain Scores:"
+
 [node name="not_music_dl" type="CheckButton" parent="ScrollContainer/VBox"]
 layout_mode = 2
 theme = SubResource("3")
 text = "Omit Music from Map Download/Upload:"
+
+[node name="show_collisions" type="CheckButton" parent="ScrollContainer/VBox"]
+layout_mode = 2
+theme = SubResource("3")
+text = "Show Collision Shapes:"
+
+[node name="show_debug" type="CheckButton" parent="ScrollContainer/VBox"]
+layout_mode = 2
+theme = SubResource("3")
+text = "Show Debug Info:"
 
 [node name="SaberThicknessRow" type="HBoxContainer" parent="ScrollContainer/VBox"]
 layout_mode = 2
@@ -702,13 +717,17 @@ scroll_node_path = NodePath("../ScrollContainer")
 [connection signal="toggled" from="ScrollContainer/VBox/dynamic" to="." method="_on_dynamic_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/static" to="." method="_on_static_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/simple" to="." method="_on_simple_toggled"]
-[connection signal="toggled" from="ScrollContainer/VBox/show_debug" to="." method="_on_show_debug_toggled"]
-[connection signal="toggled" from="ScrollContainer/VBox/show_collisions" to="." method="_on_show_collisions_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/mixed_reality" to="." method="_on_mixed_reality_toggled"]
+[connection signal="toggled" from="ScrollContainer/VBox/nightsky" to="." method="_on_dynamic_toggled"]
+[connection signal="toggled" from="ScrollContainer/VBox/nightsky" to="." method="_on_nightsky_toggled"]
+[connection signal="toggled" from="ScrollContainer/VBox/original" to="." method="_on_dynamic_toggled"]
+[connection signal="toggled" from="ScrollContainer/VBox/original" to="." method="_on_original_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/bombs_enabled" to="." method="_on_bombs_enabled_toggled"]
-[connection signal="toggled" from="ScrollContainer/VBox/explain" to="." method="_on_explain_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/swing_scoring" to="." method="_on_swing_scoring_toggled"]
+[connection signal="toggled" from="ScrollContainer/VBox/explain" to="." method="_on_explain_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/not_music_dl" to="." method="_on_not_music_dl_toggled"]
+[connection signal="toggled" from="ScrollContainer/VBox/show_collisions" to="." method="_on_show_collisions_toggled"]
+[connection signal="toggled" from="ScrollContainer/VBox/show_debug" to="." method="_on_show_debug_toggled"]
 [connection signal="value_changed" from="ScrollContainer/VBox/SaberThicknessRow/saber_thickness" to="." method="_on_thickness_value_changed"]
 [connection signal="item_selected" from="ScrollContainer/VBox/SaberTypeRow/saber" to="." method="_on_saber_item_selected"]
 [connection signal="color_changed" from="ScrollContainer/VBox/SaberColorsRow/left_saber_col" to="." method="_on_left_saber_color_changed"]

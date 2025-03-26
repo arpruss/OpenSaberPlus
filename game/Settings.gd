@@ -129,7 +129,10 @@ var background: String:
 	set(value):
 		background = value
 		set_and_emit(&"background", value)
-
+var background_texture: String:
+	set(value):
+		background_texture = value
+		set_and_emit(&"background_texture", value)
 
 func _ready() -> void:
 	if OS.get_name() in platform_default_values.keys():
@@ -184,7 +187,8 @@ var default_values = {
 	audio_sfx = 0.8,
 	spectator_view = false,
 	spectator_hud = true,
-	background = "dynamic"
+	background = "dynamic",
+	background_texture = "res://game/data/background/nightsky.png"
 }
 
 func cast_or_default(key: String, to_type: int = -1) -> Variant:
@@ -267,6 +271,7 @@ func load_old_config() -> void:
 	disable_map_color = Utils.get_bool(settings_dict, "disable_map_color", false)
 	player_height_offset = Utils.get_float(settings_dict, "player_height_offset", 0.0)
 	background = Utils.get_str(settings_dict, "background", "dynamic")
+	background_texture = Utils.get_str(settings_dict, "background_texture", "nightsky")
 
 func save() -> void:
 	var error := config.save(CONFIG_PATH)

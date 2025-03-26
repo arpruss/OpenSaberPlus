@@ -32,6 +32,8 @@ var right_color: Color
 func _ready() -> void:
 	track_lights_holder.hide()
 	
+	set_background_texture()
+	
 	# get_rendering_device() returns null in opengl, meaning this block is skipped in vulkan
 	
 	set_background()
@@ -44,6 +46,11 @@ func _ready() -> void:
 				shader_param,
 				(sphere_material.get_shader_parameter(shader_param) as float) * 2.2
 			)
+
+func set_background_texture() -> void:
+	var texture : Resource = null
+	texture = load(Settings.background_texture)
+	sphere_material.set_shader_parameter("bg_base", texture)
 
 func set_background() -> void:
 	if Settings.background == "simple":

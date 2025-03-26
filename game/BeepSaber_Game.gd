@@ -83,6 +83,7 @@ func start_map(info: MapInfo, map_difficulty: DifficultyInfo) -> void:
 	if not Map.load_beatmap(info, map_difficulty, map_data):
 		return
 		
+	event_driver.set_background_texture()
 	event_driver.set_background()
 	
 	update_left_color(Map.color_left)
@@ -239,6 +240,8 @@ func on_settings_changed(key: StringName) -> void:
 			update_right_color(Settings.color_right)
 		&"background":
 			event_driver.set_background()
+		&"background_texture":
+			event_driver.set_background_texture()
 		&"show_debug_info":
 			debug_info_label.visible = Settings.show_debug_info
 		&"glare":
