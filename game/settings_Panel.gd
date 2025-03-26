@@ -43,6 +43,7 @@ signal apply()
 @onready var static_control := $ScrollContainer/VBox/static as CheckBox
 @onready var dynamic_control := $ScrollContainer/VBox/dynamic as CheckBox
 @onready var nightsky_control := $ScrollContainer/VBox/nightsky as CheckBox
+@onready var fractal_control := $ScrollContainer/VBox/fractal as CheckBox
 @onready var original_control := $ScrollContainer/VBox/original as CheckBox
 
 var _play_ui_sound_demo := false
@@ -112,8 +113,9 @@ func set_controls_from_settings() -> void:
 	simple_control.button_pressed = Settings.background == "simple"
 	static_control.button_pressed = Settings.background == "static"
 	dynamic_control.button_pressed = Settings.background == "dynamic"
-	nightsky_control.button_pressed = Settings.background_texture == "res://game/data/background/nightsky.png"
-	original_control.button_pressed = Settings.background_texture == "res://game/data/background/bg_base.png"
+	nightsky_control.button_pressed = Settings.background_texture == "res://game/data/background/nightsky.jpg"
+	fractal_control.button_pressed = Settings.background_texture == "res://game/data/background/fractal.jpg"
+	original_control.button_pressed = Settings.background_texture == "res://game/data/background/bg_base.jpg"
 
 func _restore_defaults() -> void:
 	Settings.restore_defaults()
@@ -298,8 +300,12 @@ func _on_static_toggled(button_pressed: bool) -> void:
 
 func _on_nightsky_toggled(button_pressed: bool) -> void:
 	if button_pressed:
-		Settings.background_texture = "res://game/data/background/nightsky.png"
+		Settings.background_texture = "res://game/data/background/nightsky.jpg"
+
+func _on_fractal_toggled(button_pressed: bool) -> void:
+	if button_pressed:
+		Settings.background_texture = "res://game/data/background/fractal.jpg"
 
 func _on_original_toggled(button_pressed: bool) -> void:
 	if button_pressed:
-		Settings.background_texture = "res://game/data/background/bg_base.png"
+		Settings.background_texture = "res://game/data/background/bg_base.jpg"

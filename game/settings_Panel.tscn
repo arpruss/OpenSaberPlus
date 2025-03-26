@@ -424,6 +424,12 @@ theme = SubResource("3")
 button_group = SubResource("ButtonGroup_3ge45")
 text = "Original Background"
 
+[node name="fractal" type="CheckBox" parent="ScrollContainer/VBox"]
+layout_mode = 2
+theme = SubResource("3")
+button_group = SubResource("ButtonGroup_3ge45")
+text = "Fractal"
+
 [node name="bombs_enabled" type="CheckButton" parent="ScrollContainer/VBox"]
 layout_mode = 2
 theme = SubResource("3")
@@ -718,10 +724,9 @@ scroll_node_path = NodePath("../ScrollContainer")
 [connection signal="toggled" from="ScrollContainer/VBox/static" to="." method="_on_static_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/simple" to="." method="_on_simple_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/mixed_reality" to="." method="_on_mixed_reality_toggled"]
-[connection signal="toggled" from="ScrollContainer/VBox/nightsky" to="." method="_on_dynamic_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/nightsky" to="." method="_on_nightsky_toggled"]
-[connection signal="toggled" from="ScrollContainer/VBox/original" to="." method="_on_dynamic_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/original" to="." method="_on_original_toggled"]
+[connection signal="toggled" from="ScrollContainer/VBox/fractal" to="." method="_on_fractal_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/bombs_enabled" to="." method="_on_bombs_enabled_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/swing_scoring" to="." method="_on_swing_scoring_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/explain" to="." method="_on_explain_toggled"]
