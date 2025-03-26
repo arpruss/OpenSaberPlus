@@ -188,7 +188,7 @@ var default_values = {
 	spectator_view = false,
 	spectator_hud = true,
 	background = "dynamic",
-	background_texture = "res://game/data/background/nightsky.png"
+	background_texture = "res://game/data/background/nightsky.jpg"
 }
 
 func cast_or_default(key: String, to_type: int = -1) -> Variant:

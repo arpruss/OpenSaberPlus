@@ -5,7 +5,7 @@
 extends Node3D
 class_name BeepSaber_Game
 
-var version := "0.6.5"
+var version := "0.6.6"
 
 var gamestate_bootup := GameState.new()
 var gamestate_mapcomplete := GameStateMapComplete.new()
@@ -84,10 +84,11 @@ func start_map(info: MapInfo, map_difficulty: DifficultyInfo) -> void:
 		return
 		
 	event_driver.set_background_texture()
-	event_driver.set_background()
 	
 	update_left_color(Map.color_left)
 	update_right_color(Map.color_right)
+	event_driver.set_background()
+	
 	if Map.event_stack.is_empty():
 		event_driver.set_all_on(Map.color_left, Map.color_right)
 	else:
@@ -250,9 +251,9 @@ func on_settings_changed(key: StringName) -> void:
 			xr_origin.transform.origin.y = Settings.player_height_offset
 
 func set_colors_from_settings() -> void:
-	event_driver.set_background()
 	update_left_color(Settings.color_left)
 	update_right_color(Settings.color_right)
+	event_driver.set_background()
 
 func update_left_color(color: Color) -> void:
 	if !left_saber:
