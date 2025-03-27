@@ -272,9 +272,10 @@ func _on_HTTPRequest_download_completed(result: int, response_code: int, headers
 				"Failed to create temp directory '%s'" % tempdir)
 			has_error = true
 		
-		# sanitize path separators from song directory name
-		var song_dir_name: String = downloading[0][0].replace('/','')
-		
+		# use hash as song directory, so there are no clashes with the same name or
+		# issues with special characters in names
+		var song_dir_name: String = downloading[0][1]["hash"]
+
 		var zippath := Constants.APPDATA_PATH+"temp/%s.zip"%song_dir_name
 		if not has_error:
 			var file := FileAccess.open(zippath,FileAccess.WRITE)
