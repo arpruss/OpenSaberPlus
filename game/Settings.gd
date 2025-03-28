@@ -4,7 +4,6 @@ var config := ConfigFile.new()
 
 const SECTION := "OpenSaber"
 var CONFIG_PATH := Constants.CONFIG_ROOT_PATH + "config.ini"
-var OLD_CONFIG_PATH := Constants.CONFIG_ROOT_PATH + "config.dat"
 var SABER_VISUALS: Array[PackedStringArray] = [
 	PackedStringArray(["Default saber","res://game/sabers/default/default_saber.tscn"]),
 	PackedStringArray(["Particle sword","res://game/sabers/particles/particles_saber.tscn"])
@@ -152,8 +151,6 @@ func _ready() -> void:
 	
 	if FileAccess.file_exists(CONFIG_PATH):
 		reload()
-	elif FileAccess.file_exists(OLD_CONFIG_PATH):
-		load_old_config()
 	else:
 		restore_defaults()
 		save()
@@ -221,79 +218,11 @@ func reload() -> void:
 	for key in default_values:
 		set(key, cast_or_default(key))
 
-func load_old_config() -> void:
-	var file := FileAccess.open(OLD_CONFIG_PATH, FileAccess.READ)
-	if FileAccess.get_open_error() != OK:
-		vr.log_file_error(FileAccess.get_open_error(), OLD_CONFIG_PATH, "load_old_config() in Settings.gd")
-		return
-	var settings_var: Variant = file.get_var(true)
-	file.close()
-	if not settings_var is Dictionary:
-		restore_defaults()
-		return
-	var settings_dict := settings_var as Dictionary
-	thickness = Utils.get_float(settings_dict, "thickness", 1)
-	if settings_dict.has("COLOR_LEFT") and settings_dict["COLOR_LEFT"] is Color:
-		@warning_ignore("unsafe_cast")
-		color_left = settings_dict["COLOR_LEFT"] as Color
-	else:
-		color_left = Color("1a1aff")
-	if settings_dict.has("COLOR_RIGHT") and settings_dict["COLOR_RIGHT"] is Color:
-		@warning_ignore("unsafe_cast")
-		color_right = settings_dict["COLOR_RIGHT"] as Color
-	else:
-		color_right = Color("ff1a1a")
-	saber_visual = int(Utils.get_float(settings_dict, "saber", 0))
-	ui_volume = Utils.get_float(settings_dict, "ui_volume", 10.0)
-	left_saber_offset_pos = Vector3.ZERO
-	left_saber_offset_rot = Vector3.ZERO
-	if settings_dict.has("left_saber_offset") and settings_dict["left_saber_offset"] is Array:
-		@warning_ignore("unsafe_cast")
-		var left_array: Array = settings_dict["left_saber_offset"] as Array
-		if left_array.size() == 2:
-			if left_array[0] is Vector3:
-				@warning_ignore("unsafe_cast")
-				left_saber_offset_pos = left_array[0] as Vector3
-			if left_array[1] is Vector3:
-				@warning_ignore("unsafe_cast")
-				left_saber_offset_rot = left_array[1] as Vector3
-	right_saber_offset_pos = Vector3.ZERO
-	right_saber_offset_rot = Vector3.ZERO
-	if settings_dict.has("right_saber_offset") and settings_dict["right_saber_offset"] is Array:
-		@warning_ignore("unsafe_cast")
-		var right_array: Array = settings_dict["right_saber_offset"] as Array
-		if right_array.size() == 2:
-			if right_array[0] is Vector3:
-				@warning_ignore("unsafe_cast")
-				right_saber_offset_pos = right_array[0] as Vector3
-			if right_array[1] is Vector3:
-				@warning_ignore("unsafe_cast")
-				right_saber_offset_rot = right_array[1] as Vector3
-	cube_cuts_falloff = Utils.get_bool(settings_dict, "cube_cuts_falloff", true, {"Web": false})
-	saber_tail = Utils.get_bool(settings_dict, "saber_tail", true, {"Web": false})
-	glare = Utils.get_bool(settings_dict, "glare", true, {"Android": false, "Web": false})
-	show_debug_info = Utils.get_bool(settings_dict, "show_debug_info", false)
-	mixed_reality = Utils.get_bool(settings_dict, "mixed_reality", false)
-	explain = Utils.got_bool(settings_dict, "explain", false)
-	not_music_dl = Utils.got_bool(settings_dict, "not_music_dl", false)
-	swing_scoring = Utils.get_bool(settings_dict, "swing_scoring", true)
-	bombs_enabled = Utils.get_bool(settings_dict, "bombs_enabled", true)
-	events = Utils.get_bool(settings_dict, "events", true, {"Web": false})
-	disable_map_color = Utils.get_bool(settings_dict, "disable_map_color", false)
-	player_height_offset = Utils.get_float(settings_dict, "player_height_offset", 0.0)
-	background = Utils.get_str(settings_dict, "background", "dynamic")
-	background_texture = Utils.get_str(settings_dict, "background_texture", "nightsky")
-
 func save() -> void:
 	var error := config.save(CONFIG_PATH)
 	if error != OK:
 		vr.log_file_error(error, CONFIG_PATH, "save() in Settings.gd")
 		return
-	# remove old config
-	if FileAccess.file_exists(OLD_CONFIG_PATH):
-		error = DirAccess.open("user://").remove(OLD_CONFIG_PATH)
-		if error != OK:
-			vr.log_file_error(error, OLD_CONFIG_PATH, "save() in Settings.gd")
 
 func restore_defaults() -> void:
 	config.clear()

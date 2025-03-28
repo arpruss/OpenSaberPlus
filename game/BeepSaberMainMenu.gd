@@ -67,10 +67,9 @@ func compare(a: MapInfoWithSort, b: MapInfoWithSort) -> bool:
 
 func _load_playlists() -> void:
 	#copy sample songs to main playlist folder on first run
-	const config_path := "user://config.dat"
-	if not FileAccess.file_exists(config_path):
+	DirAccess.make_dir_recursive_absolute(Constants.APPDATA_PATH+"Songs/")
+	if not FileAccess.file_exists(Settings.CONFIG_PATH):
 		@warning_ignore("return_value_discarded")
-		DirAccess.make_dir_recursive_absolute(Constants.APPDATA_PATH+"Songs/")
 		const maps_path := "res://game/data/maps/"
 		var dir := DirAccess.open(maps_path + "Songs/")
 		@warning_ignore("return_value_discarded")
