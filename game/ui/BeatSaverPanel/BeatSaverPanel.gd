@@ -94,8 +94,6 @@ func _ready() -> void:
 			break
 		parent_canvas = parent_canvas.get_parent()
 
-	main_menu_ref.song_list_changed.connect(on_song_list_changed)
-
 # override hide() method to handle case where UI is inside a OQ_UI2DCanvas
 func _hide() -> void:
 	var parent_canvas: Node = self
