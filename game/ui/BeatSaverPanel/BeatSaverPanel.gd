@@ -10,6 +10,8 @@ class BeatSaverSongInfo extends RefCounted:
 	var duration: float
 	var versions: Array
 	var uploader_id: int
+
+	var song_key: String
 	
 	func _init(song_info: Dictionary) -> void:
 		name = Utils.get_str(song_info, "name", "")
@@ -21,6 +23,13 @@ class BeatSaverSongInfo extends RefCounted:
 		song_author_name = Utils.get_str(metadata, "songAuthorName", "")
 		level_author_name = Utils.get_str(metadata, "levelAuthorName", "")
 		duration = Utils.get_float(metadata, "duration", 0.0)
+
+		song_key = "[%s,%s,%s,%s]" % [
+			song_author_name,
+			song_name,
+			Utils.get_str(metadata, "songSubName", ""),
+			level_author_name,
+		]
 
 var song_data: Array[BeatSaverSongInfo] = []
 var current_list := 0
@@ -84,6 +93,8 @@ func _ready() -> void:
 			(parent_canvas as OQ_UI2DCanvas).visibility_changed.connect(_on_BeatSaverPanel_visibility_changed)
 			break
 		parent_canvas = parent_canvas.get_parent()
+
+	main_menu_ref.song_list_changed.connect(on_song_list_changed)
 
 # override hide() method to handle case where UI is inside a OQ_UI2DCanvas
 func _hide() -> void:
@@ -174,6 +185,8 @@ func _on_HTTPRequest_request_completed(result: int, _response_code: int, _header
 						var tooltip := "Map author: %s" % parsed_song.level_author_name
 						item_list.set_item_tooltip(index, tooltip)
 						song_data.append(parsed_song)
+						item_list.set_item_disabled(index, main_menu_ref.all_song_keys.has(parsed_song.song_key))
+
 	else:
 		vr.log_error("request error "+str(result))
 	mode_button.disabled = false
@@ -236,6 +249,7 @@ func _on_download_button_up() -> void:
 	var version_info = song_data[item_selected].versions[0]
 	downloading.insert(downloading.size(),[song_data[item_selected].name,version_info])
 	download_next()
+	item_list.set_item_disabled(item_selected, true)
 
 func download_next() -> void:
 	if downloading.size() > 0:
