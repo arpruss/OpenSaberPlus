@@ -3,12 +3,21 @@ extends Node
 var config := ConfigFile.new()
 
 const SECTION := "OpenSaber"
-const CONFIG_PATH := "user://config.ini"
-const OLD_CONFIG_PATH := "user://config.dat"
+var CONFIG_PATH := Constants.CONFIG_ROOT_PATH + "config.ini"
+var OLD_CONFIG_PATH := Constants.CONFIG_ROOT_PATH + "config.dat"
 var SABER_VISUALS: Array[PackedStringArray] = [
 	PackedStringArray(["Default saber","res://game/sabers/default/default_saber.tscn"]),
 	PackedStringArray(["Particle sword","res://game/sabers/particles/particles_saber.tscn"])
 ]
+
+const BACKGROUND_TEXTURES := [ ["res://game/data/background/fractal.jpg", "Fractal 1"],
+		["res://game/data/background/fractal2.jpg", "Fractal 2"],
+		["res://game/data/background/nightsky.jpg", "Night Sky (credit: ESA/S. Brunier)"],
+		["res://game/data/background/bg_base.jpg", "Original Open Saber"] ]
+
+const BACKGROUND_MODES := [ ["dynamic", "*Dynamic"],
+		["simple", "Simple"],
+		["static", "Static"] ]
 
 signal changed(name: StringName)
 
@@ -135,6 +144,8 @@ var background_texture: String:
 		set_and_emit(&"background_texture", value)
 
 func _ready() -> void:
+	DirAccess.make_dir_recursive_absolute(Constants.CONFIG_ROOT_PATH)
+
 	if OS.get_name() in platform_default_values.keys():
 		for key in platform_default_values[OS.get_name()].keys():
 			default_values[key] = platform_default_values[OS.get_name()][key]

@@ -45,6 +45,8 @@ signal apply()
 @onready var nightsky_control := $ScrollContainer/VBox/nightsky as CheckBox
 @onready var fractal_control := $ScrollContainer/VBox/fractal as CheckBox
 @onready var original_control := $ScrollContainer/VBox/original as CheckBox
+@onready var background_mode_control := $ScrollContainer/VBox/background_mode_grid/background_mode as OptionButton
+@onready var background_texture_control := $ScrollContainer/VBox/background_texture_grid/background_texture as OptionButton
 
 var _play_ui_sound_demo := false
 var left_saber_col_state := false
@@ -52,6 +54,18 @@ var right_saber_col_state := false
 
 func _ready() -> void:
 	UI_AudioEngine.attach_children(self)
+
+	for i in len(Settings.BACKGROUND_MODES):
+		background_mode_control.add_item(Settings.BACKGROUND_MODES[i][1])
+		if Settings.background == Settings.BACKGROUND_MODES[i][0]:
+			background_mode_control.selected = i
+	background_mode_control.connect("item_selected", _on_background_mode_selected)
+	
+	for i in len(Settings.BACKGROUND_TEXTURES):
+		background_texture_control.add_item(Settings.BACKGROUND_TEXTURES[i][1])
+		if Settings.background_texture == Settings.BACKGROUND_TEXTURES[i][0]:
+			background_texture_control.selected = i
+	background_texture_control.connect("item_selected", _on_background_texture_selected)
 	
 	set_controls_from_settings()
 	_play_ui_sound_demo = true
@@ -110,12 +124,6 @@ func set_controls_from_settings() -> void:
 	audio_sfx_control.value = Settings.audio_sfx
 	spectator_view_control.button_pressed = Settings.spectator_view
 	spectator_hud_control.button_pressed = Settings.spectator_hud
-	simple_control.button_pressed = Settings.background == "simple"
-	static_control.button_pressed = Settings.background == "static"
-	dynamic_control.button_pressed = Settings.background == "dynamic"
-	nightsky_control.button_pressed = Settings.background_texture == "res://game/data/background/nightsky.jpg"
-	fractal_control.button_pressed = Settings.background_texture == "res://game/data/background/fractal.jpg"
-	original_control.button_pressed = Settings.background_texture == "res://game/data/background/bg_base.jpg"
 
 func _restore_defaults() -> void:
 	Settings.restore_defaults()
@@ -208,12 +216,6 @@ func _on_player_height_offset_changed(value: float) -> void:
 func _on_disable_map_color_toggled(toggled_on: bool) -> void:
 	Settings.disable_map_color = toggled_on
 	
-func _on_background_selected(value: String) -> void:
-	Settings.background = value
-
-func _on_background_texture_selected(value: String) -> void:
-	Settings.background_texture = value
-
 func _force_update_show_coll_shapes(node: Node) -> void:
 	# toggle enable to make engine show collision shapes
 	if node is CollisionShape3D:
@@ -298,14 +300,8 @@ func _on_static_toggled(button_pressed: bool) -> void:
 	if button_pressed:
 		Settings.background = "static"
 
-func _on_nightsky_toggled(button_pressed: bool) -> void:
-	if button_pressed:
-		Settings.background_texture = "res://game/data/background/nightsky.jpg"
+func _on_background_texture_selected(item: int) -> void:
+	Settings.background_texture = Settings.BACKGROUND_TEXTURES[item][0]
 
-func _on_fractal_toggled(button_pressed: bool) -> void:
-	if button_pressed:
-		Settings.background_texture = "res://game/data/background/fractal.jpg"
-
-func _on_original_toggled(button_pressed: bool) -> void:
-	if button_pressed:
-		Settings.background_texture = "res://game/data/background/bg_base.jpg"
+func _on_background_mode_selected(item: int) -> void:
+	Settings.background = Settings.BACKGROUND_MODES[item][0]

@@ -229,7 +229,14 @@ func _ready() -> void:
 	await get_tree().process_frame
 	($pre_renderer as Node3D).queue_free()
 	
+	set_background_texture()
+	
 	recenter()
+
+func set_background_texture() -> void:
+	var environment : Environment = $WorldEnvironment.environment
+	var panorama : PanoramaSkyMaterial = environment.sky.sky_material 
+	panorama.panorama = load(Settings.background_texture)	
 	
 func on_settings_changed(key: StringName) -> void:
 	# ensures proper initialization of tree for proper first frame setting loading
@@ -242,6 +249,7 @@ func on_settings_changed(key: StringName) -> void:
 		&"background":
 			event_driver.set_background()
 		&"background_texture":
+			set_background_texture()
 			event_driver.set_background_texture()
 		&"show_debug_info":
 			debug_info_label.visible = Settings.show_debug_info

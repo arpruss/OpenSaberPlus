@@ -13,12 +13,9 @@ func set_mixed_reality():
 		if Settings.mixed_reality:
 			if xr_interface.start_passthrough():
 				get_viewport().transparent_bg = true
-				#var environment : Environment = $WorldEnvironment.environment
-				#environment.background_mode = Environment.BG_COLOR
-				#environment.background_color = Color(0,0,0,0)
-				#environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 		else:
 			xr_interface.stop_passthrough()
+			get_viewport().transparent_bg = false
 			
 	for n in to_hide:
 		if Settings.mixed_reality:

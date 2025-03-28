@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://biylg2wsontn3"]
+[gd_scene load_steps=15 format=3 uid="uid://biylg2wsontn3"]
 
 [ext_resource type="FontFile" uid="uid://01k27lk2a4bw" path="res://OQ_Toolkit/OQ_UI2D/theme/RobotoMono-Medium.ttf" id="1"]
 [ext_resource type="Script" path="res://game/settings_Panel.gd" id="2"]
@@ -171,12 +171,6 @@ cache/0/10/0/kerning_overrides/10/0 = Vector2(0, 0)
 
 [sub_resource type="Theme" id="3"]
 default_font = SubResource("2")
-
-[sub_resource type="ButtonGroup" id="ButtonGroup_1ith5"]
-resource_name = "background"
-
-[sub_resource type="ButtonGroup" id="ButtonGroup_3ge45"]
-resource_name = "background_texture"
 
 [sub_resource type="FontFile" id="4"]
 fallbacks = Array[Font]([ExtResource("3")])
@@ -365,12 +359,6 @@ ticks_on_borders = true
 layout_mode = 2
 text = "Recenter"
 
-[node name="d_background" type="CheckButton" parent="ScrollContainer/VBox"]
-layout_mode = 2
-tooltip_text = "Low Performance impact*"
-theme = SubResource("3")
-text = "*Dynamic Background: "
-
 [node name="cut_blocks" type="CheckButton" parent="ScrollContainer/VBox"]
 layout_mode = 2
 tooltip_text = "High Performance impact*"
@@ -389,46 +377,32 @@ tooltip_text = "High Performance impact*"
 theme = SubResource("3")
 text = "*Saber Tail: "
 
-[node name="dynamic" type="CheckBox" parent="ScrollContainer/VBox"]
+[node name="background_mode_grid" type="GridContainer" parent="ScrollContainer/VBox"]
 layout_mode = 2
-theme = SubResource("3")
-button_group = SubResource("ButtonGroup_1ith5")
-text = "*Dynamic Background"
+columns = 2
 
-[node name="static" type="CheckBox" parent="ScrollContainer/VBox"]
+[node name="Label" type="Label" parent="ScrollContainer/VBox/background_mode_grid"]
 layout_mode = 2
-theme = SubResource("3")
-button_group = SubResource("ButtonGroup_1ith5")
-text = "Static Background"
+text = "Background Mode:"
 
-[node name="simple" type="CheckBox" parent="ScrollContainer/VBox"]
+[node name="background_mode" type="OptionButton" parent="ScrollContainer/VBox/background_mode_grid"]
 layout_mode = 2
-theme = SubResource("3")
-button_group = SubResource("ButtonGroup_1ith5")
-text = "Simple Background"
+
+[node name="background_texture_grid" type="GridContainer" parent="ScrollContainer/VBox"]
+layout_mode = 2
+columns = 2
+
+[node name="Label" type="Label" parent="ScrollContainer/VBox/background_texture_grid"]
+layout_mode = 2
+text = "Background Image:"
+
+[node name="background_texture" type="OptionButton" parent="ScrollContainer/VBox/background_texture_grid"]
+layout_mode = 2
 
 [node name="mixed_reality" type="CheckButton" parent="ScrollContainer/VBox"]
 layout_mode = 2
 theme = SubResource("3")
 text = "Mixed Reality:"
-
-[node name="nightsky" type="CheckBox" parent="ScrollContainer/VBox"]
-layout_mode = 2
-theme = SubResource("3")
-button_group = SubResource("ButtonGroup_3ge45")
-text = "Night Sky Background (ESA/S. Brunier)"
-
-[node name="original" type="CheckBox" parent="ScrollContainer/VBox"]
-layout_mode = 2
-theme = SubResource("3")
-button_group = SubResource("ButtonGroup_3ge45")
-text = "Original Background"
-
-[node name="fractal" type="CheckBox" parent="ScrollContainer/VBox"]
-layout_mode = 2
-theme = SubResource("3")
-button_group = SubResource("ButtonGroup_3ge45")
-text = "Fractal"
 
 [node name="bombs_enabled" type="CheckButton" parent="ScrollContainer/VBox"]
 layout_mode = 2
@@ -716,17 +690,10 @@ scroll_node_path = NodePath("../ScrollContainer")
 [connection signal="value_changed" from="ScrollContainer/VBox/audio/music/music_slider" to="." method="_on_music_slider_value_changed"]
 [connection signal="value_changed" from="ScrollContainer/VBox/audio/music_preview/music_preview_slider" to="." method="_on_music_preview_slider_value_changed"]
 [connection signal="button_up" from="ScrollContainer/VBox/recenter" to="." method="_on_recenter_button_up"]
-[connection signal="toggled" from="ScrollContainer/VBox/d_background" to="." method="_on_d_background_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/cut_blocks" to="." method="_on_cut_blocks_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/glare" to="." method="_on_glare_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/saber_tail" to="." method="_on_saber_tail_toggled"]
-[connection signal="toggled" from="ScrollContainer/VBox/dynamic" to="." method="_on_dynamic_toggled"]
-[connection signal="toggled" from="ScrollContainer/VBox/static" to="." method="_on_static_toggled"]
-[connection signal="toggled" from="ScrollContainer/VBox/simple" to="." method="_on_simple_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/mixed_reality" to="." method="_on_mixed_reality_toggled"]
-[connection signal="toggled" from="ScrollContainer/VBox/nightsky" to="." method="_on_nightsky_toggled"]
-[connection signal="toggled" from="ScrollContainer/VBox/original" to="." method="_on_original_toggled"]
-[connection signal="toggled" from="ScrollContainer/VBox/fractal" to="." method="_on_fractal_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/bombs_enabled" to="." method="_on_bombs_enabled_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/swing_scoring" to="." method="_on_swing_scoring_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/explain" to="." method="_on_explain_toggled"]

@@ -14,6 +14,7 @@ var ROTATION_UNIT_VECTORS := PackedVector2Array([
 var _global_path := ProjectSettings.globalize_path("user://")
 var APPDATA_PATH := ( "user://OpenSaber/" if (OS.get_name() != "Android" or 
 	  not _global_path.begins_with("/data/data/")) else "/sdcard/Android/data"+_global_path.substr(10) )
+var CONFIG_ROOT_PATH := "user://" if APPDATA_PATH.begins_with("user://") else APPDATA_PATH
 const OPENSABER_BEAT_ACCURACY_SCORE := 50.
 const OPENSABER_ANGLE_ACCURACY_SCORE := 50.
 const OPENSABER_DISTANCE_ACCURACY_SCORE := 50.
