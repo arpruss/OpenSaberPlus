@@ -13,7 +13,7 @@ func _ready() -> void:
 	label = label_instance.mesh as TextMesh
 	label_instance.layers = layers
 
-func _set_health_mode(_health: bool) -> void:
+func set_health_mode(_health: bool) -> void:
 	health = _health
 	if health:
 		label.text = ""

@@ -5,7 +5,7 @@
 extends Node3D
 class_name BeepSaber_Game
 
-var version := "0.6.6"
+var version := "0.7.0"
 
 var gamestate_bootup := GameState.new()
 var gamestate_mapcomplete := GameStateMapComplete.new()
@@ -121,6 +121,7 @@ func start_map(info: MapInfo, map_difficulty: DifficultyInfo, _health: bool) -> 
 	
 	_display_points()
 	percent_indicator.start_map()
+	percent_indicator.set_health_mode(health)
 	if health:
 		current_health = Constants.HEALTH_START
 		percent_indicator.update_percent(current_health / Constants.HEALTH_MAX)
@@ -131,6 +132,8 @@ func start_map(info: MapInfo, map_difficulty: DifficultyInfo, _health: bool) -> 
 func update_health(delta: float) -> void:
 	if health:
 		current_health += delta
+		if current_health > Constants.HEALTH_MAX:
+			current_health = Constants.HEALTH_MAX
 		percent_indicator.update_percent(current_health / Constants.HEALTH_MAX)
 		if current_health < 0:
 			_on_song_ended()
