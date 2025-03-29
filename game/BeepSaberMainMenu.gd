@@ -10,7 +10,7 @@ class_name MainMenu
 signal difficulty_changed(map_info: MapInfo, diff_rank: int)
 # emitted when the settings button is pressed
 signal settings_requested()
-signal start_map(info: MapInfo, difficulty: DifficultyInfo)
+signal start_map(info: MapInfo, difficulty: DifficultyInfo, health: bool)
 
 var _cover_texture_create_sw := StopwatchFactory.create("cover_texture_create",10,true)
 
@@ -255,7 +255,7 @@ func _select_difficulty(id: int) -> void:
 	difficulty_changed.emit(_currently_selected_songlist_ref[current_selected], difficulty.difficulty_rank)
 
 
-func _load_map_and_start(map: MapInfo) -> void:
+func _load_map_and_start(map: MapInfo, health: bool) -> void:
 	if map.is_empty(): return
 	
 	var set0 := map.difficulty_beatmaps
@@ -265,7 +265,7 @@ func _load_map_and_start(map: MapInfo) -> void:
 	
 	var diff_info := set0[_map_difficulty]
 	
-	start_map.emit(map, diff_info)
+	start_map.emit(map, diff_info, health)
 
 func _on_Delete_Button_button_up() -> void:
 	if delete_button.text != "Sure?":
@@ -333,15 +333,16 @@ func _ready() -> void:
 	if OS.get_name() == &"Web":
 		$Exit_Button.hide()
 
-
 func _on_Play_Button_pressed() -> void:
 	song_preview.stop()
-	_load_map_and_start(_currently_selected_songlist_ref[current_selected])
+	_load_map_and_start(_currently_selected_songlist_ref[current_selected], false)
 
+func _on_Arcade_Play_Button_pressed() -> void:
+	song_preview.stop()
+	_load_map_and_start(_currently_selected_songlist_ref[current_selected], true)
 
 func _on_Exit_Button_pressed() -> void:
 	get_tree().quit()
-
 
 func _on_Settings_Button_pressed() -> void:
 	settings_requested.emit()

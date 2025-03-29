@@ -44,7 +44,7 @@ func _process_map(game: BeepSaber_Game) -> void:
 	if (Map.current_info == null):
 		return
 	
-	var current_beat := game.song_player.get_playback_position() * Map.current_info.beats_per_minute * 0.016666666666666667
+	var current_beat := game.get_current_beat()
 	var look_ahead := current_beat + BEATS_AHEAD
 	
 	# chains connect to a regular colornote and modify it, so we have to keep

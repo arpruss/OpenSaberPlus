@@ -15,6 +15,8 @@ var gamestate_paused := GameStatePaused.new()
 var gamestate_playing := GameStatePlaying.new()
 var gamestate_settings := GameStateSettings.new()
 var gamestate: GameState = gamestate_bootup
+var current_health := Constants.HEALTH_START
+var health := false
 
 @onready var xr_origin := $XROrigin3D as XROrigin3D
 @onready var left_controller := $XROrigin3D/LeftController as BeepSaberController
@@ -74,7 +76,8 @@ var _in_wall := false
 #prevents the song for starting from the start when pausing and unpausing
 var pause_position := 0.0
 
-func start_map(info: MapInfo, map_difficulty: DifficultyInfo) -> void:
+func start_map(info: MapInfo, map_difficulty: DifficultyInfo, _health: bool) -> void:
+	health = _health
 	var map_filename := info.filepath + map_difficulty.beatmap_filename
 	var map_data := vr.load_json_file(map_filename)
 	
@@ -118,10 +121,20 @@ func start_map(info: MapInfo, map_difficulty: DifficultyInfo) -> void:
 	
 	_display_points()
 	percent_indicator.start_map()
+	if health:
+		current_health = Constants.HEALTH_START
+		percent_indicator.update_percent(current_health / Constants.HEALTH_MAX)
 	
 	_clear_track()
 	_transition_game_state(gamestate_playing)
 
+func update_health(delta: float) -> void:
+	if health:
+		current_health += delta
+		percent_indicator.update_percent(current_health / Constants.HEALTH_MAX)
+		if current_health < 0:
+			_on_song_ended()
+			
 # This function will transitioning the game from it's current state into
 # the provided 'next_state'.
 func _transition_game_state(next_state: GameState) -> void:
@@ -156,6 +169,9 @@ func _check_and_update_saber(controller: BeepSaberController, saber: LightSaber)
 		and (not saber._anim.is_playing())):
 		if (saber.is_extended()): saber._hide()
 		else: saber._show()
+		
+	if _in_wall:
+		Scoreboard.enter_wall()
 	
 	# check for saber rumble (only when extended and not already rumbling)
 	# this check is necessary to not overwrite a rumble set from somewhere else
@@ -300,7 +316,8 @@ func _display_points() -> void:
 	
 	(point_label.mesh as TextMesh).text = "Score: %6d" % Scoreboard.points
 	(multiplier_label.mesh as TextMesh).text = "x %d\nCombo %d" % [Scoreboard.multiplier, Scoreboard.combo]
-	percent_indicator.update_percent(hit_rate)
+	if not health:
+		percent_indicator.update_percent(hit_rate)
 
 # accessor method for the player name selector UI element
 func _name_selector() -> NameSelector:
@@ -317,6 +334,9 @@ func _on_PlayerHead_area_exited(area: Area3D) -> void:
 		song_player.volume_db = 0.0
 		_in_wall = false
 		Scoreboard.exit_wall()
+		
+func get_current_beat() -> float:
+	return song_player.get_playback_position() * Map.current_info.beats_per_minute * 0.016666666666666667
 
 # when the song ended we want to display the current score and
 # the high score
@@ -334,7 +354,11 @@ func _on_song_ended() -> void:
 		highscore = Scoreboard.points
 		new_record = true
 
-	var current_percent := Scoreboard.right_notes/(Scoreboard.right_notes+Scoreboard.wrong_notes)
+	var current_percent : float
+	if health and current_health <= 0:
+		current_percent = -1
+	else:
+		current_percent = Scoreboard.right_notes/(Scoreboard.right_notes+Scoreboard.wrong_notes) 
 	endscore.show_score(
 		Scoreboard.points,
 		highscore,
@@ -354,7 +378,7 @@ func _on_song_ended() -> void:
 		_transition_game_state(gamestate_mapcomplete)
 
 func _restart_button() -> void:
-	start_map(Map.current_info, Map.current_difficulty)
+	start_map(Map.current_info, Map.current_difficulty, health)
 	endscore.visible = false
 	pause_menu.visible = false
 

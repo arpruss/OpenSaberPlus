@@ -11,8 +11,10 @@ var right_notes: float
 var wrong_notes: float
 var full_combo: bool
 var paused: bool
+var last_in_wall_beat: float
 
 func restart() -> void:
+	last_in_wall_beat = -1000.
 	points = 0
 	multiplier = 1
 	combo = 0
@@ -22,21 +24,41 @@ func restart() -> void:
 	in_wall = false
 	score_changed.emit()
 
-func reset_combo() -> void:
-	multiplier = 1
-	combo = 0
-	wrong_notes += 1.0
-	full_combo = false
-	score_changed.emit()
+func reset_combo(penalty := true) -> void:
+	if penalty:
+		GlobalReferences.main_game_scene.update_health(Constants.HEALTH_MISS)	
+	var changed = false
+	if multiplier != 1:
+		multiplier = 1
+		changed = true
+	if combo != 0:
+		combo = 0
+		changed = true
+	if penalty:
+		wrong_notes += 1.0
+		changed = true
+	if full_combo:
+		full_combo = false
+		changed = true
+	if changed:
+		score_changed.emit()
 	
 func enter_wall() -> void:
+	var beat : float
+	beat = GlobalReferences.main_game_scene.get_current_beat()
+	if last_in_wall_beat + 1. <= beat:
+		GlobalReferences.main_game_scene.update_health(Constants.HEALTH_OBSTACLE_PER_BEAT)
+		last_in_wall_beat = beat
 	in_wall = true
-	reset_combo()
+	reset_combo(false)
 
 func exit_wall() -> void:
 	in_wall = false
 
 func add_points(position: Vector3, amount: int, comment: String = "") -> void:
+	if amount > 0:
+		GlobalReferences.main_game_scene.update_health(Constants.HEALTH_HIT)
+	
 	if not in_wall:
 		combo += 1
 		@warning_ignore("integer_division")
