@@ -17,10 +17,14 @@ func set_health_mode(_health: bool) -> void:
 	health = _health
 	if health:
 		label.text = ""
+	else:
+		shader.set_shader_parameter(&"color", Vector3(1.,1.,1.))
 
 func _process(delta: float) -> void:
 	how_full_display = lerpf(how_full_display, how_full, delta*8)
 	shader.set_shader_parameter(&"how_full", how_full_display)
+	if health:
+		shader.set_shader_parameter(&"color", Vector3(1-how_full,how_full,0.))
 
 func start_map() -> void:
 	how_full = 1.0
