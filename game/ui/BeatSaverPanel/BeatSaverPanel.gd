@@ -11,8 +11,6 @@ class BeatSaverSongInfo extends RefCounted:
 	var versions: Array
 	var uploader_id: int
 
-	var song_key: String
-	
 	func _init(song_info: Dictionary) -> void:
 		name = Utils.get_str(song_info, "name", "")
 		description = Utils.get_str(song_info, "description", "")
@@ -23,13 +21,6 @@ class BeatSaverSongInfo extends RefCounted:
 		song_author_name = Utils.get_str(metadata, "songAuthorName", "")
 		level_author_name = Utils.get_str(metadata, "levelAuthorName", "")
 		duration = Utils.get_float(metadata, "duration", 0.0)
-
-		song_key = "[%s,%s,%s,%s]" % [
-			song_author_name,
-			song_name,
-			Utils.get_str(metadata, "songSubName", ""),
-			level_author_name,
-		]
 
 var song_data: Array[BeatSaverSongInfo] = []
 var current_list := 0
@@ -70,6 +61,10 @@ var prev_request: BeatSaverRequest
 
 @export var keyboard: OQ_UI2DKeyboard
 
+func on_song_list_changed() -> void:
+	for item_index in range(0, item_list.item_count):
+		item_list.set_item_disabled(item_index,main_menu_ref.all_song_hashes.has(item_list.get_item_metadata(item_index)))
+
 func _ready() -> void:
 	UI_AudioEngine.attach_children(self)
 	($back as Button).visible = false
@@ -93,6 +88,8 @@ func _ready() -> void:
 			(parent_canvas as OQ_UI2DCanvas).visibility_changed.connect(_on_BeatSaverPanel_visibility_changed)
 			break
 		parent_canvas = parent_canvas.get_parent()
+
+	main_menu_ref.song_list_changed.connect(on_song_list_changed)
 
 # override hide() method to handle case where UI is inside a OQ_UI2DCanvas
 func _hide() -> void:
@@ -183,7 +180,8 @@ func _on_HTTPRequest_request_completed(result: int, _response_code: int, _header
 						var tooltip := "Map author: %s" % parsed_song.level_author_name
 						item_list.set_item_tooltip(index, tooltip)
 						song_data.append(parsed_song)
-						item_list.set_item_disabled(index, main_menu_ref.all_song_keys.has(parsed_song.song_key))
+						item_list.set_item_disabled(index, main_menu_ref.all_song_hashes.has(parsed_song.versions[0]["hash"]))
+						item_list.set_item_metadata(index, parsed_song.versions[0]["hash"])
 
 	else:
 		vr.log_error("request error "+str(result))
