@@ -83,11 +83,10 @@ func _difficulty_and_health() -> int:
 		return dh
 
 func start_map(info: MapInfo, map_difficulty: DifficultyInfo) -> void:
-	var map_filename := info.filepath + map_difficulty.beatmap_filename
-	var map_data := vr.load_json_file(map_filename)
+	var map_data := Utils.binary_to_json(Utils.read_binary_file(info.filepath, map_difficulty.beatmap_filename))
 	
-	if (map_data == null):
-		vr.log_error("Could not read map data from " + map_filename)
+	if (map_data.is_empty()):
+		vr.log_error("Could not read map data from " + info.filepath + "/" + map_difficulty.beatmap_filename)
 	if not Map.load_beatmap(info, map_difficulty, map_data):
 		return
 		
@@ -107,16 +106,22 @@ func start_map(info: MapInfo, map_difficulty: DifficultyInfo) -> void:
 	if FileAccess.file_exists(filename):
 		song_player.stream = AudioStreamOggVorbis.load_from_file(filename)
 	else:
-		var wav := AudioStreamWAV.new()
-		wav.set_stereo(false)
-		wav.set_format(AudioStreamWAV.FORMAT_8_BITS)
-		wav.set_mix_rate(11025)
-		var length := ceili((Map.current_info.last_beat / Map.current_info.beats_per_minute * 60. + 2) * wav.mix_rate)
-		var data := PackedByteArray()
-		data.resize(length) 
-		data.fill(0)
-		wav.set_data(data)
-		song_player.stream = wav
+		var audio_data : PackedByteArray
+		audio_data = Utils.read_binary_file(info.filepath, info.song_filename)
+		if len(audio_data) > 0:
+			song_player.stream = AudioStreamOggVorbis.load_from_buffer(audio_data)
+		else:
+			vr.log("playing silence")
+			var wav := AudioStreamWAV.new()
+			wav.set_stereo(false)
+			wav.set_format(AudioStreamWAV.FORMAT_8_BITS)
+			wav.set_mix_rate(11025)
+			var length := ceili((Map.current_info.last_beat / Map.current_info.beats_per_minute * 60. + 2) * wav.mix_rate)
+			var data := PackedByteArray()
+			data.resize(length) 
+			data.fill(0)
+			wav.set_data(data)
+			song_player.stream = wav
 	
 	_audio_synced_after_restart = false
 	song_player.play(0.0)

@@ -47,7 +47,7 @@ func _init(
 	self.custom_data = custom_data
 	self.filepath = filepath
 	self.difficulty_beatmaps = difficulty_beatmaps
-	self.have_song = FileAccess.file_exists(filepath + song_filename)
+	self.have_song = Utils.file_exists(filepath, song_filename)
 
 func is_empty() -> bool:
 	return (

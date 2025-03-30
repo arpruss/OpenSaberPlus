@@ -125,9 +125,13 @@ func _discover_all_songs(seek_path: String) -> void:
 		dir.list_dir_begin()
 		var file_name := dir.get_next()
 		while not file_name.is_empty():
-			if dir.current_is_dir(): # TODO: or file_name.ends_with(".zip"):
-				var new_dir := seek_path+file_name+"/"
-				var song := Map.load_map_info(new_dir)
+			if dir.current_is_dir() or file_name.to_lower().ends_with(".zip"): 
+				var path : String
+				if dir.current_is_dir():
+					path = seek_path+file_name+"/"
+				else:
+					path = seek_path+file_name
+				var song := Map.load_map_info(path)
 				if song:
 					_all_songs.append(song)
 			file_name = dir.get_next()
@@ -143,8 +147,7 @@ func _set_cur_playlist(songs: Array[MapInfo]) -> void:
 	for map in songs:
 		@warning_ignore("return_value_discarded")
 		songs_menu.add_item("%s - %s%s" % [map.song_author_name, map.song_name, "" if map.have_song else " [silent]"], default_song_icon)
-		var filepath := map.filepath + map.cover_image_filename
-		_bg_img_loader.load_texture(filepath, _on_cover_loaded, false, map_index)
+		_bg_img_loader.load_texture(map.filepath, map.cover_image_filename, _on_cover_loaded, false, map_index)
 		map_index += 1
 	
 	if current_id.size() > 0:
@@ -219,15 +222,11 @@ func _select_song(id: int) -> void:
 	]
 	
 	# load cover in background to avoid freezing UI
-	_bg_img_loader.load_texture(map.filepath + map.cover_image_filename, _on_cover_loaded, true, -1)
+	_bg_img_loader.load_texture(map.filepath, map.cover_image_filename, _on_cover_loaded, true, -1)
 	
 	# preview song
-	var filename := map.filepath + map.song_filename
-	if Settings.audio_music_preview > 0 and FileAccess.file_exists(filename):
-		play_preview(FileAccess.get_file_as_bytes(filename), map.preview_start_time, map.preview_duration)
-		var result := FileAccess.get_open_error()
-		if result != OK:
-			vr.log_file_error(result, map.filepath + map.song_filename, "BeepSaberMainMenu.gd at line 223 ")
+	if Settings.audio_music_preview > 0 and map.have_song:
+		play_preview(Utils.read_binary_file(map.filepath, map.song_filename), map.preview_start_time, map.preview_duration)
 	
 	diff_menu.clear()
 	for diff in map.difficulty_beatmaps:

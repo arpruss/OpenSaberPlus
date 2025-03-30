@@ -60,8 +60,49 @@ func unzip(zip_file: String, destination: String) -> void:
 				filea.close()
 	@warning_ignore("return_value_discarded")
 	zreader.close()
-
-
+	
+func file_exists(base: String, file: String) -> bool:
+	if DirAccess.dir_exists_absolute(base):
+		var path : String
+		if base.ends_with("/"):
+			path = base + file
+		else:
+			path = base + "/" + file
+		return FileAccess.file_exists(path)
+	elif base.to_lower().ends_with(".zip") and FileAccess.file_exists(base):
+		print(base," ",file)
+		var zreader := ZIPReader.new()
+		if zreader.open(base) == OK:
+			var exists := zreader.file_exists(file)
+			zreader.close()
+			return exists
+	return false
+	
+		
+func read_binary_file(base: String, file: String) -> PackedByteArray:
+	if DirAccess.dir_exists_absolute(base):
+		var path : String
+		if base.ends_with("/"):
+			path = base + file
+		else:
+			path = base + "/" + file
+		if FileAccess.file_exists(path):
+			return FileAccess.get_file_as_bytes(path)
+	else:
+			var zreader := ZIPReader.new()
+			if zreader.open(base) == OK:
+				var data := zreader.read_file(file)
+				zreader.close()
+				return data
+	return PackedByteArray()
+	
+func binary_to_json(data: PackedByteArray) -> Dictionary:
+	if len(data) == 0:
+		return {}
+	else:
+		var dict := JSON.parse_string(data.get_string_from_ascii()) as Dictionary
+		return dict
+	
 var thread_finished : Array[Thread] = []
 var fake_thread_finished = {}
 

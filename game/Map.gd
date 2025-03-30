@@ -87,10 +87,12 @@ static func set_colors_from_custom_data() -> void:
 
 static func load_map_info(load_path: String) -> MapInfo:
 	var info_dict := {}
-	if FileAccess.file_exists(load_path + "Info.dat"):
-		info_dict = vr.load_json_file(load_path + "Info.dat")
-	elif FileAccess.file_exists(load_path + "info.dat"):
-		info_dict = vr.load_json_file(load_path + "info.dat")
+	var info_dat := Utils.read_binary_file(load_path, "Info.dat")
+	if len(info_dat) == 0:
+		info_dat = Utils.read_binary_file(load_path, "info.dat")
+		if len(info_dat) == 0:
+			info_dat = Utils.read_binary_file(load_path, "INFO.DAT")
+	info_dict = Utils.binary_to_json(info_dat)
 	if (info_dict.is_empty()):
 		vr.log_error("Invalid info.dat found in " + load_path)
 		return null
