@@ -27,6 +27,7 @@ var _cover_texture_create_sw := StopwatchFactory.create("cover_texture_create",1
 @onready var songs_menu := $SongsMenu as ItemList
 @onready var diff_menu := $DifficultyMenu as ItemList
 @onready var delete_button := $Delete_Button as Button
+@onready var health_control := $Arcade_Button as CheckButton
 
 @onready var song_preview := $song_prev as AudioStreamPlayer
 var song_preview_transition_time := 1.0
@@ -255,7 +256,7 @@ func _select_difficulty(id: int) -> void:
 	difficulty_changed.emit(_currently_selected_songlist_ref[current_selected], difficulty.difficulty_rank)
 
 
-func _load_map_and_start(map: MapInfo, health: bool) -> void:
+func _load_map_and_start(map: MapInfo) -> void:
 	if map.is_empty(): return
 	
 	var set0 := map.difficulty_beatmaps
@@ -265,7 +266,7 @@ func _load_map_and_start(map: MapInfo, health: bool) -> void:
 	
 	var diff_info := set0[_map_difficulty]
 	
-	start_map.emit(map, diff_info, health)
+	start_map.emit(map, diff_info)
 
 func _on_Delete_Button_button_up() -> void:
 	if delete_button.text != "Sure?":
@@ -299,6 +300,8 @@ func _delete_map(map: MapInfo) -> void:
 		_on_LoadPlaylists_Button_pressed()
 
 func _ready() -> void:
+	health_control.button_pressed = Settings.health_mode
+	
 	UI_AudioEngine.attach_children(self)
 	vr.log_info("BeepSaber search path is " + Constants.APPDATA_PATH)
 	
@@ -335,11 +338,7 @@ func _ready() -> void:
 
 func _on_Play_Button_pressed() -> void:
 	song_preview.stop()
-	_load_map_and_start(_currently_selected_songlist_ref[current_selected], false)
-
-func _on_Arcade_Play_Button_pressed() -> void:
-	song_preview.stop()
-	_load_map_and_start(_currently_selected_songlist_ref[current_selected], true)
+	_load_map_and_start(_currently_selected_songlist_ref[current_selected])
 
 func _on_Exit_Button_pressed() -> void:
 	get_tree().quit()
@@ -431,3 +430,9 @@ func _on_PlaylistSelector_item_selected(id: int) -> void:
 		_:
 			vr.log_warning("Unsupported playlist option %s" % id)
 			_set_cur_playlist(_all_songs)
+
+
+func _on_arcade_button_toggled(value: bool) -> void:
+	Settings.health_mode = value
+	var difficulty := _currently_selected_songlist_ref[current_selected].difficulty_beatmaps[_map_difficulty]
+	difficulty_changed.emit(_currently_selected_songlist_ref[current_selected], difficulty.difficulty_rank)

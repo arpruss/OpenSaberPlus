@@ -132,7 +132,7 @@ func cut(saber: LightSaber, _cut_speed: Vector3, cut_plane: Plane, _controller: 
 		release()# release now instead of waiting for cut pieces to die off
 
 func on_miss() -> void:
-	Scoreboard.reset_combo()
+	Scoreboard.bad_cut(transform.origin, "miss")
 	hide_cube()
 	release()
 

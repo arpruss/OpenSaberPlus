@@ -39,12 +39,6 @@ signal apply()
 @onready var audio_sfx_control := $ScrollContainer/VBox/audio/sfx/sfx_slider as HSlider
 @onready var spectator_view_control := $ScrollContainer/VBox/spectator_view as CheckButton
 @onready var spectator_hud_control := $ScrollContainer/VBox/spectator_hud as CheckButton
-@onready var simple_control := $ScrollContainer/VBox/simple as CheckBox
-@onready var static_control := $ScrollContainer/VBox/static as CheckBox
-@onready var dynamic_control := $ScrollContainer/VBox/dynamic as CheckBox
-@onready var nightsky_control := $ScrollContainer/VBox/nightsky as CheckBox
-@onready var fractal_control := $ScrollContainer/VBox/fractal as CheckBox
-@onready var original_control := $ScrollContainer/VBox/original as CheckBox
 @onready var background_mode_control := $ScrollContainer/VBox/background_mode_grid/background_mode as OptionButton
 @onready var background_texture_control := $ScrollContainer/VBox/background_texture_grid/background_texture as OptionButton
 

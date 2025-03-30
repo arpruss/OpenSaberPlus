@@ -141,10 +141,10 @@ var background_texture: String:
 	set(value):
 		background_texture = value
 		set_and_emit(&"background_texture", value)
-var health: bool:
+var health_mode: bool:
 	set(value):
-		health = value
-		set_and_emit(&"health", value)
+		health_mode = value
+		set_and_emit(&"health_mode", value)
 
 func _ready() -> void:
 	DirAccess.make_dir_recursive_absolute(Constants.CONFIG_ROOT_PATH)
@@ -201,7 +201,7 @@ var default_values = {
 	spectator_hud = true,
 	background = "dynamic",
 	background_texture = "res://game/data/background/nightsky.jpg",
-	health = true
+	health_mode = false
 }
 
 func cast_or_default(key: String, to_type: int = -1) -> Variant:

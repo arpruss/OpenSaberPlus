@@ -11,10 +11,10 @@ var right_notes: float
 var wrong_notes: float
 var full_combo: bool
 var paused: bool
-var last_in_wall_beat: float
+var last_in_wall_time: float
 
 func restart() -> void:
-	last_in_wall_beat = -1000.
+	last_in_wall_time = -1000.
 	points = 0
 	multiplier = 1
 	combo = 0
@@ -24,9 +24,7 @@ func restart() -> void:
 	in_wall = false
 	score_changed.emit()
 
-func reset_combo(penalty := true) -> void:
-	if penalty:
-		GlobalReferences.main_game_scene.update_health(Constants.HEALTH_MISS)	
+func reset_combo(wrong_note) -> void:
 	var changed = false
 	if multiplier != 1:
 		multiplier = 1
@@ -34,7 +32,7 @@ func reset_combo(penalty := true) -> void:
 	if combo != 0:
 		combo = 0
 		changed = true
-	if penalty:
+	if wrong_note:
 		wrong_notes += 1.0
 		changed = true
 	if full_combo:
@@ -45,15 +43,16 @@ func reset_combo(penalty := true) -> void:
 	
 func enter_wall() -> void:
 	var beat : float
-	beat = GlobalReferences.main_game_scene.get_current_beat()
-	if last_in_wall_beat + 1. <= beat:
-		GlobalReferences.main_game_scene.update_health(Constants.HEALTH_OBSTACLE_PER_BEAT)
-		last_in_wall_beat = beat
+	var time := GlobalReferences.main_game_scene.get_current_time()
+	if last_in_wall_time >= 0 and last_in_wall_time + 0.1 <= time:
+		GlobalReferences.main_game_scene.update_health(Constants.HEALTH_OBSTACLE_PER_SECOND *(time-last_in_wall_time))
+	last_in_wall_time = time
 	in_wall = true
 	reset_combo(false)
 
 func exit_wall() -> void:
 	in_wall = false
+	last_in_wall_time = -1000.
 
 func add_points(position: Vector3, amount: int, comment: String = "") -> void:
 	if amount > 0:
@@ -101,13 +100,18 @@ func note_cut(saber: LightSaber, position: Vector3, beat_accuracy: float, cut_an
 			points_new = roundf(points_new)
 			add_points(position, int(points_new))
 	else:
-		if cut_angle_accuracy < 1e-10: # and cut_distance_accuracy >= 1e-10:
-			bad_cut(position, "bad angle")
-		#elif cut_angle_accuracy >= 1e-10 and cut_distance_accuracy < 1e-10:
-		#	bad_cut(position, "too far")
-		#else:
-		#	bad_cut(position, "bad angle, too far")
+		bad_cut(position, "bad angle")
 
 func bad_cut(position: Vector3, description: String) -> void:
-	reset_combo()
+	if description == "bomb":
+		reset_combo(false)
+		GlobalReferences.main_game_scene.update_health(Constants.HEALTH_BOMB)
+	elif description == "wrong saber" or description == "miss":
+		reset_combo(true)
+		GlobalReferences.main_game_scene.update_health(Constants.HEALTH_MISS)
+		if description == "miss":
+			description = ""
+	else:
+		reset_combo(true)
+		GlobalReferences.main_game_scene.update_health(Constants.HEALTH_BAD_CUT)
 	points_awarded.emit(position, description if Settings.explain else "x")

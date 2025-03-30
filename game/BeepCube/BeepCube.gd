@@ -114,10 +114,7 @@ func make_chain_head() -> void:
 	chain_head = true
 
 func on_miss() -> void:
-	if Settings.explain:		
-		Scoreboard.bad_cut(global_transform.origin+Vector3(0,0,-3.5), "miss")
-	else:
-		Scoreboard.reset_combo()
+	Scoreboard.bad_cut(global_transform.origin+Vector3(0,0,-3.5), "miss")
 	hide_cube()
 	release()
 

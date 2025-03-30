@@ -20,8 +20,13 @@ func _ready() -> void:
 	_song_info_panel.visible = show_song_info
 
 func load_highscores(map_info: MapInfo, diff_rank: int):
+	
 	# clear the high score list
 	_clear_list()
+	
+	if Settings.health_mode:
+		diff_rank |= Constants.DIFFICULTY_HEALTH
+
 	
 	# populate title text
 	set_title("Highscores (%s)" % _get_difficulty_name(map_info,diff_rank))
@@ -54,10 +59,15 @@ func _clear_list():
 		c.queue_free()
 	
 func _get_difficulty_name(map_info: MapInfo, diff_rank: int) -> String:
+	var difficulty := diff_rank & Constants.DIFFICULTY_MASK
+	var game_type := "Arcade" if (diff_rank & Constants.DIFFICULTY_HEALTH) != 0 else "Casual"
 	for beat_map in map_info.difficulty_beatmaps:
-		if beat_map.difficulty_rank == diff_rank:
-			return beat_map.difficulty
-	return 'Rank %s' % diff_rank
+		if beat_map.difficulty_rank == (diff_rank & Constants.DIFFICULTY_MASK):
+			if diff_rank & Constants.DIFFICULTY_HEALTH:
+				return beat_map.difficulty + " " + game_type
+			else:
+				return beat_map.difficulty + " " + game_type
+	return ('Rank %d' % (diff_rank & Constants.DIFFICULTY_MASK)) + " " + game_type
 
 func _on_Exit_Button_pressed() -> void:
 	close.emit()

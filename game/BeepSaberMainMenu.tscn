@@ -103,17 +103,6 @@ script = ExtResource("3")
 
 [node name="Play_Button" type="Button" parent="."]
 layout_mode = 0
-offset_left = 299.0
-offset_top = 576.0
-offset_right = 566.0
-offset_bottom = 624.0
-theme_override_styles/hover = SubResource("2")
-theme_override_styles/pressed = SubResource("3")
-theme_override_styles/normal = SubResource("4")
-text = "Play Casual"
-
-[node name="Arcade_Button" type="Button" parent="."]
-layout_mode = 0
 offset_left = 582.0
 offset_top = 576.0
 offset_right = 849.0
@@ -121,7 +110,18 @@ offset_bottom = 624.0
 theme_override_styles/hover = SubResource("2")
 theme_override_styles/pressed = SubResource("3")
 theme_override_styles/normal = SubResource("4")
-text = "Play Arcade"
+text = "Play!"
+
+[node name="Arcade_Button" type="CheckButton" parent="."]
+layout_mode = 0
+offset_left = 299.0
+offset_top = 576.0
+offset_right = 566.0
+offset_bottom = 624.0
+theme_override_styles/hover = SubResource("2")
+theme_override_styles/pressed = SubResource("3")
+theme_override_styles/normal = SubResource("4")
+text = "Arcade Mode"
 
 [node name="Delete_Button" type="Button" parent="."]
 layout_mode = 0
@@ -293,7 +293,7 @@ grow_vertical = 0
 text = "0.4.1"
 
 [connection signal="pressed" from="Play_Button" to="." method="_on_Play_Button_pressed"]
-[connection signal="pressed" from="Arcade_Button" to="." method="_on_Arcade_Play_Button_pressed"]
+[connection signal="toggled" from="Arcade_Button" to="." method="_on_arcade_button_toggled"]
 [connection signal="button_up" from="Delete_Button" to="." method="_on_Delete_Button_button_up"]
 [connection signal="pressed" from="Exit_Button" to="." method="_on_Exit_Button_pressed"]
 [connection signal="pressed" from="Settings_Button" to="." method="_on_Settings_Button_pressed"]

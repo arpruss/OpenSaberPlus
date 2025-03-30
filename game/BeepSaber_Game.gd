@@ -16,7 +16,6 @@ var gamestate_playing := GameStatePlaying.new()
 var gamestate_settings := GameStateSettings.new()
 var gamestate: GameState = gamestate_bootup
 var current_health := Constants.HEALTH_START
-var health := false
 
 @onready var xr_origin := $XROrigin3D as XROrigin3D
 @onready var left_controller := $XROrigin3D/LeftController as BeepSaberController
@@ -76,8 +75,14 @@ var _in_wall := false
 #prevents the song for starting from the start when pausing and unpausing
 var pause_position := 0.0
 
-func start_map(info: MapInfo, map_difficulty: DifficultyInfo, _health: bool) -> void:
-	health = _health
+func _difficulty_and_health() -> int:
+	var dh := Map.current_difficulty.difficulty_rank
+	if Settings.health_mode:
+		return dh | Constants.DIFFICULTY_HEALTH
+	else:
+		return dh
+
+func start_map(info: MapInfo, map_difficulty: DifficultyInfo) -> void:
 	var map_filename := info.filepath + map_difficulty.beatmap_filename
 	var map_data := vr.load_json_file(map_filename)
 	
@@ -121,8 +126,8 @@ func start_map(info: MapInfo, map_difficulty: DifficultyInfo, _health: bool) -> 
 	
 	_display_points()
 	percent_indicator.start_map()
-	percent_indicator.set_health_mode(health)
-	if health:
+	percent_indicator.set_health_mode(Settings.health_mode)
+	if Settings.health_mode:
 		current_health = Constants.HEALTH_START
 		percent_indicator.update_percent(current_health / Constants.HEALTH_MAX)
 	
@@ -130,7 +135,7 @@ func start_map(info: MapInfo, map_difficulty: DifficultyInfo, _health: bool) -> 
 	_transition_game_state(gamestate_playing)
 
 func update_health(delta: float) -> void:
-	if health:
+	if Settings.health_mode:
 		current_health += delta
 		if current_health > Constants.HEALTH_MAX:
 			current_health = Constants.HEALTH_MAX
@@ -159,7 +164,7 @@ func _submit_highscore(player_name: String) -> void:
 	if gamestate == gamestate_newhighscore:
 		Highscores.add_highscore(
 			Map.current_info,
-			Map.current_difficulty.difficulty_rank,
+			_difficulty_and_health(),
 			player_name,
 			Scoreboard.points)
 			
@@ -319,7 +324,7 @@ func _display_points() -> void:
 	
 	(point_label.mesh as TextMesh).text = "Score: %6d" % Scoreboard.points
 	(multiplier_label.mesh as TextMesh).text = "x %d\nCombo %d" % [Scoreboard.multiplier, Scoreboard.combo]
-	if not health:
+	if not Settings.health_mode:
 		percent_indicator.update_percent(hit_rate)
 
 # accessor method for the player name selector UI element
@@ -338,8 +343,8 @@ func _on_PlayerHead_area_exited(area: Area3D) -> void:
 		_in_wall = false
 		Scoreboard.exit_wall()
 		
-func get_current_beat() -> float:
-	return song_player.get_playback_position() * Map.current_info.beats_per_minute * 0.016666666666666667
+func get_current_time() -> float:
+	return song_player.get_playback_position()
 
 # when the song ended we want to display the current score and
 # the high score
@@ -348,7 +353,7 @@ func _on_song_ended() -> void:
 	PlayCount.increment_play_count(Map.current_info,Map.current_difficulty.difficulty_rank)
 	
 	var new_record := false
-	var highscore := Highscores.get_highscore(Map.current_info,Map.current_difficulty.difficulty_rank)
+	var highscore := Highscores.get_highscore(Map.current_info,_difficulty_and_health())
 	if highscore == -1:
 		# no highscores exist yet
 		highscore = Scoreboard.points
@@ -358,7 +363,7 @@ func _on_song_ended() -> void:
 		new_record = true
 
 	var current_percent : float
-	if health and current_health <= 0:
+	if Settings.health_mode and current_health <= 0:
 		current_percent = -1
 	else:
 		current_percent = Scoreboard.right_notes/(Scoreboard.right_notes+Scoreboard.wrong_notes) 
@@ -375,13 +380,13 @@ func _on_song_ended() -> void:
 		new_record
 	)
 	
-	if Highscores.is_new_highscore(Map.current_info,Map.current_difficulty.difficulty_rank,Scoreboard.points):
+	if Highscores.is_new_highscore(Map.current_info,_difficulty_and_health(),Scoreboard.points):
 		_transition_game_state(gamestate_newhighscore)
 	else:
 		_transition_game_state(gamestate_mapcomplete)
 
 func _restart_button() -> void:
-	start_map(Map.current_info, Map.current_difficulty, health)
+	start_map(Map.current_info, Map.current_difficulty)
 	endscore.visible = false
 	pause_menu.visible = false
 
