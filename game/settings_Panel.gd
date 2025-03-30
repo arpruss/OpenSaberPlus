@@ -48,6 +48,10 @@ var right_saber_col_state := false
 
 func _ready() -> void:
 	UI_AudioEngine.attach_children(self)
+	
+	if OS.get_name() in ["Android", "Web"]:
+		spectator_hud_control.hide()
+		spectator_view_control.hide()
 
 	for i in len(Settings.BACKGROUND_MODES):
 		background_mode_control.add_item(Settings.BACKGROUND_MODES[i][1])

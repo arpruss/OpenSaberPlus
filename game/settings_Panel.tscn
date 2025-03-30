@@ -409,30 +409,10 @@ layout_mode = 2
 theme = SubResource("3")
 text = "Bombs Enabled:"
 
-[node name="swing_scoring" type="CheckButton" parent="ScrollContainer/VBox"]
-layout_mode = 2
-theme = SubResource("3")
-text = "Score by Swing and Distance:"
-
 [node name="explain" type="CheckButton" parent="ScrollContainer/VBox"]
 layout_mode = 2
 theme = SubResource("3")
 text = "Explain Scores:"
-
-[node name="not_music_dl" type="CheckButton" parent="ScrollContainer/VBox"]
-layout_mode = 2
-theme = SubResource("3")
-text = "Omit Music from Map Download/Upload:"
-
-[node name="show_collisions" type="CheckButton" parent="ScrollContainer/VBox"]
-layout_mode = 2
-theme = SubResource("3")
-text = "Show Collision Shapes:"
-
-[node name="show_debug" type="CheckButton" parent="ScrollContainer/VBox"]
-layout_mode = 2
-theme = SubResource("3")
-text = "Show Debug Info:"
 
 [node name="SaberThicknessRow" type="HBoxContainer" parent="ScrollContainer/VBox"]
 layout_mode = 2
@@ -646,6 +626,26 @@ layout_mode = 2
 theme = SubResource("3")
 text = "Ignore Map's Colors:"
 
+[node name="not_music_dl" type="CheckButton" parent="ScrollContainer/VBox"]
+layout_mode = 2
+theme = SubResource("3")
+text = "Omit Music from Map Download/Upload:"
+
+[node name="swing_scoring" type="CheckButton" parent="ScrollContainer/VBox"]
+layout_mode = 2
+theme = SubResource("3")
+text = "Score by Swing and Distance:"
+
+[node name="show_collisions" type="CheckButton" parent="ScrollContainer/VBox"]
+layout_mode = 2
+theme = SubResource("3")
+text = "Show Collision Shapes:"
+
+[node name="show_debug" type="CheckButton" parent="ScrollContainer/VBox"]
+layout_mode = 2
+theme = SubResource("3")
+text = "Show Debug Info:"
+
 [node name="spectator_view" type="CheckButton" parent="ScrollContainer/VBox"]
 layout_mode = 2
 tooltip_text = "High Performance impact*"
@@ -695,11 +695,7 @@ scroll_node_path = NodePath("../ScrollContainer")
 [connection signal="toggled" from="ScrollContainer/VBox/saber_tail" to="." method="_on_saber_tail_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/mixed_reality" to="." method="_on_mixed_reality_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/bombs_enabled" to="." method="_on_bombs_enabled_toggled"]
-[connection signal="toggled" from="ScrollContainer/VBox/swing_scoring" to="." method="_on_swing_scoring_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/explain" to="." method="_on_explain_toggled"]
-[connection signal="toggled" from="ScrollContainer/VBox/not_music_dl" to="." method="_on_not_music_dl_toggled"]
-[connection signal="toggled" from="ScrollContainer/VBox/show_collisions" to="." method="_on_show_collisions_toggled"]
-[connection signal="toggled" from="ScrollContainer/VBox/show_debug" to="." method="_on_show_debug_toggled"]
 [connection signal="value_changed" from="ScrollContainer/VBox/SaberThicknessRow/saber_thickness" to="." method="_on_thickness_value_changed"]
 [connection signal="item_selected" from="ScrollContainer/VBox/SaberTypeRow/saber" to="." method="_on_saber_item_selected"]
 [connection signal="color_changed" from="ScrollContainer/VBox/SaberColorsRow/left_saber_col" to="." method="_on_left_saber_color_changed"]
@@ -721,6 +717,10 @@ scroll_node_path = NodePath("../ScrollContainer")
 [connection signal="value_changed" from="ScrollContainer/VBox/right_saber_offset/rotz" to="." method="_on_right_saber_rot_z_changed"]
 [connection signal="value_changed" from="ScrollContainer/VBox/player_height_offset/pos" to="." method="_on_player_height_offset_changed"]
 [connection signal="toggled" from="ScrollContainer/VBox/disable_map_color" to="." method="_on_disable_map_color_toggled"]
+[connection signal="toggled" from="ScrollContainer/VBox/not_music_dl" to="." method="_on_not_music_dl_toggled"]
+[connection signal="toggled" from="ScrollContainer/VBox/swing_scoring" to="." method="_on_swing_scoring_toggled"]
+[connection signal="toggled" from="ScrollContainer/VBox/show_collisions" to="." method="_on_show_collisions_toggled"]
+[connection signal="toggled" from="ScrollContainer/VBox/show_debug" to="." method="_on_show_debug_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/spectator_view" to="." method="_on_spectator_view_toggled"]
 [connection signal="toggled" from="ScrollContainer/VBox/spectator_hud" to="." method="_on_spectator_hud_toggled"]
 [connection signal="button_up" from="defaults" to="." method="_restore_defaults"]
