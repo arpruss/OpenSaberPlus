@@ -44,9 +44,12 @@ func reset_combo(wrong_note) -> void:
 func enter_wall() -> void:
 	var beat : float
 	var time := GlobalReferences.main_game_scene.get_current_time()
-	if last_in_wall_time >= 0 and last_in_wall_time + 0.1 <= time:
+	if last_in_wall_time < 0:
+		GlobalReferences.main_game_scene.update_health(Constants.HEALTH_OBSTACLE_PER_SECOND *.1)
+		last_in_wall_time = time
+	elif time > 0 and last_in_wall_time >= 0 and last_in_wall_time + 0.1 <= time:
 		GlobalReferences.main_game_scene.update_health(Constants.HEALTH_OBSTACLE_PER_SECOND *(time-last_in_wall_time))
-	last_in_wall_time = time
+		last_in_wall_time = time
 	in_wall = true
 	reset_combo(false)
 

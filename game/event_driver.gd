@@ -76,6 +76,7 @@ func set_background() -> void:
 		($Level/DiagonalLasers/laser10).hide()
 		track_lights_holder.hide()
 		set_all_off()
+		turn_light_on(EventInfo.TYPE_FLOOR_LIGHTS, Color.WHITE)
 		disabled = true
 	else:
 		ring_holder.show()
@@ -105,6 +106,7 @@ func set_background() -> void:
 		else:
 			disabled = true
 			set_all_off()
+			turn_light_on(EventInfo.TYPE_FLOOR_LIGHTS, Color.WHITE)
 
 func _process(delta: float) -> void:
 	# update the level animations

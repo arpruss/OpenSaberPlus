@@ -1,12 +1,8 @@
 extends Node
 
-const to_hide := [ "/root/BeepSaber/event_driver/Level/Sphere", 
-	"/root/BeepSaber/event_driver/Level/floor" 
-	]
-const make_transparent := [ "/root/BeepSaber/StandingGround/Node3D/cutFloor",
-	#"/root/BeepSaber/event_driver/Level/floor" 
-	]
-
+var floor_albedo_texture : Texture2D = null
+	
+	
 func set_mixed_reality():
 	var xr_interface := XRServer.find_interface("OpenXR") as XRInterface
 	if xr_interface and xr_interface.is_passthrough_supported():
@@ -17,14 +13,33 @@ func set_mixed_reality():
 			xr_interface.stop_passthrough()
 			get_viewport().transparent_bg = false
 			
-	for n in to_hide:
-		if Settings.mixed_reality:
-			get_node(n).hide()
-		else:
-			get_node(n).show()
-			
-	var transparency := 1 if Settings.mixed_reality else 0
+	if Settings.mixed_reality:
+		get_node("/root/BeepSaber/event_driver/Level/Sphere").hide()
+	else:
+		get_node("/root/BeepSaber/event_driver/Level/Sphere").show()
 
-	for n in make_transparent:
-		var material := (get_node(n) as MeshInstance3D).material_override as StandardMaterial3D
-		material.transparency = transparency
+	var cut_floor := get_node("/root/BeepSaber/StandingGround/Node3D/cutFloor") as MeshInstance3D
+	var material := cut_floor.material_override as StandardMaterial3D
+	
+	if floor_albedo_texture == null:
+		floor_albedo_texture = material.albedo_texture
+
+	if Settings.mixed_reality:
+		material.transparency = 1
+		material.albedo_texture = null
+		material.albedo_color = Color(0,0,0,.6)
+	else:
+		material.transparency = 0
+		material.albedo_texture = floor_albedo_texture
+	
+	material = (get_node("/root/BeepSaber/event_driver/Level/floor") as MeshInstance3D).material_override as StandardMaterial3D
+	var gradient_texture := material.albedo_texture as GradientTexture2D
+	var gradient := gradient_texture.gradient
+	for i in gradient.get_point_count():
+		var c := gradient.get_color(i)
+		if Settings.mixed_reality:
+			gradient.set_color(i, Color(c.r,c.g,c.b,0.6))
+		else:
+			gradient.set_color(i, Color(c.r,c.g,c.b))
+
+		
