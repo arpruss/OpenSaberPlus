@@ -142,7 +142,7 @@ func _set_cur_playlist(songs: Array[MapInfo]) -> void:
 	var map_index := 0
 	for map in songs:
 		@warning_ignore("return_value_discarded")
-		songs_menu.add_item("%s - %s" % [map.song_author_name, map.song_name], default_song_icon)
+		songs_menu.add_item("%s - %s%s" % [map.song_author_name, map.song_name, "" if map.have_song else " [silent]"], default_song_icon)
 		var filepath := map.filepath + map.cover_image_filename
 		_bg_img_loader.load_texture(filepath, _on_cover_loaded, false, map_index)
 		map_index += 1

@@ -17,6 +17,7 @@ var environment_name: String
 var song_time_offset: float
 var custom_data: Dictionary
 var last_beat: float
+var have_song: bool
 
 var filepath: String
 var difficulty_beatmaps: Array[DifficultyInfo]
@@ -46,6 +47,7 @@ func _init(
 	self.custom_data = custom_data
 	self.filepath = filepath
 	self.difficulty_beatmaps = difficulty_beatmaps
+	self.have_song = FileAccess.file_exists(filepath + song_filename)
 
 func is_empty() -> bool:
 	return (
