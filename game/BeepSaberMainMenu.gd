@@ -31,6 +31,7 @@ var _cover_texture_create_sw := StopwatchFactory.create("cover_texture_create",1
 
 @onready var song_preview := $song_prev as AudioStreamPlayer
 var song_preview_transition_time := 1.0
+var licenses_showing := false
 
 var current_selected: int
 
@@ -435,3 +436,14 @@ func _on_arcade_button_toggled(value: bool) -> void:
 	Settings.health_mode = value
 	var difficulty := _currently_selected_songlist_ref[current_selected].difficulty_beatmaps[_map_difficulty]
 	difficulty_changed.emit(_currently_selected_songlist_ref[current_selected], difficulty.difficulty_rank)
+
+
+func _on_licenses_pressed() -> void:
+	var license := FileAccess.open("res://LICENSE", FileAccess.READ).get_as_text()
+	$LicensePopup/ScrollContainer/Label.text = license
+	if licenses_showing:
+		$LicensePopup.hide()
+	else:
+		$LicensePopup.show()
+	licenses_showing = not licenses_showing
+	return

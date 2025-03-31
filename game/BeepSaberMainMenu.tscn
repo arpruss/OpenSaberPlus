@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://glii0poslcve"]
+[gd_scene load_steps=20 format=3 uid="uid://glii0poslcve"]
 
 [ext_resource type="Theme" uid="uid://dvcjel72een6o" path="res://OQ_Toolkit/OQ_UI2D/theme/oq_ui2d_standard.theme" id="1"]
 [ext_resource type="FontFile" uid="uid://cdsnr8tscm8y6" path="res://OQ_Toolkit/OQ_UI2D/theme/Roboto-Medium.ttf" id="2"]
@@ -94,6 +94,8 @@ cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
 default_font = SubResource("11")
 default_font_size = 25
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t5flx"]
+
 [node name="BeepSaberMainMenu" type="Panel"]
 offset_right = 1408.0
 offset_bottom = 640.0
@@ -157,6 +159,17 @@ theme_override_styles/hover = SubResource("2")
 theme_override_styles/pressed = SubResource("3")
 theme_override_styles/normal = SubResource("4")
 text = "Settings"
+
+[node name="Licenses" type="Button" parent="."]
+layout_mode = 0
+offset_left = 1265.0
+offset_top = 464.0
+offset_right = 1390.0
+offset_bottom = 512.0
+theme_override_styles/hover = SubResource("2")
+theme_override_styles/pressed = SubResource("3")
+theme_override_styles/normal = SubResource("4")
+text = "Licenses"
 
 [node name="Search_Button" type="Button" parent="."]
 layout_mode = 0
@@ -285,18 +298,36 @@ anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = -56.0
-offset_top = -152.0
+offset_top = -208.0
 offset_right = -16.0
-offset_bottom = -133.0
+offset_bottom = -189.0
 grow_horizontal = 0
 grow_vertical = 0
 text = "0.4.1"
+
+[node name="LicensePopup" type="PopupPanel" parent="."]
+title = "Licenses"
+position = Vector2i(1090, 20)
+size = Vector2i(302, 400)
+theme_override_styles/panel = SubResource("StyleBoxFlat_t5flx")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="LicensePopup"]
+offset_right = 302.0
+offset_bottom = 400.0
+horizontal_scroll_mode = 0
+
+[node name="Label" type="Label" parent="LicensePopup/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "LICENSES"
+autowrap_mode = 2
 
 [connection signal="pressed" from="Play_Button" to="." method="_on_Play_Button_pressed"]
 [connection signal="toggled" from="Arcade_Button" to="." method="_on_arcade_button_toggled"]
 [connection signal="button_up" from="Delete_Button" to="." method="_on_Delete_Button_button_up"]
 [connection signal="pressed" from="Exit_Button" to="." method="_on_Exit_Button_pressed"]
 [connection signal="pressed" from="Settings_Button" to="." method="_on_Settings_Button_pressed"]
+[connection signal="pressed" from="Licenses" to="." method="_on_licenses_pressed"]
 [connection signal="button_up" from="Search_Button" to="." method="_on_Search_Button_button_up"]
 [connection signal="item_selected" from="SongsMenu" to="." method="_select_song"]
 [connection signal="item_selected" from="PlaylistSelector" to="." method="_on_PlaylistSelector_item_selected"]
