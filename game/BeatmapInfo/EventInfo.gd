@@ -48,3 +48,13 @@ static func new_v3(event_dict: Dictionary) -> EventInfo:
 		int(Utils.get_float(event_dict, "i", 0)),
 		Utils.get_float(event_dict, "f", -1.0)
 	)
+
+static func new_v4(event_dict: Dictionary, event_data_dict: Dictionary) -> EventInfo:
+	event_dict.erase("i")
+	event_dict.merge(event_data_dict)
+	return EventInfo.new(
+		Utils.get_float(event_dict, "b", 0.0),
+		int(Utils.get_float(event_dict, "et", 0)),
+		int(Utils.get_float(event_dict, "i", 0)),
+		Utils.get_float(event_dict, "f", -1.0)
+	)

@@ -24,3 +24,12 @@ static func new_v3(bomb_dict: Dictionary) -> BombInfo:
 		int(Utils.get_float(bomb_dict, "x", 0)),
 		int(Utils.get_float(bomb_dict, "y", 0))
 	)
+
+static func new_v4(bomb_dict: Dictionary, bomb_data_dict: Dictionary) -> BombInfo:
+	bomb_dict.erase("i")
+	bomb_dict.merge(bomb_data_dict)
+	return BombInfo.new(
+		Utils.get_float(bomb_dict, "b", 0.0),
+		int(Utils.get_float(bomb_dict, "x", 0)),
+		int(Utils.get_float(bomb_dict, "y", 0))
+	)

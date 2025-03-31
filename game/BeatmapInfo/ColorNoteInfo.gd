@@ -36,3 +36,15 @@ static func new_v3(note_dict: Dictionary) -> ColorNoteInfo:
 		int(Utils.get_float(note_dict, "d", 0)),
 		int(Utils.get_float(note_dict, "a", 0))
 	)
+
+static func new_v4(note_dict: Dictionary, note_data_dict: Dictionary) -> ColorNoteInfo:
+	note_dict.erase("i")
+	note_dict.merge(note_data_dict)
+	return ColorNoteInfo.new(
+		Utils.get_float(note_dict, "b", 0.0),
+		int(Utils.get_float(note_dict, "x", 0)),
+		int(Utils.get_float(note_dict, "y", 0)),
+		int(Utils.get_float(note_dict, "c", 0)),	# TODO: default should be 0, not -1?
+		int(Utils.get_float(note_dict, "d", 0)),
+		int(Utils.get_float(note_dict, "a", 0))
+	)

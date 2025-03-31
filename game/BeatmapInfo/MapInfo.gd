@@ -95,3 +95,49 @@ static func new_v2(info_dict: Dictionary, load_path: String) -> MapInfo:
 		load_path,
 		diffs
 	)
+
+static func new_v4(info_dict: Dictionary, load_path: String) -> MapInfo:
+	var diffs := {}
+	var difficulty_beatmaps := Utils.get_array(info_dict, "difficultyBeatmaps", [])
+	if (difficulty_beatmaps.is_empty()):
+		vr.log_warning("No difficultyBeatmaps in info.dat")
+	var beatmap_author: String
+
+	for difficulty_beatmap: Variant in difficulty_beatmaps:
+		if difficulty_beatmap is Dictionary:
+			# TODO: each beatmap can have different authors / lighters - for now, just take the first one
+			if not beatmap_author:
+				var beatmap_authors: Dictionary = Utils.get_dict(difficulty_beatmap, "beatmapAuthors", { "mappers": [""] })
+				beatmap_author = beatmap_authors["mappers"][0]
+
+			var difficulty_set_name : String = difficulty_beatmap["characteristic"]
+			diffs[difficulty_set_name] = {
+				difficulty_beatmap["difficulty"]: DifficultyInfo.load_v4(difficulty_beatmap)
+			}
+
+	var song: Dictionary = Utils.get_dict(info_dict, "song", {})
+	var audio: Dictionary = Utils.get_dict(info_dict, "audio", {})
+	var environment_names: Array = Utils.get_array(info_dict, "environmentNames", [""])
+
+	# TODO: colorSchemes
+	# TODO: audio/songDuration
+	# TODO: audio/audioDataFilename
+	# TODO: audio/lufs
+	# TODO: songPreviewFilename
+	return MapInfo.new(
+		Utils.get_str(info_dict, "version", "4.0.0"),
+		Utils.get_str(song, "title", ""),
+		Utils.get_str(song, "subTitle", ""),
+		Utils.get_str(song, "author", ""),
+		beatmap_author,
+		Utils.get_float(audio, "bpm", 60.0),
+		Utils.get_float(audio, "previewStartTime", 0.0),
+		Utils.get_float(audio, "previewDuration", 0.0),
+		Utils.get_str(audio, "songFilename", ""),
+		Utils.get_str(info_dict, "coverImageFilename", ""),
+		environment_names[0],	# TODO: each beatmap can have different environments - for now, just take the first one
+		Utils.get_float(info_dict, "_songTimeOffset", 0.0),	# TODO: does this exist in v4?
+		Utils.get_dict(info_dict, "_customData", {}),	# TODO: does this exist in v4?
+		load_path,
+		diffs
+	)

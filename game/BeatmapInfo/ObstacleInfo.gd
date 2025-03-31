@@ -48,3 +48,15 @@ static func new_v3(obstacle_dict: Dictionary) -> ObstacleInfo:
 		int(Utils.get_float(obstacle_dict, "w", 0)),
 		int(Utils.get_float(obstacle_dict, "h", 0))
 	)
+
+static func new_v4(obstacle_dict: Dictionary, obstacle_data_dict: Dictionary) -> ObstacleInfo:
+	obstacle_dict.erase("i")
+	obstacle_dict.merge(obstacle_data_dict)
+	return ObstacleInfo.new(
+		Utils.get_float(obstacle_dict, "b", 0.0),
+		Utils.get_float(obstacle_dict, "d", 0.0),
+		int(Utils.get_float(obstacle_dict, "x", 0)),
+		int(Utils.get_float(obstacle_dict, "y", 0)),
+		int(Utils.get_float(obstacle_dict, "w", 0)),
+		int(Utils.get_float(obstacle_dict, "h", 0))
+	)
