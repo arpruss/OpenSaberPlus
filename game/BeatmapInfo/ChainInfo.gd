@@ -42,19 +42,3 @@ static func new_v3(chain_dict: Dictionary) -> ChainInfo:
 		int(Utils.get_float(chain_dict, "sc", 0)),
 		Utils.get_float(chain_dict, "s", 1.0)
 	)
-
-static func new_v4(chain_dict: Dictionary, chain_data_dict: Dictionary) -> ChainInfo:
-	chain_dict.erase("i")
-	chain_dict.merge(chain_data_dict)
-	return ChainInfo.new(
-		int(Utils.get_float(chain_dict, "c", 0)),
-		Utils.get_float(chain_dict, "b", 0.0),
-		int(Utils.get_float(chain_dict, "x", 0)),
-		int(Utils.get_float(chain_dict, "y", 0)),
-		int(Utils.get_float(chain_dict, "d", 0)),
-		Utils.get_float(chain_dict, "tb", 0.0),
-		int(Utils.get_float(chain_dict, "tx", 0)),
-		int(Utils.get_float(chain_dict, "ty", 0)),
-		int(Utils.get_float(chain_dict, "sc", 0)),
-		Utils.get_float(chain_dict, "s", 1.0)
-	)

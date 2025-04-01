@@ -70,21 +70,3 @@ static func new_v3(arc_dict: Dictionary) -> ArcInfo:
 		Utils.get_float(arc_dict, "tmu", 1.0),
 		int(Utils.get_float(arc_dict, "m", 0))
 	)
-
-static func new_v4(arc_dict: Dictionary, arc_data_dict: Dictionary) -> ArcInfo:
-	arc_dict.erase("i")
-	arc_dict.merge(arc_data_dict)
-	return ArcInfo.new(
-		int(Utils.get_float(arc_dict, "c", 0)),
-		Utils.get_float(arc_dict, "b", 0.0),
-		int(Utils.get_float(arc_dict, "x", 0)),
-		int(Utils.get_float(arc_dict, "y", 0)),
-		int(Utils.get_float(arc_dict, "d", 0)),
-		Utils.get_float(arc_dict, "mu", 1.0),
-		Utils.get_float(arc_dict, "tb", 0.0),
-		int(Utils.get_float(arc_dict, "tx", 0)),
-		int(Utils.get_float(arc_dict, "ty", 0)),
-		int(Utils.get_float(arc_dict, "tc", 0)),
-		Utils.get_float(arc_dict, "tmu", 1.0),
-		int(Utils.get_float(arc_dict, "m", 0))
-	)
