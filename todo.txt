@@ -1,0 +1,3 @@
+no arrow mode
+claw mode?
+make modes be checkmarks on main menu
