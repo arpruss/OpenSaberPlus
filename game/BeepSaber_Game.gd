@@ -235,6 +235,8 @@ func _ready() -> void:
 		right_controller
 	)
 	
+	vr.pose_recentered.connect(recenter)
+
 	debug_info_label.visible = Settings.show_debug_info
 	set_colors_from_settings()
 	($WorldEnvironment as WorldEnvironment).environment.glow_enabled = Settings.glare
