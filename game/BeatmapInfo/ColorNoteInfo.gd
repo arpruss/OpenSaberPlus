@@ -32,7 +32,7 @@ static func new_v3(note_dict: Dictionary) -> ColorNoteInfo:
 		Utils.get_float(note_dict, "b", 0.0),
 		int(Utils.get_float(note_dict, "x", 0)),
 		int(Utils.get_float(note_dict, "y", 0)),
-		int(Utils.get_float(note_dict, "c", -1)),
+		int(Utils.get_float(note_dict, "c", 0)),
 		int(Utils.get_float(note_dict, "d", 0)),
 		int(Utils.get_float(note_dict, "a", 0))
 	)
