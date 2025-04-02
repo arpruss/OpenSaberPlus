@@ -1,3 +1,2 @@
-no arrow mode
 claw mode?
-make modes be checkmarks on main menu
+don't make arrows appear when cutting dotted or no-arrow blocks
