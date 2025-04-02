@@ -63,6 +63,8 @@ func spawn(note_info: ColorNoteInfo, current_beat: float) -> void:
 	piece_right.set_color(color)
 	_mat.set_shader_parameter(&"color", color)
 	_mat.set_shader_parameter(&"is_dot", is_dot)
+	_mat.set_shader_parameter(&"arrows_enabled", Settings.arrows_enabled)
+	print("arrows", Settings.arrows_enabled)
 	# since cube instances get recycled, we gotta reset cubes that were chain
 	# heads in a past life
 	_mat.set_shader_parameter(&"is_chain_head", false)
@@ -136,7 +138,7 @@ func cut(saber: LightSaber, cut_speed: Vector3, cut_plane: Plane, controller: Be
 	
 	if saber.type == which_saber:
 		var cut_angle_accuracy := clampf((base_cut_angle_accuracy-0.7)/0.3, 0.0, 1.0)
-		if is_dot: #ignore angle if is a dot
+		if is_dot or not Settings.arrows_enabled: #ignore angle if is a dot
 			cut_angle_accuracy = 1.0
 		var cut_distance_accuracy := clampf((0.1 - absf(cut_distance))/0.1, 0.0, 1.0)
 		var travel_distance_factor := controller.movement_aabb.get_longest_axis_size()

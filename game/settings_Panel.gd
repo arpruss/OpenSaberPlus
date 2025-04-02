@@ -17,7 +17,6 @@ signal apply()
 @onready var not_music_dl_control := $ScrollContainer/VBox/not_music_dl as CheckButton
 @onready var swing_scoring_control := $ScrollContainer/VBox/swing_scoring as CheckButton
 @onready var show_collisions := $ScrollContainer/VBox/show_collisions as CheckButton
-@onready var bombs_enabled_control := $ScrollContainer/VBox/bombs_enabled as CheckButton
 @onready var ui_volume_slider := $ScrollContainer/VBox/UI_VolumeRow/ui_volume_slider as HSlider
 @onready var disable_map_color_control := $ScrollContainer/VBox/disable_map_color as CheckButton
 @onready var left_saber_posx_control := $ScrollContainer/VBox/left_saber_offset/posx as SpinBox
@@ -100,7 +99,6 @@ func set_controls_from_settings() -> void:
 	explain_control.button_pressed = Settings.explain
 	not_music_dl_control.button_pressed = Settings.not_music_dl
 	swing_scoring_control.button_pressed = Settings.swing_scoring
-	bombs_enabled_control.button_pressed = Settings.bombs_enabled
 	ui_volume_slider.value = Settings.ui_volume
 	disable_map_color_control.button_pressed = Settings.disable_map_color
 	left_saber_posx_control.value = Settings.left_saber_offset_pos.x
@@ -161,9 +159,6 @@ func _on_explain_toggled(button_pressed: bool) -> void:
 
 func _on_swing_scoring_toggled(button_pressed: bool) -> void:
 	Settings.swing_scoring = button_pressed
-
-func _on_bombs_enabled_toggled(button_pressed: bool) -> void:
-	Settings.bombs_enabled = button_pressed
 
 func _on_ui_volume_slider_value_changed(value: float) -> void:
 	UI_AudioEngine.set_volume(linear_to_db(float(value)/10.0))

@@ -145,6 +145,10 @@ var health_mode: bool:
 	set(value):
 		health_mode = value
 		set_and_emit(&"health_mode", value)
+var arrows_enabled: bool:
+	set(value):
+		arrows_enabled = value
+		set_and_emit(&"arrows_enabled", value)
 
 func _ready() -> void:
 	DirAccess.make_dir_recursive_absolute(Constants.CONFIG_ROOT_PATH)
@@ -201,7 +205,8 @@ var default_values = {
 	spectator_hud = true,
 	background = "dynamic",
 	background_texture = "res://game/data/background/nightsky.jpg",
-	health_mode = false
+	health_mode = false,
+	arrows_enabled = true
 }
 
 func cast_or_default(key: String, to_type: int = -1) -> Variant:

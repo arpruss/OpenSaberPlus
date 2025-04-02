@@ -111,7 +111,7 @@ func start_map(info: MapInfo, map_difficulty: DifficultyInfo) -> void:
 		if len(audio_data) > 0:
 			song_player.stream = AudioStreamOggVorbis.load_from_buffer(audio_data)
 		else:
-			vr.log("playing silence")
+			vr.log_info("playing silence")
 			var wav := AudioStreamWAV.new()
 			wav.set_stereo(false)
 			wav.set_format(AudioStreamWAV.FORMAT_8_BITS)

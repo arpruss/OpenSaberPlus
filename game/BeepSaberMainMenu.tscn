@@ -103,9 +103,37 @@ theme = ExtResource("1")
 theme_override_styles/panel = SubResource("1")
 script = ExtResource("3")
 
+[node name="Modifiers" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 864.0
+offset_top = 297.0
+offset_right = 1041.0
+offset_bottom = 400.0
+
+[node name="Health" type="CheckBox" parent="Modifiers"]
+layout_mode = 0
+offset_right = 24.0
+offset_bottom = 24.0
+text = "Health"
+
+[node name="Bombs" type="CheckBox" parent="Modifiers"]
+layout_mode = 0
+offset_left = -1.0
+offset_top = 27.0
+offset_right = 78.0
+offset_bottom = 54.0
+text = "Bombs"
+
+[node name="Arrows" type="CheckBox" parent="Modifiers"]
+layout_mode = 0
+offset_top = 54.0
+offset_right = 79.0
+offset_bottom = 81.0
+text = "Arrows"
+
 [node name="Play_Button" type="Button" parent="."]
 layout_mode = 0
-offset_left = 582.0
+offset_left = 293.0
 offset_top = 576.0
 offset_right = 849.0
 offset_bottom = 624.0
@@ -113,17 +141,6 @@ theme_override_styles/hover = SubResource("2")
 theme_override_styles/pressed = SubResource("3")
 theme_override_styles/normal = SubResource("4")
 text = "Play!"
-
-[node name="Arcade_Button" type="CheckButton" parent="."]
-layout_mode = 0
-offset_left = 299.0
-offset_top = 576.0
-offset_right = 566.0
-offset_bottom = 624.0
-theme_override_styles/hover = SubResource("2")
-theme_override_styles/pressed = SubResource("3")
-theme_override_styles/normal = SubResource("4")
-text = "Arcade Mode"
 
 [node name="Delete_Button" type="Button" parent="."]
 layout_mode = 0
@@ -203,9 +220,9 @@ stretch_mode = 5
 [node name="SongInfo_Label" type="Label" parent="."]
 layout_mode = 0
 offset_left = 864.0
-offset_top = 320.0
+offset_top = 409.0
 offset_right = 1328.0
-offset_bottom = 468.0
+offset_bottom = 498.0
 text = "Song Author: TheFatRat
 Song Title: Time Lapse
 Beatmap Author: Timeweaver
@@ -234,9 +251,9 @@ flat = true
 [node name="DifficultyMenu" type="ItemList" parent="."]
 layout_mode = 0
 offset_left = 864.0
-offset_top = 64.0
+offset_top = 49.0
 offset_right = 1040.0
-offset_bottom = 320.0
+offset_bottom = 284.0
 theme = SubResource("12")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 
@@ -245,7 +262,7 @@ layout_mode = 0
 offset_left = 864.0
 offset_top = 16.0
 offset_right = 1040.0
-offset_bottom = 64.0
+offset_bottom = 50.0
 theme_override_font_sizes/font_size = 25
 text = "Difficulty"
 
@@ -322,8 +339,10 @@ size_flags_horizontal = 3
 text = "LICENSES"
 autowrap_mode = 2
 
+[connection signal="toggled" from="Modifiers/Health" to="." method="_on_health_toggled"]
+[connection signal="toggled" from="Modifiers/Bombs" to="." method="_on_bombs_toggled"]
+[connection signal="toggled" from="Modifiers/Arrows" to="." method="_on_arrows_toggled"]
 [connection signal="pressed" from="Play_Button" to="." method="_on_Play_Button_pressed"]
-[connection signal="toggled" from="Arcade_Button" to="." method="_on_arcade_button_toggled"]
 [connection signal="button_up" from="Delete_Button" to="." method="_on_Delete_Button_button_up"]
 [connection signal="pressed" from="Exit_Button" to="." method="_on_Exit_Button_pressed"]
 [connection signal="pressed" from="Settings_Button" to="." method="_on_Settings_Button_pressed"]

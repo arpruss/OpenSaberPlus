@@ -15,6 +15,7 @@ uniform float cut_angle = 0.0;
 uniform float cut_white_margin = 0.04;
 
 uniform bool is_dot = false;
+uniform bool arrows_enabled = true;
 uniform bool is_chain_head = false;
 
 // [firepal]TODO: Build matrix on CPU (I tried but couldn't')
@@ -56,7 +57,10 @@ void fragment() {
 	ROUGHNESS = roughness;
 	if (FRONT_FACING) {
 		vec2 dot_uv = vec2(UV.x+0.5, UV.y);
-		EMISSION = (color.rgb * sub_emission_energy) + texture(texture_emission, is_dot ? dot_uv : UV).rgb;
+		if (is_dot || arrows_enabled) 
+			EMISSION = (color.rgb * sub_emission_energy) + texture(texture_emission, is_dot ? dot_uv : UV).rgb;
+		else
+			EMISSION = (color.rgb * sub_emission_energy);
 
 		if (is_chain_head) {
 			EMISSION += vec3( smoothstep(cut_white_margin+0.01,cut_white_margin,chain_interp) );

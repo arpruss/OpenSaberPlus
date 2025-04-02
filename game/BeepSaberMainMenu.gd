@@ -27,7 +27,9 @@ var _cover_texture_create_sw := StopwatchFactory.create("cover_texture_create",1
 @onready var songs_menu := $SongsMenu as ItemList
 @onready var diff_menu := $DifficultyMenu as ItemList
 @onready var delete_button := $Delete_Button as Button
-@onready var health_control := $Arcade_Button as CheckButton
+@onready var health_control := $Modifiers/Health as CheckBox
+@onready var bombs_control := $Modifiers/Bombs as CheckBox
+@onready var arrows_control := $Modifiers/Arrows as CheckBox
 
 @onready var song_preview := $song_prev as AudioStreamPlayer
 var song_preview_transition_time := 1.0
@@ -310,6 +312,8 @@ func _delete_map(map: MapInfo) -> void:
 
 func _ready() -> void:
 	health_control.button_pressed = Settings.health_mode
+	arrows_control.button_pressed = Settings.arrows_enabled
+	bombs_control.button_pressed = Settings.bombs_enabled
 	
 	UI_AudioEngine.attach_children(self)
 	vr.log_info("BeepSaber search path is " + Constants.APPDATA_PATH)
@@ -440,13 +444,6 @@ func _on_PlaylistSelector_item_selected(id: int) -> void:
 			vr.log_warning("Unsupported playlist option %s" % id)
 			_set_cur_playlist(_all_songs)
 
-
-func _on_arcade_button_toggled(value: bool) -> void:
-	Settings.health_mode = value
-	var difficulty := _currently_selected_songlist_ref[current_selected].difficulty_beatmaps[_map_difficulty]
-	difficulty_changed.emit(_currently_selected_songlist_ref[current_selected], difficulty.difficulty_rank)
-
-
 func _on_licenses_pressed() -> void:
 	var license := FileAccess.open("res://LICENSE", FileAccess.READ).get_as_text()
 	$LicensePopup/ScrollContainer/Label.text = license
@@ -456,3 +453,21 @@ func _on_licenses_pressed() -> void:
 		$LicensePopup.show()
 	licenses_showing = not licenses_showing
 	return
+
+func _on_health_toggled(value: bool) -> void:
+	Settings.health_mode = value
+	if len(_currently_selected_songlist_ref):
+		var difficulty := _currently_selected_songlist_ref[current_selected].difficulty_beatmaps[_map_difficulty]
+		difficulty_changed.emit(_currently_selected_songlist_ref[current_selected], difficulty.difficulty_rank)
+
+func _on_bombs_toggled(value: bool) -> void:
+	Settings.bombs_enabled = value
+	if len(_currently_selected_songlist_ref):
+		var difficulty := _currently_selected_songlist_ref[current_selected].difficulty_beatmaps[_map_difficulty]
+		difficulty_changed.emit(_currently_selected_songlist_ref[current_selected], difficulty.difficulty_rank)
+
+func _on_arrows_toggled(value: bool) -> void:
+	Settings.arrows_enabled = value
+	if len(_currently_selected_songlist_ref):
+		var difficulty := _currently_selected_songlist_ref[current_selected].difficulty_beatmaps[_map_difficulty]
+		difficulty_changed.emit(_currently_selected_songlist_ref[current_selected], difficulty.difficulty_rank)
