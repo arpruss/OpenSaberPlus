@@ -30,7 +30,7 @@ var _cover_texture_create_sw := StopwatchFactory.create("cover_texture_create",1
 @onready var health_control := $Modifiers/Health as CheckBox
 @onready var bombs_control := $Modifiers/Bombs as CheckBox
 @onready var arrows_control := $Modifiers/Arrows as CheckBox
-@onready var claws_control := $Modifiers/Arrows as CheckBox
+@onready var claws_control := $Modifiers/Claws as CheckBox
 
 @onready var song_preview := $song_prev as AudioStreamPlayer
 var song_preview_transition_time := 1.0
@@ -467,7 +467,7 @@ func _on_bombs_toggled(value: bool) -> void:
 	if len(_currently_selected_songlist_ref):
 		var difficulty := _currently_selected_songlist_ref[current_selected].difficulty_beatmaps[_map_difficulty]
 		difficulty_changed.emit(_currently_selected_songlist_ref[current_selected], difficulty.difficulty_rank)
-
+	
 func _on_arrows_toggled(value: bool) -> void:
 	Settings.arrows_enabled = value
 	if len(_currently_selected_songlist_ref):

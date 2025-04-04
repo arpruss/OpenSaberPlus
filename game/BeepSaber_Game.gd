@@ -144,7 +144,6 @@ func update_health(delta: float) -> void:
 		current_health += delta
 		if current_health > Constants.HEALTH_MAX:
 			current_health = Constants.HEALTH_MAX
-		vr.log_info("ARP %f" % current_health)
 		percent_indicator.update_percent(current_health / Constants.HEALTH_MAX)
 		if current_health < 0:
 			_on_song_ended()
