@@ -24,6 +24,12 @@ var thickness: float:
 	set(value):
 		thickness = value
 		set_and_emit(&"thickness", value)
+var claws: bool:
+	set(value):
+		claws = value
+		set_and_emit(&"claws", value)
+		if claws:
+			saber_visual = 0 # TODO: support particle sword in claws mode
 var color_left: Color:
 	set(value):
 		color_left = value
@@ -206,7 +212,8 @@ var default_values = {
 	background = "dynamic",
 	background_texture = "res://game/data/background/nightsky.jpg",
 	health_mode = false,
-	arrows_enabled = true
+	arrows_enabled = true,
+	claws = false
 }
 
 func cast_or_default(key: String, to_type: int = -1) -> Variant:

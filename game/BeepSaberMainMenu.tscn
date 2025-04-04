@@ -131,6 +131,13 @@ offset_right = 79.0
 offset_bottom = 81.0
 text = "Arrows"
 
+[node name="Claws" type="CheckBox" parent="Modifiers"]
+layout_mode = 0
+offset_top = 81.0
+offset_right = 79.0
+offset_bottom = 108.0
+text = "Claws"
+
 [node name="Play_Button" type="Button" parent="."]
 layout_mode = 0
 offset_left = 293.0
@@ -220,9 +227,9 @@ stretch_mode = 5
 [node name="SongInfo_Label" type="Label" parent="."]
 layout_mode = 0
 offset_left = 864.0
-offset_top = 409.0
+offset_top = 415.0
 offset_right = 1328.0
-offset_bottom = 498.0
+offset_bottom = 504.0
 text = "Song Author: TheFatRat
 Song Title: Time Lapse
 Beatmap Author: Timeweaver
@@ -342,6 +349,7 @@ autowrap_mode = 2
 [connection signal="toggled" from="Modifiers/Health" to="." method="_on_health_toggled"]
 [connection signal="toggled" from="Modifiers/Bombs" to="." method="_on_bombs_toggled"]
 [connection signal="toggled" from="Modifiers/Arrows" to="." method="_on_arrows_toggled"]
+[connection signal="toggled" from="Modifiers/Claws" to="." method="_on_claws_toggled"]
 [connection signal="pressed" from="Play_Button" to="." method="_on_Play_Button_pressed"]
 [connection signal="button_up" from="Delete_Button" to="." method="_on_Delete_Button_button_up"]
 [connection signal="pressed" from="Exit_Button" to="." method="_on_Exit_Button_pressed"]

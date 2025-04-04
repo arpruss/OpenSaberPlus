@@ -72,7 +72,7 @@ _data = {
 "Spawn": SubResource("3")
 }
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_qc0er"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_j0y1h"]
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("3_7slj3")
@@ -117,6 +117,6 @@ libraries = {
 [node name="BeepCubeMesh" parent="." instance=ExtResource("2_sbb11")]
 transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 0, 0, 0)
 layers = 3
-material_override = SubResource("ShaderMaterial_qc0er")
+material_override = SubResource("ShaderMaterial_j0y1h")
 
 [node name="SliceParticles" parent="." instance=ExtResource("5_tissj")]

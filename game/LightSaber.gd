@@ -14,6 +14,8 @@ class_name LightSaber
 @onready var _swing_cast := $SwingableRayCast as SwingableRayCast
 @onready var saber_visual := $saber_holder.get_child(0) as DefaultSaber
 @onready var controller := get_parent() as BeepSaberController
+@onready var collision_shape := $CollisionShape3D as CollisionShape3D
+@onready var collision_cylinder := collision_shape.shape as CylinderShape3D
 
 @export var offset_pos := Vector3.ZERO
 @export var offset_rot := Vector3.ZERO
@@ -33,9 +35,29 @@ var history_tail := history_size - 1
 # entry: [time,position,pointing,preswing_angle,accuracy]
 var score_queue := Array() 
 
+func _update_size_and_angle():
+	if type == 0:
+		@warning_ignore("unsafe_cast")				
+		extra_offset_rot = Settings.left_saber_offset_rot
+		extra_offset_pos = Settings.left_saber_offset_pos
+	else:
+		@warning_ignore("unsafe_cast")				
+		extra_offset_rot = Settings.right_saber_offset_rot
+		extra_offset_pos = Settings.right_saber_offset_pos
+
+	if Settings.claws:
+		collision_shape.position.y = .2142
+		collision_cylinder.height = 0.3744
+		extra_offset_rot.x -= 90
+		extra_offset_pos.z += .1
+	else:
+		collision_cylinder.height = 1.248
+		collision_shape.position.y = .651
+
 func _show() -> void:
-	if not is_extended():
-		_anim.play(&"Show")
+	_update_size_and_angle()
+	if not is_extended() or (Settings.claws and _swing_cast.target_position.y > 1.) or (not Settings.claws and _swing_cast.target_position.y < 1.):
+		_anim.play(&"ShowShort" if Settings.claws else &"Show")
 		saber_visual._show()
 
 func is_extended() -> bool:
@@ -46,7 +68,7 @@ func _hide() -> void:
 	# (where we translated the light saber to the hilt) to avoid playing it back
 	# again from the fully extended light saber position
 	if (is_extended() and _anim.current_animation != "QuickHide"):
-		_anim.play(&"Hide")
+		_anim.play(&"HideShort" if Settings.claws else &"Hide")
 		saber_visual._hide()
 
 func set_color(color: Color) -> void:
@@ -67,18 +89,13 @@ func on_settings_changed(key: StringName) -> void:
 		&"saber_visual":
 			set_saber(Settings.SABER_VISUALS[Settings.saber_visual][1])
 		&"left_saber_offset_pos":
-			if type == 0:
-				extra_offset_pos = Settings.left_saber_offset_pos
+			_update_size_and_angle()
 		&"right_saber_offset_pos":
-			if type == 1:
-				extra_offset_pos = Settings.right_saber_offset_pos
+			_update_size_and_angle()
 		&"left_saber_offset_rot":
-			if type == 0:
-				@warning_ignore("unsafe_cast")
-				extra_offset_rot = Settings.left_saber_offset_rot
+			_update_size_and_angle()
 		&"right_saber_offset_rot":
-			if type == 1:
-				extra_offset_rot = Settings.right_saber_offset_rot	
+			_update_size_and_angle()
 
 func _ready() -> void:
 	set_saber(Settings.SABER_VISUALS[Settings.saber_visual][1])

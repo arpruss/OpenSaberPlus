@@ -471,3 +471,10 @@ func _on_arrows_toggled(value: bool) -> void:
 	if len(_currently_selected_songlist_ref):
 		var difficulty := _currently_selected_songlist_ref[current_selected].difficulty_beatmaps[_map_difficulty]
 		difficulty_changed.emit(_currently_selected_songlist_ref[current_selected], difficulty.difficulty_rank)
+
+
+func _on_claws_toggled(value: bool) -> void:
+	Settings.claws = value
+	if len(_currently_selected_songlist_ref):
+		var difficulty := _currently_selected_songlist_ref[current_selected].difficulty_beatmaps[_map_difficulty]
+		difficulty_changed.emit(_currently_selected_songlist_ref[current_selected], difficulty.difficulty_rank)

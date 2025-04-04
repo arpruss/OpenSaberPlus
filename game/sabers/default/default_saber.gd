@@ -25,11 +25,11 @@ func set_trail(enabled: bool = true) -> void:
 	tail.visible = enabled
 
 func _show() -> void:
-	_anim.play(&"Show")
+	_anim.play(&"ShowShort" if Settings.claws else &"Show")
 	is_extended = true
 	
 func _hide() -> void:
-	_anim.play(&"Hide")
+	_anim.play(&"HideShort" if Settings.claws else &"Hide")
 	is_extended = false
 	
 func quickhide() -> void:
