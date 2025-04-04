@@ -64,7 +64,6 @@ func spawn(note_info: ColorNoteInfo, current_beat: float) -> void:
 	_mat.set_shader_parameter(&"color", color)
 	_mat.set_shader_parameter(&"is_dot", is_dot)
 	_mat.set_shader_parameter(&"arrows_enabled", Settings.arrows_enabled)
-	print("arrows", Settings.arrows_enabled)
 	# since cube instances get recycled, we gotta reset cubes that were chain
 	# heads in a past life
 	_mat.set_shader_parameter(&"is_chain_head", false)

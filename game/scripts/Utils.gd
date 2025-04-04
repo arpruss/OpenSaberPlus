@@ -70,7 +70,6 @@ func file_exists(base: String, file: String) -> bool:
 			path = base + "/" + file
 		return FileAccess.file_exists(path)
 	elif base.to_lower().ends_with(".zip") and FileAccess.file_exists(base):
-		print(base," ",file)
 		var zreader := ZIPReader.new()
 		if zreader.open(base) == OK:
 			var exists := zreader.file_exists(file)
