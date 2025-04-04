@@ -315,7 +315,7 @@ func _ready() -> void:
 	health_control.button_pressed = Settings.health_mode
 	arrows_control.button_pressed = Settings.arrows_enabled
 	bombs_control.button_pressed = Settings.bombs_enabled
-	claws_control.button_pressed = Settings.claws_enabled
+	claws_control.button_pressed = Settings.claws
 	
 	UI_AudioEngine.attach_children(self)
 	vr.log_info("BeepSaber search path is " + Constants.APPDATA_PATH)
