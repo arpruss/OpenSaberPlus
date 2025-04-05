@@ -353,6 +353,7 @@ func _ready() -> void:
 
 func _on_Play_Button_pressed() -> void:
 	song_preview.stop()
+	Settings.save()
 	_load_map_and_start(_currently_selected_songlist_ref[current_selected])
 
 func _on_Exit_Button_pressed() -> void:
