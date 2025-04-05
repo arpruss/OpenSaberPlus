@@ -28,8 +28,6 @@ var claws: bool:
 	set(value):
 		claws = value
 		set_and_emit(&"claws", value)
-		if claws:
-			saber_visual = 0 # TODO: support particle sword in claws mode
 var color_left: Color:
 	set(value):
 		color_left = value

@@ -113,6 +113,8 @@ func _ready() -> void:
 		_swing_cast._set_collision_mask_value(CollisionLayerConstants.RightNote_bit, true)
 	_swing_cast._set_collision_mask_value(CollisionLayerConstants.Bombs_bit, true)
 	
+	_update_size_and_angle()
+	
 func get_pointing() -> Vector3:
 	return (saber_end-global_transform.origin).normalized()
 	
