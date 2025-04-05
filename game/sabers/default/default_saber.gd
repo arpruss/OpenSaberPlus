@@ -27,12 +27,18 @@ func set_trail(enabled: bool = true) -> void:
 func _show() -> void:
 	_anim.play(&"ShowShort" if Settings.claws else &"Show")
 	is_extended = true
+	#if Settings.claws: TODO?
+	#	$Hilt_Mesh.hide()
+	#else:
+	#	$Hilt_Mesh.show()
 	
 func _hide() -> void:
+	#$Hilt_Mesh.show()
 	_anim.play(&"HideShort" if Settings.claws else &"Hide")
 	is_extended = false
 	
 func quickhide() -> void:
+	#$Hilt_Mesh.show()
 	_anim.play(&"QuickHide")
 	is_extended = false
 

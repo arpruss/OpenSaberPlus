@@ -50,6 +50,7 @@ func _update_size_and_angle():
 		collision_cylinder.height = 0.3744
 		extra_offset_rot.x -= 90
 		extra_offset_pos.z += .1
+		extra_offset_pos.y += .075 # TODO: tweak positioning
 	else:
 		collision_cylinder.height = 1.248
 		collision_shape.position.y = .651
