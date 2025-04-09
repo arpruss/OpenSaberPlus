@@ -49,8 +49,8 @@ func _update_size_and_angle():
 		collision_shape.position.y = .2142
 		collision_cylinder.height = 0.3744
 		extra_offset_rot.x -= 90
-		extra_offset_pos.z += .1
-		extra_offset_pos.y += .075 # TODO: tweak positioning
+		extra_offset_pos.z += .055
+		extra_offset_pos.y += -.005
 	else:
 		collision_cylinder.height = 1.248
 		collision_shape.position.y = .651
@@ -88,7 +88,9 @@ func on_settings_changed(key: StringName) -> void:
 		&"saber_tail":
 			saber_visual.set_trail(Settings.saber_tail)
 		&"saber_visual":
-			set_saber(Settings.SABER_VISUALS[Settings.saber_visual][1])
+			set_saber(Settings.get_saber_visuals())
+		&"claws":
+			set_saber(Settings.get_saber_visuals())
 		&"left_saber_offset_pos":
 			_update_size_and_angle()
 		&"right_saber_offset_pos":

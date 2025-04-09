@@ -25,6 +25,14 @@ func set_trail(enabled: bool = true) -> void:
 	tail.visible = enabled
 
 func _show() -> void:
+	if Settings.claws:
+		$Hilt_Mesh.rotation_degrees.x = 90
+		$Hilt_Mesh.position.y = .02
+		$Hilt_Mesh.position.z = -.02
+	else:
+		$Hilt_Mesh.rotation_degrees.x = 0
+		$Hilt_Mesh.position.y = -.03
+		$Hilt_Mesh.position.z = 0
 	_anim.play(&"ShowShort" if Settings.claws else &"Show")
 	is_extended = true
 	#if Settings.claws: TODO?

@@ -243,3 +243,6 @@ func restore_defaults() -> void:
 	config.clear()
 	save()
 	reload()
+	
+func get_saber_visuals() -> String:
+	return SABER_VISUALS[saber_visual if not claws else 0][1]
