@@ -18,20 +18,13 @@ func _ready() -> void:
 	_clear_list()
 	_exit_button.visible = show_close_button
 	_song_info_panel.visible = show_song_info
-
-func load_highscores(map_info: MapInfo, diff_rank: int):
+	
+func load_highscores(map_info: MapInfo, diff_rank: int) -> void:
 	
 	# clear the high score list
 	_clear_list()
 	
-	if Settings.health_mode:
-		diff_rank |= Constants.DIFFICULTY_HEALTH
-	if Settings.arrows_enabled:
-		diff_rank |= Constants.DIFFICULTY_ARROWS
-	if Settings.bombs_enabled:
-		diff_rank |= Constants.DIFFICULTY_BOMBS
-	if Settings.claws:
-		diff_rank |= Constants.DIFFICULTY_CLAWS
+	diff_rank = HighscoreTable.get_rank_key(diff_rank)
 	
 	# populate title text
 	set_title("Highscores (%s)" % _get_difficulty_name(map_info,diff_rank))
@@ -42,7 +35,7 @@ func load_highscores(map_info: MapInfo, diff_rank: int):
 		Map Author: %s""" % [map_info.song_author_name, map_info.song_name, map_info.level_author_name]
 		
 	# TODO populate song artwork
-		
+	
 	var records := Highscores.get_records(map_info,diff_rank)
 	var idx = 1
 	for record in records:
@@ -68,7 +61,7 @@ func _get_difficulty_name(map_info: MapInfo, diff_rank: int) -> String:
 	var game_type := ( ("Health" if (diff_rank & Constants.DIFFICULTY_HEALTH) != 0 else "No Health") +
 					 ("" if (diff_rank & Constants.DIFFICULTY_BOMBS) != 0 else ", No Bombs") + 
 					 ("" if (diff_rank & Constants.DIFFICULTY_ARROWS) != 0 else ", No Arrows") +
-					 (", Claws" if (diff_rank & Constants.DIFFICULTY_ARROWS) != 0 else "") )
+					 (", Claws" if (diff_rank & Constants.DIFFICULTY_CLAWS) != 0 else "") )
 	for beat_map in map_info.difficulty_beatmaps:
 		if beat_map.difficulty_rank == (diff_rank & Constants.DIFFICULTY_MASK):
 			return beat_map.difficulty + ", " + game_type

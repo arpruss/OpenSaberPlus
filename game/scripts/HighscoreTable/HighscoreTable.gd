@@ -40,8 +40,22 @@ func remove_map(map_info: MapInfo) -> void:
 	
 # returns true if score is a new highscore in the table, false otherwise
 func is_new_highscore(map_info: MapInfo, diff_rank: int, score: int) -> bool:
+	if score == 0:
+		return false
 	var hs_key := map_info.get_key()
 	return _is_new_highscore(hs_key, diff_rank, score)
+	
+static func get_rank_key(diff_rank: int) -> int:
+	diff_rank &= Constants.DIFFICULTY_MASK
+	if Settings.health_mode:
+		diff_rank |= Constants.DIFFICULTY_HEALTH
+	if Settings.arrows_enabled:
+		diff_rank |= Constants.DIFFICULTY_ARROWS
+	if Settings.bombs_enabled:
+		diff_rank |= Constants.DIFFICULTY_BOMBS
+	if Settings.claws:
+		diff_rank |= Constants.DIFFICULTY_CLAWS
+	return diff_rank
 	
 # adds a new score record to the table. if the score is not a highscore
 # then the record will not be stored.
@@ -52,9 +66,10 @@ func is_new_highscore(map_info: MapInfo, diff_rank: int, score: int) -> bool:
 # score : integer score to store
 #
 # return : None
-func add_highscore(map_info: MapInfo, diff_rank: int ,player_name: String, score: int) -> void:
+func add_highscore(map_info: MapInfo, diff_rank: int, player_name: String, score: int) -> void:
 	# get existing records for song + difficulty
 	var hs_key := map_info.get_key()
+	diff_rank = get_rank_key(diff_rank)
 	var records := _get_records(hs_key,diff_rank)
 	
 	# construct a new record and resort the list
