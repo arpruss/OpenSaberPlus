@@ -38,7 +38,7 @@ func _init(parent: Node3D, mesh_in: Mesh, mat_in: ShaderMaterial, bouncy: bool) 
 	
 	hide_piece()
 
-func start_cut(dist_from_center, angle) -> void:
+func start_cut_plane(normal: Vector3, dist: float) -> void:
 	# re-enable our process_mode first otherwise it seems like Godot-internals
 	# can behave weirdly (ex. AnimationPlayer won't always play correctly)
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -47,8 +47,11 @@ func start_cut(dist_from_center, angle) -> void:
 	visible = true
 	angular_velocity = Vector3()
 	linear_velocity = Vector3()
-	mesh.material_override.set_shader_parameter(&"cut_dist_from_center", dist_from_center)
-	mesh.material_override.set_shader_parameter(&"cut_angle", angle)
+	
+	mesh.material_override.set_shader_parameter(&"cut_plane_normal", normal)
+	mesh.material_override.set_shader_parameter(&"cut_plane_dist", 0)
+	#mesh.material_override.set_shader_parameter(&"cut_plane_normal", plane.normal)
+	#mesh.material_override.set_shader_parameter(&"cut_plane_dist", plane.d)
 
 func set_color(new_color: Color, is_dot: bool) -> void:
 	mesh.material_override.set_shader_parameter(&"color", new_color)

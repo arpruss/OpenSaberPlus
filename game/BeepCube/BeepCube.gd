@@ -172,13 +172,17 @@ func _start_cut_pieces(cutplane: Plane) -> void:
 	var cut_angle_rel := cut_angle_abs - global_rotation.z
 	
 	_piece_death_count = 0
-	piece_left.start_cut(-cut_dist_from_center, cut_angle_rel + PI)
-	piece_right.start_cut(cut_dist_from_center, cut_angle_rel)
+#	piece_left.start_cut(-cut_dist_from_center, cut_angle_rel + PI)
+#	piece_right.start_cut(cut_dist_from_center, cut_angle_rel)
+
+	var p := global_transform * cutplane	
+	piece_left.start_cut_plane(-p.normal, -p.d)
+	piece_right.start_cut_plane(p.normal, p.d)
 	
 	# some impulse so the cube half moves
-	var split_vector := cutplane.normal * 2.0
-	piece_left.apply_central_impulse(-split_vector)
-	piece_right.apply_central_impulse(split_vector)
+	var split_vector := p.normal * 2.0
+	piece_left.apply_central_impulse(piece_left.transform * -split_vector)
+	piece_right.apply_central_impulse(piece_left.transform * split_vector)
 	
 	slice_particles.global_transform.origin = global_transform.origin
 	slice_particles.rotation.z = cut_angle_abs+TAU*0.25

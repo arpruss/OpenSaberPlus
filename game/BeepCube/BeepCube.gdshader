@@ -9,26 +9,15 @@ uniform float roughness;
 uniform float sub_emission_energy;
 
 uniform bool cutted = false;
-uniform float cut_dist_from_center = 0.0;
 uniform float cut_vanish = 0.0;
-uniform float cut_angle = 0.0;
 uniform float cut_white_margin = 0.04;
 
 uniform bool is_dot = false;
 uniform bool arrows_enabled = true;
 uniform bool is_chain_head = false;
 
-// [firepal]TODO: Build matrix on CPU (I tried but couldn't')
-mat3 rotation3dZ(float angle) {
-	float s = sin(angle);
-	float c = cos(angle);
-
-	return mat3(
-		vec3(c, s, 0.0),
-		vec3(-s, c, 0.0),
-		vec3(0.0, 0.0, 1.0)
-	);
-}
+uniform vec3 cut_plane_normal = vec3(0,0,0);
+uniform float cut_plane_dist = 0;
 
 varying float cut_interp;
 varying float chain_interp;
@@ -37,7 +26,7 @@ void vertex() {
 		chain_interp = 0.1 + VERTEX.y;
 	}
 	if (cutted) {
-		float cut_line = cut_dist_from_center+(VERTEX*rotation3dZ(cut_angle)).x;
+		float cut_line = VERTEX.x * cut_plane_normal.x + VERTEX.y * cut_plane_normal.y + VERTEX.z * cut_plane_normal.z - cut_plane_dist;
 		cut_interp = cut_line;
 		cut_interp -= cut_vanish;
 	}
