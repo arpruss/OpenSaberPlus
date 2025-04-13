@@ -92,6 +92,7 @@ shader_parameter/texture_emission = ExtResource("4_10m2m")
 
 [node name="BeepCube" type="Node3D"]
 script = ExtResource("1_7mymb")
+min_speed = null
 
 [node name="BeepCube_Big" type="Area3D" parent="." groups=["beepcube"]]
 monitoring = false

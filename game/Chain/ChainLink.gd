@@ -93,8 +93,8 @@ func spawn(chain_info: ChainInfo, current_beat: float, head_pos: Vector2, tail_p
 		(collision.shape as BoxShape3D).size.z = new_size
 		collision.transform.origin.z = new_size * 0.5 - 0.25
 	
-	piece_left.set_color(color)
-	piece_right.set_color(color)
+	piece_left.set_color(color, false) # TODO: can it be true?
+	piece_right.set_color(color, false)
 	_mat.set_shader_parameter(&"color", color)
 	
 	var anim := $AnimationPlayer as AnimationPlayer

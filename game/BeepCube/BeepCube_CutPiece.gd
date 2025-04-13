@@ -48,10 +48,11 @@ func start_cut(dist_from_center, angle) -> void:
 	angular_velocity = Vector3()
 	linear_velocity = Vector3()
 	mesh.material_override.set_shader_parameter(&"cut_dist_from_center", dist_from_center)
-	mesh.material_override.set_shader_parameter(&"cut_angle", angle)
 
-func set_color(new_color: Color) -> void:
+func set_color(new_color: Color, is_dot: bool) -> void:
 	mesh.material_override.set_shader_parameter(&"color", new_color)
+	mesh.material_override.set_shader_parameter(&"is_dot", is_dot)
+	mesh.material_override.set_shader_parameter(&"arrows_enabled", Settings.arrows_enabled)
 	
 func set_chain_head(is_chain_head: bool) -> void:
 	mesh.material_override.set_shader_parameter(&"is_chain_head", is_chain_head)

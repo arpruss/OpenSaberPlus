@@ -59,8 +59,8 @@ func spawn(note_info: ColorNoteInfo, current_beat: float) -> void:
 	
 	rotation.z = Constants.CUBE_ROTATIONS[note_info.cut_direction] + deg_to_rad(note_info.angle_offset)
 	
-	piece_left.set_color(color)
-	piece_right.set_color(color)
+	piece_left.set_color(color, is_dot)
+	piece_right.set_color(color, is_dot)
 	_mat.set_shader_parameter(&"color", color)
 	_mat.set_shader_parameter(&"is_dot", is_dot)
 	_mat.set_shader_parameter(&"arrows_enabled", Settings.arrows_enabled)
