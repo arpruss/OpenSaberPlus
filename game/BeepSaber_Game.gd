@@ -418,6 +418,11 @@ func _unpause_button() -> void:
 	_transition_game_state(gamestate_playing)
 
 func _on_BeepSaberMainMenu_difficulty_changed(map_info: MapInfo, diff_rank: int) -> void:
+	if diff_rank < 0:
+		if highscore_canvas:
+			highscore_canvas.hide()
+		return
+		
 	# menu loads playlist in _ready(), must yield until scene is loaded
 	if not highscore_canvas:
 		await self.ready

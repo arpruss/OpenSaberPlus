@@ -36,7 +36,7 @@ var _cover_texture_create_sw := StopwatchFactory.create("cover_texture_create",1
 var song_preview_transition_time := 1.0
 var licenses_showing := false
 
-var current_selected: int
+var current_selected := -1
 
 enum PlaylistOptions {
 	AllSongs,
@@ -264,8 +264,7 @@ func _select_difficulty(id: int) -> void:
 	diff_menu.select(id)
 	
 	# notify listeners that difficulty has changed
-	var difficulty := _currently_selected_songlist_ref[current_selected].difficulty_beatmaps[id]
-	difficulty_changed.emit(_currently_selected_songlist_ref[current_selected], difficulty.difficulty_rank)
+	update_view()
 
 
 func _load_map_and_start(map: MapInfo) -> void:
@@ -288,6 +287,8 @@ func _on_Delete_Button_button_up() -> void:
 	else:
 		delete_button.text = "Delete"
 		_delete_map(_currently_selected_songlist_ref[current_selected])
+		current_selected = -1
+		update_view()
 	
 func _delete_map(map: MapInfo) -> void:
 	Highscores.remove_map(map)
@@ -456,27 +457,26 @@ func _on_licenses_pressed() -> void:
 		$LicensePopup.show()
 	licenses_showing = not licenses_showing
 	return
+	
+func update_view() -> void:
+	if current_selected >= 0 and len(_currently_selected_songlist_ref):
+		var difficulty := _currently_selected_songlist_ref[current_selected].difficulty_beatmaps[_map_difficulty]
+		difficulty_changed.emit(_currently_selected_songlist_ref[current_selected], difficulty.difficulty_rank)
+	else:	
+		difficulty_changed.emit(null, -1)
 
 func _on_health_toggled(value: bool) -> void:
 	Settings.health_mode = value
-	if len(_currently_selected_songlist_ref):
-		var difficulty := _currently_selected_songlist_ref[current_selected].difficulty_beatmaps[_map_difficulty]
-		difficulty_changed.emit(_currently_selected_songlist_ref[current_selected], difficulty.difficulty_rank)
+	update_view()
 
 func _on_bombs_toggled(value: bool) -> void:
 	Settings.bombs_enabled = value
-	if len(_currently_selected_songlist_ref):
-		var difficulty := _currently_selected_songlist_ref[current_selected].difficulty_beatmaps[_map_difficulty]
-		difficulty_changed.emit(_currently_selected_songlist_ref[current_selected], difficulty.difficulty_rank)
+	update_view()
 	
 func _on_arrows_toggled(value: bool) -> void:
 	Settings.arrows_enabled = value
-	if len(_currently_selected_songlist_ref):
-		var difficulty := _currently_selected_songlist_ref[current_selected].difficulty_beatmaps[_map_difficulty]
-		difficulty_changed.emit(_currently_selected_songlist_ref[current_selected], difficulty.difficulty_rank)
+	update_view()
 
 func _on_claws_toggled(value: bool) -> void:
 	Settings.claws = value
-	if len(_currently_selected_songlist_ref):
-		var difficulty := _currently_selected_songlist_ref[current_selected].difficulty_beatmaps[_map_difficulty]
-		difficulty_changed.emit(_currently_selected_songlist_ref[current_selected], difficulty.difficulty_rank)
+	update_view()
