@@ -48,6 +48,7 @@ func start_cut(dist_from_center, angle) -> void:
 	angular_velocity = Vector3()
 	linear_velocity = Vector3()
 	mesh.material_override.set_shader_parameter(&"cut_dist_from_center", dist_from_center)
+	mesh.material_override.set_shader_parameter(&"cut_angle", angle)
 
 func set_color(new_color: Color, is_dot: bool) -> void:
 	mesh.material_override.set_shader_parameter(&"color", new_color)
