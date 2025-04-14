@@ -153,10 +153,7 @@ func _start_cut_pieces(cutplane: Plane) -> void:
 	piece_left.start_cut_plane(-p.normal, -p.d)
 	piece_right.start_cut_plane(p.normal, p.d)
 
-	#piece_left.start_cut(-cut_dist_from_center, cut_angle_rel + PI)
-	#piece_right.start_cut(cut_dist_from_center, cut_angle_rel)
-	
 	# some impulse so the cube half moves
 	var split_vector := p.normal * 2.0
 	piece_left.apply_central_impulse(piece_left.transform * -split_vector)
-	piece_right.apply_central_impulse(piece_left.transform * split_vector)
+	piece_right.apply_central_impulse(piece_right.transform * split_vector)

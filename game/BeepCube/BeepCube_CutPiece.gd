@@ -50,8 +50,6 @@ func start_cut_plane(normal: Vector3, dist: float) -> void:
 	
 	mesh.material_override.set_shader_parameter(&"cut_plane_normal", normal)
 	mesh.material_override.set_shader_parameter(&"cut_plane_dist", 0)
-	#mesh.material_override.set_shader_parameter(&"cut_plane_normal", plane.normal)
-	#mesh.material_override.set_shader_parameter(&"cut_plane_dist", plane.d)
 
 func set_color(new_color: Color, is_dot: bool) -> void:
 	mesh.material_override.set_shader_parameter(&"color", new_color)

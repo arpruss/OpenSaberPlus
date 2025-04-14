@@ -26,9 +26,7 @@ void vertex() {
 		chain_interp = 0.1 + VERTEX.y;
 	}
 	if (cutted) {
-		float cut_line = VERTEX.x * cut_plane_normal.x + VERTEX.y * cut_plane_normal.y + VERTEX.z * cut_plane_normal.z - cut_plane_dist;
-		cut_interp = cut_line;
-		cut_interp -= cut_vanish;
+		cut_interp = dot(VERTEX, cut_plane_normal) - cut_plane_dist - cut_vanish;
 	}
 }
 
