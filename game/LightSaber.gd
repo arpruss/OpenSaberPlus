@@ -48,9 +48,9 @@ func _update_size_and_angle():
 	if Settings.claws:
 		collision_shape.position.y = .2142
 		collision_cylinder.height = 0.3744
-		extra_offset_rot.x -= 90
-		extra_offset_pos.z += .055
-		extra_offset_pos.y += -.005
+		#extra_offset_rot.x -= 90
+		#extra_offset_pos.z += .055
+		#extra_offset_pos.y += -.005
 	else:
 		collision_cylinder.height = 1.248
 		collision_shape.position.y = .651

@@ -136,7 +136,7 @@ layout_mode = 0
 offset_top = 81.0
 offset_right = 79.0
 offset_bottom = 108.0
-text = "Claws"
+text = "Short Sword"
 
 [node name="Play_Button" type="Button" parent="."]
 layout_mode = 0
