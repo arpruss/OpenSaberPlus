@@ -48,6 +48,9 @@ func _init(
 	self.filepath = filepath
 	self.difficulty_beatmaps = difficulty_beatmaps
 	self.have_song = Utils.file_exists(filepath, song_filename)
+	
+func get_length_seconds() -> float:
+	return self.last_beat / self.beats_per_minute * 60.
 
 func is_empty() -> bool:
 	return (

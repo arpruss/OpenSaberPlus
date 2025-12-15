@@ -5,7 +5,7 @@
 extends Node3D
 class_name BeepSaber_Game
 
-var version := "0.7.10"
+var version := "0.7.11"
 
 var gamestate_bootup := GameState.new()
 var gamestate_mapcomplete := GameStateMapComplete.new()
@@ -116,7 +116,7 @@ func start_map(info: MapInfo, map_difficulty: DifficultyInfo) -> void:
 			wav.set_stereo(false)
 			wav.set_format(AudioStreamWAV.FORMAT_8_BITS)
 			wav.set_mix_rate(11025)
-			var length := ceili((Map.current_info.last_beat / Map.current_info.beats_per_minute * 60. + 2) * wav.mix_rate)
+			var length := ceili((Map.current_info.get_length_seconds() + 2) * wav.mix_rate)
 			var data := PackedByteArray()
 			data.resize(length) 
 			data.fill(0)
@@ -201,6 +201,8 @@ func _check_and_update_saber(controller: BeepSaberController, saber: LightSaber)
 
 
 func _physics_process(_dt: float) -> void:
+	Scoreboard.score_changed.emit()
+	
 	if debug_info_label.visible:
 		var dbg_text := "FPS: %d\nCube Pool: %d free of %d\nLink Pool: %d free of %d" % [
 			Engine.get_frames_per_second(),
@@ -329,8 +331,20 @@ func _display_points() -> void:
 	else:
 		hit_rate = 1.0
 	
-	(point_label.mesh as TextMesh).text = "Score: %6d" % Scoreboard.points
-	(multiplier_label.mesh as TextMesh).text = "x %d\nCombo %d" % [Scoreboard.multiplier, Scoreboard.combo]
+	var minutes = 0
+	var seconds = 0
+	if Map.current_info != null:
+		var time_left = Map.current_info.get_length_seconds() - get_current_time()
+		if time_left < 0:
+			time_left = 0
+		minutes = int(time_left) / 60
+		seconds = int(time_left) % 60
+	var display = "Score %6d\n%02d:%02d" % [Scoreboard.points,minutes,seconds]
+	if (point_label.mesh as TextMesh).text != display:
+		(point_label.mesh as TextMesh).text = display
+	display = "x %d\nCombo %d" % [Scoreboard.multiplier, Scoreboard.combo]
+	if (multiplier_label.mesh as TextMesh).text != display:
+		(multiplier_label.mesh as TextMesh).text = display
 	if not Settings.health_mode:
 		percent_indicator.update_percent(hit_rate)
 

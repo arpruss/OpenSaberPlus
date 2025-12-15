@@ -75,7 +75,8 @@ vertical_alignment = 0
 depth = 0.0
 
 [sub_resource type="TextMesh" id="TextMesh_0bbpk"]
-text = "Score: 000000"
+text = "Score: 000000
+Time: 00:00"
 font_size = 10
 vertical_alignment = 0
 depth = 0.0
@@ -182,7 +183,7 @@ mesh = SubResource("TextMesh_cx1im")
 skeleton = NodePath("")
 
 [node name="Point_Label" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 1.375, -2.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 1.54, -2.5)
 material_override = ExtResource("13_3xkki")
 mesh = SubResource("TextMesh_0bbpk")
 skeleton = NodePath("")

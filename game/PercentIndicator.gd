@@ -38,4 +38,6 @@ func endscore() -> void:
 
 func update_percent(amount: float) -> void:
 	how_full = amount
-	label.text = "" if health else "%d%%" % int(amount * 100)
+	var display = "" if health else "%d%%" % int(amount * 100)
+	if label.text != display:
+		label.text = display
