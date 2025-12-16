@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=3 uid="uid://dqb3ybvpsfcbw"]
+[gd_scene load_steps=46 format=3 uid="uid://dqb3ybvpsfcbw"]
 
 [ext_resource type="PackedScene" uid="uid://cs8e62lsifik5" path="res://game/floor.tscn" id="1"]
 [ext_resource type="PackedScene" uid="uid://d04fmtjhjx4oy" path="res://OQ_Toolkit/OQ_UI2D/OQ_UI2DLabel.tscn" id="2"]
@@ -74,9 +74,12 @@ horizontal_alignment = 0
 vertical_alignment = 0
 depth = 0.0
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_penx5"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wa4gh"]
 transparency = 1
 albedo_color = Color(0, 0, 0, 0.588235)
+
+[sub_resource type="BoxMesh" id="BoxMesh_fqetm"]
+size = Vector3(0.4, 0.336, 0.01)
 
 [sub_resource type="TextMesh" id="TextMesh_0bbpk"]
 text = "Score: 000000
@@ -84,6 +87,9 @@ Time: 00:00"
 font_size = 10
 vertical_alignment = 0
 depth = 0.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_aod47"]
+size = Vector3(0.75, 0.854, 0.01)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6dld2"]
 resource_local_to_scene = true
@@ -186,10 +192,10 @@ material_override = ExtResource("13_3xkki")
 mesh = SubResource("TextMesh_cx1im")
 skeleton = NodePath("")
 
-[node name="Score_Background" type="CSGBox3D" parent="Multiplier_Label"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.176074, -0.159631, -0.0999999)
-size = Vector3(0.447852, 0.33645, 0.01)
-material = SubResource("StandardMaterial3D_penx5")
+[node name="Text_Background" type="MeshInstance3D" parent="Multiplier_Label"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.176, -0.16, -0.05)
+material_override = SubResource("StandardMaterial3D_wa4gh")
+mesh = SubResource("BoxMesh_fqetm")
 
 [node name="Point_Label" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 1.54, -2.5)
@@ -197,10 +203,10 @@ material_override = ExtResource("13_3xkki")
 mesh = SubResource("TextMesh_0bbpk")
 skeleton = NodePath("")
 
-[node name="Score_Background" type="CSGBox3D" parent="Point_Label"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.418555, -0.0999999)
-size = Vector3(0.8, 0.854297, 0.01)
-material = SubResource("StandardMaterial3D_penx5")
+[node name="Text_Background" type="MeshInstance3D" parent="Point_Label"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.419, -0.05)
+material_override = SubResource("StandardMaterial3D_wa4gh")
+mesh = SubResource("BoxMesh_aod47")
 
 [node name="Percent_Indicator" parent="." instance=ExtResource("16")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 1, -2.5)
