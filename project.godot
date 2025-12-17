@@ -173,4 +173,5 @@ right_saber={
 openxr/enabled=true
 openxr/reference_space=2
 openxr/startup_alert=false
+openxr/extensions/hand_tracking=false
 shaders/enabled=true

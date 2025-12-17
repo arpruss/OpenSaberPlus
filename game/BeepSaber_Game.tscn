@@ -68,9 +68,8 @@ shader_parameter/right_color = Color(0, 0, 1, 1)
 
 [sub_resource type="TextMesh" id="TextMesh_cx1im"]
 text = "x 0
-Combo 000"
+Combo 1"
 font_size = 10
-horizontal_alignment = 0
 vertical_alignment = 0
 depth = 0.0
 
@@ -84,7 +83,7 @@ albedo_color = Color(0, 0, 0, 0.588235)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_b2wmm"]
 material = SubResource("StandardMaterial3D_qk53l")
-size = Vector2(0.45, 0.336)
+size = Vector2(0.55, 0.336)
 orientation = 2
 
 [sub_resource type="TextMesh" id="TextMesh_0bbpk"]
@@ -195,13 +194,14 @@ beepsaber_game = NodePath("../..")
 song_uploader_ref = NodePath("../../SongUploader")
 
 [node name="Multiplier_Label" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.75, 1.375, -2.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 1.375, -2.5)
 material_override = ExtResource("13_3xkki")
 mesh = SubResource("TextMesh_cx1im")
 skeleton = NodePath("")
 
 [node name="Text_Background" type="MeshInstance3D" parent="Multiplier_Label"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.176, -0.16, -0.01)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.16, -0.01)
+visible = false
 material_override = SubResource("StandardMaterial3D_wa4gh")
 mesh = SubResource("PlaneMesh_b2wmm")
 skeleton = NodePath("")
@@ -214,6 +214,7 @@ skeleton = NodePath("")
 
 [node name="Text_Background2" type="MeshInstance3D" parent="Point_Label"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.419, -0.01)
+visible = false
 material_override = SubResource("StandardMaterial3D_wa4gh")
 mesh = SubResource("PlaneMesh_4xldb")
 skeleton = NodePath("")

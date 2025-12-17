@@ -13,11 +13,6 @@ func set_mixed_reality():
 			xr_interface.stop_passthrough()
 			get_viewport().transparent_bg = false
 			
-	if Settings.mixed_reality:
-		get_node("/root/BeepSaber/event_driver/Level/Sphere").hide()
-	else:
-		get_node("/root/BeepSaber/event_driver/Level/Sphere").show()
-
 	var cut_floor := get_node("/root/BeepSaber/StandingGround/Node3D/cutFloor") as MeshInstance3D
 	var material := cut_floor.material_override as StandardMaterial3D
 	
@@ -28,9 +23,15 @@ func set_mixed_reality():
 		material.transparency = 1
 		material.albedo_texture = null
 		material.albedo_color = Color(0,0,0,.6)
+		get_node("/root/BeepSaber/event_driver/Level/Sphere").hide()
+		get_node("/root/BeepSaber/Multiplier_Label/Text_Background").show()
+		get_node("/root/BeepSaber/Point_Label/Text_Background2").show()
 	else:
 		material.transparency = 0
 		material.albedo_texture = floor_albedo_texture
+		get_node("/root/BeepSaber/event_driver/Level/Sphere").show()
+		get_node("/root/BeepSaber/Multiplier_Label/Text_Background").hide()
+		get_node("/root/BeepSaber/Point_Label/Text_Background2").hide()
 	
 	material = (get_node("/root/BeepSaber/event_driver/Level/floor") as MeshInstance3D).material_override as StandardMaterial3D
 	var gradient_texture := material.albedo_texture as GradientTexture2D

@@ -1,4 +1,4 @@
-[gd_resource type="OpenXRActionMap" load_steps=161 format=3 uid="uid://bnjusxd6gijc6"]
+[gd_resource type="OpenXRActionMap" load_steps=162 format=3 uid="uid://bnjusxd6gijc6"]
 
 [sub_resource type="OpenXRAction" id="OpenXRAction_tw7lj"]
 resource_name = "trigger"
@@ -9,7 +9,7 @@ toplevel_paths = PackedStringArray("/user/hand/left", "/user/hand/right")
 resource_name = "trigger_click"
 localized_name = "Trigger click"
 action_type = 0
-toplevel_paths = PackedStringArray("/user/hand/left", "/user/hand/right")
+toplevel_paths = PackedStringArray("/user/hand/right", "/user/hand/left")
 
 [sub_resource type="OpenXRAction" id="OpenXRAction_8b1qc"]
 resource_name = "trigger_touch"
@@ -174,9 +174,13 @@ paths = PackedStringArray("/user/hand/left/input/select/click", "/user/hand/righ
 action = SubResource("OpenXRAction_djeq2")
 paths = PackedStringArray("/user/hand/left/output/haptic", "/user/hand/right/output/haptic")
 
+[sub_resource type="OpenXRIPBinding" id="OpenXRIPBinding_4hloq"]
+action = SubResource("OpenXRAction_pmeq2")
+paths = PackedStringArray("/user/hand/right/input/select/click", "/user/hand/right/input/menu/click")
+
 [sub_resource type="OpenXRInteractionProfile" id="OpenXRInteractionProfile_cm8yk"]
 interaction_profile_path = "/interaction_profiles/khr/simple_controller"
-bindings = [SubResource("OpenXRIPBinding_47n6v"), SubResource("OpenXRIPBinding_xe1h5"), SubResource("OpenXRIPBinding_lbi3i"), SubResource("OpenXRIPBinding_eg5jq"), SubResource("OpenXRIPBinding_j4pvy"), SubResource("OpenXRIPBinding_kxuaw"), SubResource("OpenXRIPBinding_sc6t1")]
+bindings = [SubResource("OpenXRIPBinding_47n6v"), SubResource("OpenXRIPBinding_xe1h5"), SubResource("OpenXRIPBinding_lbi3i"), SubResource("OpenXRIPBinding_eg5jq"), SubResource("OpenXRIPBinding_j4pvy"), SubResource("OpenXRIPBinding_kxuaw"), SubResource("OpenXRIPBinding_sc6t1"), SubResource("OpenXRIPBinding_4hloq")]
 
 [sub_resource type="OpenXRIPBinding" id="OpenXRIPBinding_lpabe"]
 action = SubResource("OpenXRAction_r47j1")
