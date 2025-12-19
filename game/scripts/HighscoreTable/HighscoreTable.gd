@@ -55,6 +55,10 @@ static func get_rank_key(diff_rank: int) -> int:
 		diff_rank |= Constants.DIFFICULTY_BOMBS
 	if Settings.claws:
 		diff_rank |= Constants.DIFFICULTY_CLAWS
+	if Settings.width == Constants.XWIDTH:
+		diff_rank |= Constants.DIFFICULTY_XWIDTH
+	elif Settings.width == Constants.XXWIDTH:
+		diff_rank |= Constants.DIFFICULTY_XXWIDTH
 	return diff_rank
 	
 # adds a new score record to the table. if the score is not a highscore
