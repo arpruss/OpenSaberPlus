@@ -30,13 +30,13 @@ func spawn(info: ArcInfo, current_beat: float, _activator_cube: BeepCube = null)
 		start_magnet()
 	
 	var head_pos := Vector3(
-		Constants.LANE_DISTANCE * float(info.head_line_index) + Constants.LANE_ZERO_X,
-		Constants.LANE_DISTANCE * float(info.head_line_layer) + Constants.LAYER_ZERO_Y,
+		Settings.LANE_DISTANCE_X * float(info.head_line_index) + Settings.LANE_ZERO_X,
+		Constants.LANE_DISTANCE_Y * float(info.head_line_layer) + Constants.LAYER_ZERO_Y,
 		-(info.head_beat - current_beat) * Constants.BEAT_DISTANCE
 	)
 	var tail_pos := Vector3(
-		Constants.LANE_DISTANCE * float(info.tail_line_index) + Constants.LANE_ZERO_X,
-		Constants.LANE_DISTANCE * float(info.tail_line_layer) + Constants.LAYER_ZERO_Y,
+		Settings.LANE_DISTANCE_X * float(info.tail_line_index) + Settings.LANE_ZERO_X,
+		Constants.LANE_DISTANCE_Y * float(info.tail_line_layer) + Constants.LAYER_ZERO_Y,
 		-(info.tail_beat - current_beat) * Constants.BEAT_DISTANCE
 	)
 	despawn_z = Constants.MISS_Z - tail_pos.z

@@ -115,10 +115,10 @@ script = ExtResource("3")
 
 [node name="Modifiers" type="Panel" parent="."]
 layout_mode = 0
-offset_left = 864.0
-offset_top = 297.0
-offset_right = 1041.0
-offset_bottom = 400.0
+offset_left = 863.0
+offset_top = 322.0
+offset_right = 1070.0
+offset_bottom = 409.0
 
 [node name="Health" type="CheckBox" parent="Modifiers"]
 layout_mode = 0
@@ -126,27 +126,40 @@ offset_right = 24.0
 offset_bottom = 24.0
 text = "Health"
 
-[node name="Bombs" type="CheckBox" parent="Modifiers"]
+[node name="Bombs" type="CheckBox" parent="Modifiers/Health"]
 layout_mode = 0
-offset_left = -1.0
 offset_top = 27.0
-offset_right = 78.0
+offset_right = 79.0
 offset_bottom = 54.0
 text = "Bombs"
 
-[node name="Arrows" type="CheckBox" parent="Modifiers"]
+[node name="Arrows" type="CheckBox" parent="Modifiers/Health/Bombs"]
 layout_mode = 0
-offset_top = 54.0
+offset_top = 27.0
 offset_right = 79.0
-offset_bottom = 81.0
+offset_bottom = 54.0
 text = "Arrows"
 
 [node name="Claws" type="CheckBox" parent="Modifiers"]
 layout_mode = 0
-offset_top = 81.0
-offset_right = 79.0
-offset_bottom = 108.0
+offset_left = 90.0
+offset_right = 207.0
+offset_bottom = 27.0
 text = "Short Sword"
+
+[node name="XWidth" type="CheckBox" parent="Modifiers/Claws"]
+layout_mode = 0
+offset_top = 27.0
+offset_right = 84.0
+offset_bottom = 54.0
+text = "XWidth	"
+
+[node name="XXWidth" type="CheckBox" parent="Modifiers/Claws/XWidth"]
+layout_mode = 0
+offset_top = 27.0
+offset_right = 94.0
+offset_bottom = 54.0
+text = "XXWidth	"
 
 [node name="Play_Button" type="Button" parent="."]
 layout_mode = 0
@@ -235,7 +248,6 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="Favorite_Button" type="Button" parent="cover"]
-visible = false
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -287,7 +299,7 @@ layout_mode = 0
 offset_left = 864.0
 offset_top = 49.0
 offset_right = 1040.0
-offset_bottom = 284.0
+offset_bottom = 308.0
 theme = SubResource("12")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 
@@ -374,9 +386,11 @@ text = "LICENSES"
 autowrap_mode = 2
 
 [connection signal="toggled" from="Modifiers/Health" to="." method="_on_health_toggled"]
-[connection signal="toggled" from="Modifiers/Bombs" to="." method="_on_bombs_toggled"]
-[connection signal="toggled" from="Modifiers/Arrows" to="." method="_on_arrows_toggled"]
+[connection signal="toggled" from="Modifiers/Health/Bombs" to="." method="_on_bombs_toggled"]
+[connection signal="toggled" from="Modifiers/Health/Bombs/Arrows" to="." method="_on_arrows_toggled"]
 [connection signal="toggled" from="Modifiers/Claws" to="." method="_on_claws_toggled"]
+[connection signal="toggled" from="Modifiers/Claws/XWidth" to="." method="_on_xwidth_toggled"]
+[connection signal="toggled" from="Modifiers/Claws/XWidth/XXWidth" to="." method="_on_xxwidth_toggled"]
 [connection signal="pressed" from="Play_Button" to="." method="_on_Play_Button_pressed"]
 [connection signal="button_up" from="Delete_Button" to="." method="_on_Delete_Button_button_up"]
 [connection signal="pressed" from="Exit_Button" to="." method="_on_Exit_Button_pressed"]

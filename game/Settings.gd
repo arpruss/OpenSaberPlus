@@ -20,6 +20,9 @@ const BACKGROUND_MODES := [ ["dynamic", "*Dynamic"],
 
 signal changed(name: StringName)
 
+var LANE_DISTANCE_X := Constants.DEFAULT_LANE_DISTANCE_X
+var LANE_ZERO_X := Constants.DEFAULT_LANE_ZERO_X
+
 var thickness: float:
 	set(value):
 		thickness = value
@@ -44,6 +47,13 @@ var ui_volume: float:
 	set(value):
 		ui_volume = value
 		set_and_emit(&"ui_volume", value)
+var width: int:
+	set(value):
+		width = value
+		LANE_DISTANCE_X = Constants.DEFAULT_LANE_DISTANCE_X * width / Constants.DEFAULT_WIDTH
+		LANE_ZERO_X = Constants.DEFAULT_LANE_ZERO_X * width / Constants.DEFAULT_WIDTH
+		set_and_emit(&"width", value)
+		vr.log_info("width "+str(value))
 var left_saber_offset_pos: Vector3:
 	set(value):
 		left_saber_offset_pos = value
@@ -195,6 +205,7 @@ var default_values = {
 	events = true,
 	saber_visual = 0,
 	ui_volume = 10.0,
+	width = Constants.DEFAULT_WIDTH,
 	left_saber_offset_pos = Vector3.ZERO,
 	left_saber_offset_rot = Vector3.ZERO,
 	right_saber_offset_pos = Vector3.ZERO,

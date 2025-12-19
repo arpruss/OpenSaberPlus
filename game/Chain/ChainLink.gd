@@ -47,12 +47,12 @@ static func construct_chain(chain_info: ChainInfo, current_beat: float, note_inf
 	# of a straight line from the head to the tail.  the end point of the line
 	# you just drew is the mid point of the curve.
 	var head_pos := Vector2(
-		Constants.LANE_DISTANCE * float(chain_info.head_line_index) + Constants.LANE_ZERO_X,
-		Constants.LANE_DISTANCE * float(chain_info.head_line_layer) + Constants.LAYER_ZERO_Y
+		Settings.LANE_DISTANCE_X * float(chain_info.head_line_index) + Settings.LANE_ZERO_X,
+		Constants.LANE_DISTANCE_Y * float(chain_info.head_line_layer) + Constants.LAYER_ZERO_Y
 	)
 	var tail_pos := Vector2(
-		Constants.LANE_DISTANCE * float(chain_info.tail_line_index) + Constants.LANE_ZERO_X,
-		Constants.LANE_DISTANCE * float(chain_info.tail_line_layer) + Constants.LAYER_ZERO_Y
+		Settings.LANE_DISTANCE_X * float(chain_info.tail_line_index) + Settings.LANE_ZERO_X,
+		Constants.LANE_DISTANCE_Y * float(chain_info.tail_line_layer) + Constants.LAYER_ZERO_Y
 	)
 	var mid_pos := head_pos + (Constants.ROTATION_UNIT_VECTORS[chain_info.head_cut_direction] * head_pos.distance_to(tail_pos) * 0.5)
 	i = 1

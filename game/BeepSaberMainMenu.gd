@@ -29,9 +29,11 @@ const FAVORITE_MASK := 0x4000000000000000
 @onready var diff_menu := $DifficultyMenu as ItemList
 @onready var delete_button := $Delete_Button as Button
 @onready var health_control := $Modifiers/Health as CheckBox
-@onready var bombs_control := $Modifiers/Bombs as CheckBox
-@onready var arrows_control := $Modifiers/Arrows as CheckBox
+@onready var bombs_control := $Modifiers/Health/Bombs as CheckBox
+@onready var arrows_control := $Modifiers/Health/Bombs/Arrows as CheckBox
 @onready var claws_control := $Modifiers/Claws as CheckBox
+@onready var xwidth_control := $Modifiers/Claws/XWidth as CheckBox
+@onready var xxwidth_control := $Modifiers/Claws/XWidth/XXWidth as CheckBox
 @onready var favorite_button := $cover/Favorite_Button as Button
 
 @onready var song_preview := $song_prev as AudioStreamPlayer
@@ -354,6 +356,9 @@ func _ready() -> void:
 	arrows_control.button_pressed = Settings.arrows_enabled
 	bombs_control.button_pressed = Settings.bombs_enabled
 	claws_control.button_pressed = Settings.claws
+	xwidth_control.button_pressed = Settings.width == Constants.XWIDTH
+	xxwidth_control.button_pressed = Settings.width == Constants.XXWIDTH
+	favorite_button.hide()
 	
 	UI_AudioEngine.attach_children(self)
 	vr.log_info("BeepSaber search path is " + Constants.APPDATA_PATH)
@@ -514,8 +519,16 @@ func _on_arrows_toggled(value: bool) -> void:
 	Settings.arrows_enabled = value
 	update_view()
 
-func _on_claws_toggled(value: bool) -> void:
-	Settings.claws = value
+func _on_xwidth_toggled(value: bool) -> void:
+	xxwidth_control.button_pressed = false
+	xwidth_control.button_pressed = value
+	Settings.width = Constants.XWIDTH if value else Constants.DEFAULT_WIDTH
+	update_view()
+	
+func _on_xxwidth_toggled(value: bool) -> void:
+	xwidth_control.button_pressed = false
+	Settings.width = Constants.XXWIDTH if value else Constants.DEFAULT_WIDTH
+	xxwidth_control.button_pressed = value
 	update_view()
 	
 func _set_favorite_icon(value: bool) -> void:
