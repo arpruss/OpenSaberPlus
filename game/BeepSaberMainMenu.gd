@@ -14,6 +14,7 @@ signal start_map(info: MapInfo, difficulty: DifficultyInfo, health: bool)
 
 var _cover_texture_create_sw := StopwatchFactory.create("cover_texture_create",10,true)
 
+const FAVORITE_MASK := 0x4000000000000000
 @export var main_song_player_ref: AudioStreamPlayer
 @export var keyboard: OQ_UI2DKeyboard
 @export var beepsaber_game : BeepSaber_Game
@@ -31,6 +32,7 @@ var _cover_texture_create_sw := StopwatchFactory.create("cover_texture_create",1
 @onready var bombs_control := $Modifiers/Bombs as CheckBox
 @onready var arrows_control := $Modifiers/Arrows as CheckBox
 @onready var claws_control := $Modifiers/Claws as CheckBox
+@onready var favorite_button := $cover/Favorite_Button as Button
 
 @onready var song_preview := $song_prev as AudioStreamPlayer
 var song_preview_transition_time := 1.0
@@ -74,9 +76,57 @@ class MapInfoWithSort:
 
 func compare(a: MapInfoWithSort, b: MapInfoWithSort) -> bool:
 	return a.num > b.num
-
+	
+func _sort_songs() -> void:
+	var do_map : MapInfo = null
+	var do_difficulty := -1
+	
+	if _currently_selected_songlist_ref != null and current_selected >= 0:
+		do_map = _currently_selected_songlist_ref[current_selected]
+		do_difficulty = _map_difficulty
+			
+	var songs_with_modify_times: Array[MapInfoWithSort] = []
+	var songs_with_play_count: Array[MapInfoWithSort] = []
+	var songs_favorite: Array[MapInfo] = []
+	var songs_unfavorite: Array[MapInfo] = []
+	for song in _all_songs:
+		var song_path := song.filepath
+		var modified_time := FileAccess.get_modified_time(song_path)
+		var play_count := PlayCount.get_total_play_count(song)
+		var favorite := PlayCount.is_favorite(song)
+		if favorite:
+			modified_time |= FAVORITE_MASK
+			play_count |= FAVORITE_MASK
+			songs_favorite.append(song)
+		else:
+			songs_unfavorite.append(song)
+		songs_with_modify_times.append(MapInfoWithSort.new(modified_time, song))
+		songs_with_play_count.append(MapInfoWithSort.new(play_count, song))
+	
+	songs_with_modify_times.sort_custom(compare)
+	songs_with_play_count.sort_custom(compare)
+	_recently_added_songs = []
+	_most_played_songs = []
+	_all_songs = []
+	for song in songs_with_modify_times:
+		_recently_added_songs.append(song.info)
+	for song in songs_with_play_count:
+		_most_played_songs.append(song.info)
+	for song in songs_favorite:
+		_all_songs.append(song)
+	for song in songs_unfavorite:
+		_all_songs.append(song)
+		
+	refresh_playlist()
+	if do_map != null:
+		for i in range(_currently_selected_songlist_ref.size()):
+			if _currently_selected_songlist_ref[i] == do_map:
+				_select_song(i)
+				_select_difficulty(do_difficulty)
+	
 func _load_playlists() -> void:
 	#copy sample songs to main playlist folder on first run
+	current_selected = -1
 	DirAccess.make_dir_recursive_absolute(Constants.APPDATA_PATH+"Songs/")
 	if not FileAccess.file_exists(Settings.CONFIG_PATH):
 		@warning_ignore("return_value_discarded")
@@ -102,26 +152,9 @@ func _load_playlists() -> void:
 			file_name = dir.get_next()
 	
 	_discover_all_songs(Constants.APPDATA_PATH+"Songs/")
-	var songs_with_modify_times: Array[MapInfoWithSort] = []
-	var songs_with_play_count: Array[MapInfoWithSort] = []
-	for song in _all_songs:
-		var song_path := song.filepath
-		var modified_time := FileAccess.get_modified_time(song_path)
-		var play_count := PlayCount.get_total_play_count(song)
-		songs_with_modify_times.append(MapInfoWithSort.new(modified_time, song))
-		songs_with_play_count.append(MapInfoWithSort.new(play_count, song))
 	
-	songs_with_modify_times.sort_custom(compare)
-	songs_with_play_count.sort_custom(compare)
-	_recently_added_songs = []
-	_most_played_songs = []
-	for song in songs_with_modify_times:
-		_recently_added_songs.append(song.info)
-	for song in songs_with_play_count:
-		_most_played_songs.append(song.info)
-	
-	refresh_playlist()
-	
+	_sort_songs()
+		
 	var canvas := get_parent().get_parent()
 	if canvas is OQ_UI2DCanvas:
 		(canvas as OQ_UI2DCanvas)._input_update()
@@ -222,6 +255,7 @@ func _select_song(id: int) -> void:
 	current_selected = id
 	songs_menu.ensure_current_is_visible()
 	delete_button.disabled = false
+	favorite_button.show()
 	
 	var map := _currently_selected_songlist_ref[id]
 	($SongInfo_Label as Label).text = """Song Author: %s
@@ -233,6 +267,8 @@ func _select_song(id: int) -> void:
 		map.level_author_name,
 		PlayCount.get_total_play_count(map)
 	]
+	
+	favorite_button.text = _get_favorite_icon(PlayCount.is_favorite(map))
 	
 	# load cover in background to avoid freezing UI
 	_bg_img_loader.load_texture(map.filepath, map.cover_image_filename, _on_cover_loaded, true, -1)
@@ -246,7 +282,8 @@ func _select_song(id: int) -> void:
 		var diff_index := diff_menu.add_item(diff.custom_name)
 		diff_menu.set_item_tooltip(diff_index, diff.difficulty + " / " + diff.custom_name)
 	
-	_select_difficulty(0)
+	var d := PlayCount.get_last_difficulty(map)
+	_select_difficulty(0 if d < 0 else (d & Constants.DIFFICULTY_MASK))
 
 func _on_stop_prev_timeout() -> void:
 	var song_prev_Tween := song_preview.create_tween().set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_IN_OUT)
@@ -255,7 +292,6 @@ func _on_stop_prev_timeout() -> void:
 	song_prev_Tween.play()
 	await get_tree().create_timer(song_preview_transition_time).timeout
 	song_preview.stop()
-
 
 var _map_difficulty := 0
 
@@ -306,8 +342,8 @@ func _delete_map(map: MapInfo) -> void:
 				current_file = dir.get_next()
 			@warning_ignore("return_value_discarded")
 			DirAccess.remove_absolute(map.filepath)
-			vr.log_info(map.filepath+" Removed")
 			delete_button.disabled = true
+			favorite_button.hide()
 		else:
 			vr.log_info("Error removing song " + map.filepath)
 		_on_LoadPlaylists_Button_pressed()
@@ -480,3 +516,16 @@ func _on_arrows_toggled(value: bool) -> void:
 func _on_claws_toggled(value: bool) -> void:
 	Settings.claws = value
 	update_view()
+	
+func _get_favorite_icon(value: bool) -> String:
+	#return "\u2665" if value else "\u2661"	
+	return "\u2605" if value else "\u2606"
+
+func _on_favorite_button_pressed() -> void:
+	var map := _currently_selected_songlist_ref[current_selected]
+	var favorite := not PlayCount.is_favorite(map)
+	PlayCount.set_favorite(map, favorite)
+	favorite_button.text = _get_favorite_icon(favorite)
+	_sort_songs()
+	update_view()
+	

@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://glii0poslcve"]
+[gd_scene load_steps=25 format=3 uid="uid://glii0poslcve"]
 
 [ext_resource type="Theme" uid="uid://dvcjel72een6o" path="res://OQ_Toolkit/OQ_UI2D/theme/oq_ui2d_standard.theme" id="1"]
 [ext_resource type="FontFile" uid="uid://cdsnr8tscm8y6" path="res://OQ_Toolkit/OQ_UI2D/theme/Roboto-Medium.ttf" id="2"]
@@ -47,6 +47,16 @@ border_width_top = 5
 border_width_right = 5
 border_width_bottom = 5
 border_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qax3j"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bhima"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kdryv"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qhkdt"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3ptxp"]
 
 [sub_resource type="FontFile" id="6"]
 fallbacks = Array[Font]([ExtResource("5"), ExtResource("5")])
@@ -224,6 +234,23 @@ texture = ExtResource("3_wpmn0")
 expand_mode = 1
 stretch_mode = 5
 
+[node name="Favorite_Button" type="Button" parent="cover"]
+visible = false
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -97.0
+offset_right = 55.0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 75
+theme_override_styles/focus = SubResource("StyleBoxEmpty_qax3j")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_bhima")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_kdryv")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_qhkdt")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_3ptxp")
+text = "X"
+
 [node name="SongInfo_Label" type="Label" parent="."]
 layout_mode = 0
 offset_left = 864.0
@@ -356,6 +383,7 @@ autowrap_mode = 2
 [connection signal="pressed" from="Settings_Button" to="." method="_on_Settings_Button_pressed"]
 [connection signal="pressed" from="Licenses" to="." method="_on_licenses_pressed"]
 [connection signal="button_up" from="Search_Button" to="." method="_on_Search_Button_button_up"]
+[connection signal="pressed" from="cover/Favorite_Button" to="." method="_on_favorite_button_pressed"]
 [connection signal="item_selected" from="SongsMenu" to="." method="_select_song"]
 [connection signal="item_selected" from="PlaylistSelector" to="." method="_on_PlaylistSelector_item_selected"]
 [connection signal="item_selected" from="DifficultyMenu" to="." method="_select_difficulty"]

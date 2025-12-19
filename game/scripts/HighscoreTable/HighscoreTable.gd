@@ -2,7 +2,7 @@ extends Node
 class_name HighscoreTable
 
 # location to store the highscores on filesystem
-const HIGHSCORES_FILEPATH := "user://highscores.json"
+var HIGHSCORES_FILEPATH := Constants.CONFIG_ROOT_PATH + "highscores.json"
 
 # maximum records to store in each song's record table. once list
 # grows past this length, the lowest ranking score will get bumped.

@@ -79,7 +79,7 @@ albedo_color = Color(0, 0, 0, 0.588235)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qk53l"]
 transparency = 1
-albedo_color = Color(0, 0, 0, 0.588235)
+albedo_color = Color(0, 0, 0, 0.313726)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_b2wmm"]
 material = SubResource("StandardMaterial3D_qk53l")
