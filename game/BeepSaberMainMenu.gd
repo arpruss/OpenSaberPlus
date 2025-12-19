@@ -193,6 +193,7 @@ func _set_cur_playlist(songs: Array[MapInfo]) -> void:
 	for map in songs:
 		@warning_ignore("return_value_discarded")
 		songs_menu.add_item("%s - %s%s" % [map.song_author_name, map.song_name, "" if map.have_song else " [silent]"], default_song_icon)
+		songs_menu.set_item_custom_fg_color(map_index, Color.YELLOW if PlayCount.is_favorite(map) else Color.WHITE)
 		_bg_img_loader.load_texture(map.filepath, map.cover_image_filename, _on_cover_loaded, false, map_index)
 		map_index += 1
 	
@@ -268,7 +269,7 @@ func _select_song(id: int) -> void:
 		PlayCount.get_total_play_count(map)
 	]
 	
-	favorite_button.text = _get_favorite_icon(PlayCount.is_favorite(map))
+	_set_favorite_icon(PlayCount.is_favorite(map))
 	
 	# load cover in background to avoid freezing UI
 	_bg_img_loader.load_texture(map.filepath, map.cover_image_filename, _on_cover_loaded, true, -1)
@@ -517,15 +518,21 @@ func _on_claws_toggled(value: bool) -> void:
 	Settings.claws = value
 	update_view()
 	
-func _get_favorite_icon(value: bool) -> String:
-	#return "\u2665" if value else "\u2661"	
-	return "\u2605" if value else "\u2606"
+func _set_favorite_icon(value: bool) -> void:
+	favorite_button.text = "\u2605" if value else "\u2606"
+	var color := Color.YELLOW if value else Color.WHITE
+	favorite_button.add_theme_color_override("font_color", color)
+	favorite_button.add_theme_color_override("font_disabled_color", color)
+	favorite_button.add_theme_color_override("font_focus_color", color)
+	favorite_button.add_theme_color_override("font_hover_color", color)
+	favorite_button.add_theme_color_override("font_hover_pressed_color", color)
+	favorite_button.add_theme_color_override("font_pressed_color", color)
 
 func _on_favorite_button_pressed() -> void:
 	var map := _currently_selected_songlist_ref[current_selected]
 	var favorite := not PlayCount.is_favorite(map)
 	PlayCount.set_favorite(map, favorite)
-	favorite_button.text = _get_favorite_icon(favorite)
+	_set_favorite_icon(favorite)
 	_sort_songs()
 	update_view()
 	

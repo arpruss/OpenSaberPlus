@@ -55,6 +55,8 @@ func increment_play_count(map_info: MapInfo, diff_rank: int) -> void:
 func set_favorite(map_info: MapInfo, favorite: bool) -> void:
 	var song_key := map_info.get_key()
 	var key_dict := Utils.get_dict(_pc_table, song_key, {})
+	if not _pc_table.has(song_key):
+		_pc_table[song_key] = key_dict
 	key_dict[FAVORITE] = favorite
 	save_table()
 
