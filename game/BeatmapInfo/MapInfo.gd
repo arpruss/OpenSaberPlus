@@ -77,7 +77,9 @@ static func new_v2(info_dict: Dictionary, load_path: String) -> MapInfo:
 	
 	for difficulty_set: Variant in difficulty_beatmap_sets:
 		var characteristic := Utils.get_str(difficulty_set, "_beatmapCharacteristicName", "")
-		if characteristic == "Lawless":
+		if (characteristic == "Lawless" or 
+			characteristic == "Lightshow" or 
+			characteristic == "360Degree" or characteristic == "90Degree"):
 			continue
 		if difficulty_set is Dictionary:
 			var beatmaps := Utils.get_array(difficulty_set as Dictionary, "_difficultyBeatmaps", [])
