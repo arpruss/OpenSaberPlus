@@ -9,7 +9,10 @@ func _ready(game: BeepSaber_Game) -> void:
 	game.pause_menu._hide()
 	game.highscore_canvas._hide()
 	game.name_selector_canvas._hide()
-	game.left_saber._show()
+	if Map.one_saber:
+		game.left_saber._hide()
+	else:
+		game.left_saber._show()
 	game.right_saber._show()
 	game.multiplier_label.visible = true
 	game.point_label.visible = true

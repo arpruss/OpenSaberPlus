@@ -76,11 +76,14 @@ static func new_v2(info_dict: Dictionary, load_path: String) -> MapInfo:
 		vr.log_warning("No _difficultyBeatmapSets in info.dat")
 	
 	for difficulty_set: Variant in difficulty_beatmap_sets:
+		var characteristic := Utils.get_str(difficulty_set, "_beatmapCharacteristicName", "")
+		if characteristic == "Lawless":
+			continue
 		if difficulty_set is Dictionary:
 			var beatmaps := Utils.get_array(difficulty_set as Dictionary, "_difficultyBeatmaps", [])
 			for i: Variant in beatmaps:
 				if i is Dictionary:
-					diffs.append(DifficultyInfo.load_v2(i as Dictionary))
+					diffs.append(DifficultyInfo.load_v2(i as Dictionary, characteristic))
 	return MapInfo.new(
 		Utils.get_str(info_dict, "_version", "2.0.0"),
 		Utils.get_str(info_dict, "_songName", ""),

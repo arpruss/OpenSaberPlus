@@ -395,7 +395,7 @@ func _on_song_ended() -> void:
 		"%s By %s\n%s     Map author: %s" % [
 			Map.current_info.song_name,
 			Map.current_info.song_author_name,
-			Map.current_difficulty.custom_name,
+			Map.current_difficulty.get_display_name(),
 			Map.current_info.level_author_name],
 		Scoreboard.full_combo,
 		new_record

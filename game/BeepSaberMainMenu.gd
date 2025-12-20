@@ -34,7 +34,7 @@ const FAVORITE_MASK := 0x4000000000000000
 @onready var claws_control := $Modifiers/Claws as CheckBox
 @onready var xwidth_control := $Modifiers/Claws/XWidth as CheckBox
 @onready var xxwidth_control := $Modifiers/Claws/XWidth/XXWidth as CheckBox
-@onready var favorite_button := $cover/Favorite_Button as Button
+@onready var favorite_button := $Favorite_Button as Button
 
 @onready var song_preview := $song_prev as AudioStreamPlayer
 var song_preview_transition_time := 1.0
@@ -282,8 +282,8 @@ func _select_song(id: int) -> void:
 	
 	diff_menu.clear()
 	for diff in map.difficulty_beatmaps:
-		var diff_index := diff_menu.add_item(diff.custom_name)
-		diff_menu.set_item_tooltip(diff_index, diff.difficulty + " / " + diff.custom_name)
+		var diff_index := diff_menu.add_item(diff.get_display_name())
+		diff_menu.set_item_tooltip(diff_index, diff.difficulty + " / " + diff.get_display_name())
 	
 	var d := PlayCount.get_last_difficulty(map)
 	_select_difficulty(0 if d < 0 else (d & Constants.DIFFICULTY_MASK))

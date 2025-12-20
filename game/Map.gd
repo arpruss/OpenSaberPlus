@@ -18,6 +18,7 @@ static var event_stack: Array[EventInfo]
 static var color_left: Color
 static var color_right: Color
 static var last_beat := 0.
+static var one_saber := false
 
 # some simple multithreading, since larger maps can take a very long time to
 # load.  one particulary notable outlier is the beatmap of shrek, which took
@@ -325,6 +326,7 @@ static func load_beatmap(info: MapInfo, difficulty: DifficultyInfo, map_data: Di
 		chain_stack.clear()
 		current_info = info
 		current_difficulty = difficulty
+		one_saber = difficulty.characteristic == "OneSaber"
 		Map.set_colors_from_custom_data()
 		#note_thread_0.wait_to_finish()
 		Utils.custom_thread_wait_to_finish(note_thread_0)
@@ -353,6 +355,7 @@ static func load_beatmap(info: MapInfo, difficulty: DifficultyInfo, map_data: Di
 			Utils.custom_thread_call(event_thread_0, load_event_stack_v3, [Utils.get_array(map_data, "basicBeatmapEvents", [])])
 			current_info = info
 			current_difficulty = difficulty
+			one_saber = difficulty.characteristic == "OneSaber"
 			Map.set_colors_from_custom_data()
 			#note_thread_0.wait_to_finish()
 			Utils.custom_thread_wait_to_finish(note_thread_0)

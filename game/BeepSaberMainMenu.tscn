@@ -48,16 +48,6 @@ border_width_right = 5
 border_width_bottom = 5
 border_color = Color(1, 1, 1, 1)
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qax3j"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bhima"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kdryv"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qhkdt"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3ptxp"]
-
 [sub_resource type="FontFile" id="6"]
 fallbacks = Array[Font]([ExtResource("5"), ExtResource("5")])
 subpixel_positioning = 0
@@ -99,12 +89,32 @@ cache/0/16/0/underline_position = 0.0
 cache/0/16/0/underline_thickness = 0.0
 cache/0/16/0/scale = 1.0
 cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/25/0/ascent = 0.0
+cache/0/25/0/descent = 0.0
+cache/0/25/0/underline_position = 0.0
+cache/0/25/0/underline_thickness = 0.0
+cache/0/25/0/scale = 1.0
+cache/0/20/0/ascent = 0.0
+cache/0/20/0/descent = 0.0
+cache/0/20/0/underline_position = 0.0
+cache/0/20/0/underline_thickness = 0.0
+cache/0/20/0/scale = 1.0
 
 [sub_resource type="Theme" id="12"]
 default_font = SubResource("11")
-default_font_size = 25
+default_font_size = 20
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t5flx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qax3j"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bhima"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kdryv"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qhkdt"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3ptxp"]
 
 [node name="BeepSaberMainMenu" type="Panel"]
 offset_right = 1408.0
@@ -239,29 +249,13 @@ offset_bottom = 36.0
 
 [node name="cover" type="TextureRect" parent="."]
 layout_mode = 0
-offset_left = 1050.0
-offset_top = 67.0
-offset_right = 1390.0
-offset_bottom = 320.0
+offset_left = 1137.0
+offset_top = 84.0
+offset_right = 1391.0
+offset_bottom = 337.0
 texture = ExtResource("3_wpmn0")
 expand_mode = 1
 stretch_mode = 5
-
-[node name="Favorite_Button" type="Button" parent="cover"]
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_top = -97.0
-offset_right = 55.0
-grow_vertical = 0
-theme_override_font_sizes/font_size = 75
-theme_override_styles/focus = SubResource("StyleBoxEmpty_qax3j")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_bhima")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_kdryv")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_qhkdt")
-theme_override_styles/normal = SubResource("StyleBoxEmpty_3ptxp")
-text = "X"
 
 [node name="SongInfo_Label" type="Label" parent="."]
 layout_mode = 0
@@ -298,7 +292,7 @@ flat = true
 layout_mode = 0
 offset_left = 864.0
 offset_top = 49.0
-offset_right = 1040.0
+offset_right = 1118.0
 offset_bottom = 308.0
 theme = SubResource("12")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -309,7 +303,7 @@ offset_left = 864.0
 offset_top = 16.0
 offset_right = 1040.0
 offset_bottom = 50.0
-theme_override_font_sizes/font_size = 25
+theme_override_font_sizes/font_size = 20
 text = "Difficulty"
 
 [node name="LoadPlaylists_Button" type="Button" parent="."]
@@ -385,6 +379,24 @@ size_flags_horizontal = 3
 text = "LICENSES"
 autowrap_mode = 2
 
+[node name="Favorite_Button" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 1344.0
+offset_top = -642.0
+offset_right = 1399.0
+offset_bottom = -545.0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 75
+theme_override_styles/focus = SubResource("StyleBoxEmpty_qax3j")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_bhima")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_kdryv")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_qhkdt")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_3ptxp")
+text = "X"
+
 [connection signal="toggled" from="Modifiers/Health" to="." method="_on_health_toggled"]
 [connection signal="toggled" from="Modifiers/Health/Bombs" to="." method="_on_bombs_toggled"]
 [connection signal="toggled" from="Modifiers/Health/Bombs/Arrows" to="." method="_on_arrows_toggled"]
@@ -397,9 +409,9 @@ autowrap_mode = 2
 [connection signal="pressed" from="Settings_Button" to="." method="_on_Settings_Button_pressed"]
 [connection signal="pressed" from="Licenses" to="." method="_on_licenses_pressed"]
 [connection signal="button_up" from="Search_Button" to="." method="_on_Search_Button_button_up"]
-[connection signal="pressed" from="cover/Favorite_Button" to="." method="_on_favorite_button_pressed"]
 [connection signal="item_selected" from="SongsMenu" to="." method="_select_song"]
 [connection signal="item_selected" from="PlaylistSelector" to="." method="_on_PlaylistSelector_item_selected"]
 [connection signal="item_selected" from="DifficultyMenu" to="." method="_select_difficulty"]
 [connection signal="pressed" from="LoadPlaylists_Button" to="." method="_on_LoadPlaylists_Button_pressed"]
 [connection signal="timeout" from="song_prev/stop_prev" to="." method="_on_stop_prev_timeout"]
+[connection signal="pressed" from="Favorite_Button" to="." method="_on_favorite_button_pressed"]
