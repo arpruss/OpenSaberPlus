@@ -123,3 +123,20 @@ func custom_thread_call(thread : Thread, function : Callable, params := []):
 	else:
 		thread_finished.append(thread)
 		return thread.start(function.bindv(params))
+
+func precise_measurement(x : int) -> float:
+	if x < 1000:
+		return x
+	else:
+		return (x-1000.)/1000.
+
+func precise_angle_rad(direction: int, offset: int) -> float:
+	var angle : float
+	if direction < 1000:
+		angle = Constants.CUBE_ROTATIONS[direction]
+	else:
+		angle = direction - 1000
+	return angle + offset * (PI/180.)
+
+func rotation_unit_vector(angle: float) -> Vector2:
+	return Vector2(sin(angle), -cos(angle))
