@@ -511,6 +511,10 @@ func _on_health_toggled(value: bool) -> void:
 	Settings.health_mode = value
 	update_view()
 
+func _on_claws_toggled(value: bool) -> void:
+	Settings.claws = value
+	update_view()
+
 func _on_bombs_toggled(value: bool) -> void:
 	Settings.bombs_enabled = value
 	update_view()
