@@ -101,8 +101,7 @@ static func load_map_info(load_path: String) -> MapInfo:
 	if info_dict.has("_version"):
 		return MapInfo.new_v2(info_dict, load_path)
 	elif info_dict.has("version"):
-		vr.log_warning("%s is an unsupported beatmap version: %s" % [load_path, info_dict["version"]])
-		return null
+		return MapInfo.new_v4(info_dict, load_path)
 	else:
 		vr.log_warning("%s is an unknown beatmap version" % load_path)
 		return null
@@ -188,14 +187,18 @@ static func load_event_stack_v2(event_data: Array) -> void:
 	#event_thread_1.wait_to_finish()
 	Utils.custom_thread_wait_to_finish(event_thread_1)
 
-static func load_note_stack_v3(note_data: Array) -> void:
+static func load_note_stack_v3_v4(note_data: Array, meta: Array) -> void:
 	var last_index := note_data.size() - 1
 	var load_range := func(start: int, end: int) -> void:
 		var i := start
 		while i < end:
 			if note_data[i] is Dictionary:
 				@warning_ignore("unsafe_cast")
-				note_stack[last_index - i] = ColorNoteInfo.new_v3(note_data[i] as Dictionary)
+				var n := note_data[i] as Dictionary
+				var index := int(Utils.get_float(note_data[i], "i", -1))
+				if 0 <= index and index < meta.size() and meta[index] is Dictionary:
+					n.merge(meta[index])
+				note_stack[last_index - i] = ColorNoteInfo.new_v3(n as Dictionary)
 			i += 1
 	var midpoint := note_data.size() >> 1
 	note_stack.resize(note_data.size())
@@ -205,7 +208,7 @@ static func load_note_stack_v3(note_data: Array) -> void:
 	#note_thread_1.wait_to_finish()
 	Utils.custom_thread_wait_to_finish(note_thread_1)
 
-static func load_bomb_stack_v3(bomb_data: Array) -> void:
+static func load_bomb_stack_v3_v4(bomb_data: Array, meta: Array) -> void:
 	if not Settings.bombs_enabled:
 		bomb_stack.clear()
 		return
@@ -215,7 +218,11 @@ static func load_bomb_stack_v3(bomb_data: Array) -> void:
 		while i < end:
 			if bomb_data[i] is Dictionary:
 				@warning_ignore("unsafe_cast")
-				bomb_stack[last_index - i] = BombInfo.new_v3(bomb_data[i] as Dictionary)
+				var b := bomb_data[i] as Dictionary
+				var index := int(Utils.get_float(b, "i", -1))
+				if 0 <= index and index < meta.size() and meta[index] is Dictionary:
+					b.merge(meta[index])
+				bomb_stack[last_index - i] = BombInfo.new_v3(b)
 			i += 1
 	var midpoint := bomb_data.size() >> 1
 	bomb_stack.resize(bomb_data.size())
@@ -225,14 +232,18 @@ static func load_bomb_stack_v3(bomb_data: Array) -> void:
 	#bomb_thread_1.wait_to_finish()
 	Utils.custom_thread_wait_to_finish(bomb_thread_1)
 
-static func load_obstacle_stack_v3(obstacle_data: Array) -> void:
+static func load_obstacle_stack_v3_v4(obstacle_data: Array, meta: Array) -> void:
 	var last_index := obstacle_data.size() - 1
 	var load_range := func(start: int, end: int) -> void:
 		var i := start
 		while i < end:
 			if obstacle_data[i] is Dictionary:
 				@warning_ignore("unsafe_cast")
-				obstacle_stack[last_index - i] = ObstacleInfo.new_v3(obstacle_data[i] as Dictionary)
+				var o := obstacle_data[i] as Dictionary
+				var index := int(Utils.get_float(o, "i", -1))
+				if 0 <= index and index < meta.size() and meta[index] is Dictionary:
+					o.merge(meta[index])
+				obstacle_stack[last_index - i] = ObstacleInfo.new_v3(o)
 			i += 1
 	var midpoint := obstacle_data.size() >> 1
 	obstacle_stack.resize(obstacle_data.size())
@@ -258,6 +269,84 @@ static func load_arc_stack_v3(arc_data: Array) -> void:
 	load_range.bind(midpoint, arc_data.size()).call()
 	#arc_thread_1.wait_to_finish()
 	Utils.custom_thread_wait_to_finish(arc_thread_1)
+
+static func load_arc_stack_v4(arc_data: Array, meta: Array, meta_notes: Array) -> void:
+	var last_index := arc_data.size() - 1
+	var load_range := func(start: int, end: int) -> void:
+		var i := start
+		while i < end:
+			if arc_data[i] is Dictionary:
+				@warning_ignore("unsafe_cast")
+				var a := arc_data[i] as Dictionary
+				var a3 := {}
+				if a.has("hb"):
+					a3["b"] = a["hb"] # head beat
+				if a.has("tb"):
+					a3["tb"] = a["tb"] # tail beat
+				var index := int(Utils.get_float(a, "ai", -1))
+				if 0 <= index and index < meta.size() and meta[index] is Dictionary:
+					a3["mu"] = Utils.get_float(meta[index], "m", 1.)
+					a3["tmu"] = Utils.get_float(meta[index], "tm", 1.)
+					a3["m"] = Utils.get_float(meta[index], "a", 1.)
+				index = int(Utils.get_float(a, "hi", -1))
+				if 0 <= index and index < meta_notes.size() and meta_notes[index] is Dictionary:
+					var m := meta_notes[index] as Dictionary
+					a3["x"] = Utils.get_float(m, "x", 0)
+					a3["y"] = Utils.get_float(m, "y", 0)
+					a3["c"] = Utils.get_float(m, "c", 0)
+					a3["d"] = Utils.get_float(m, "d", 0)
+				index = int(Utils.get_float(a, "ti", -1))
+				if 0 <= index and index < meta_notes.size() and meta_notes[index] is Dictionary:
+					var m := meta_notes[index] as Dictionary
+					a3["tx"] = Utils.get_float(m, "x", 0)
+					a3["ty"] = Utils.get_float(m, "y", 0)
+					a3["tc"] = Utils.get_float(m, "c", 0)
+				
+				arc_stack[last_index - i] = ArcInfo.new_v3(a3)
+			i += 1
+	var midpoint := arc_data.size() >> 1
+	arc_stack.resize(arc_data.size())
+	#arc_thread_1.start(load_range.bind(0, midpoint))
+	Utils.custom_thread_call(arc_thread_1, load_range, [0, midpoint])
+	load_range.bind(midpoint, arc_data.size()).call()
+	#arc_thread_1.wait_to_finish()
+	Utils.custom_thread_wait_to_finish(arc_thread_1)
+
+static func load_chain_stack_v4(chain_data: Array, meta: Array, meta_notes: Array) -> void:
+	var last_index := chain_data.size() - 1
+	var load_range := func(start: int, end: int) -> void:
+		var i := start
+		while i < end:
+			if chain_data[i] is Dictionary:
+				@warning_ignore("unsafe_cast")
+				var c := chain_data[i] as Dictionary
+				var c3 := {}
+				if c.has("hb"):
+					c3["b"] = c["hb"] # head beat
+				if c.has("tb"):
+					c3["tb"] = c["tb"] # tail beat
+				var index := int(Utils.get_float(c, "ci", -1))
+				if 0 <= index and index < meta.size() and meta[index] is Dictionary:
+					c3["tx"] = Utils.get_float(meta[index], "tx", 0.)
+					c3["ty"] = Utils.get_float(meta[index], "ty", 0.)
+					c3["sc"] = Utils.get_float(meta[index], "c", 0)
+					c3["s"] = Utils.get_float(meta[index], "s", 1.)
+				index = int(Utils.get_float(c, "i", -1))
+				if 0 <= index and index < meta_notes.size() and meta_notes[index] is Dictionary:
+					var m := meta_notes[index] as Dictionary
+					c3["x"] = Utils.get_float(m, "x", 0)
+					c3["y"] = Utils.get_float(m, "y", 0)
+					c3["c"] = Utils.get_float(m, "c", 0)
+					c3["d"] = Utils.get_float(m, "d", 0)
+				chain_stack[last_index - i] = ChainInfo.new_v3(c3)
+			i += 1
+	var midpoint := chain_data.size() >> 1
+	chain_stack.resize(chain_data.size())
+	#chain_thread_1.start(load_range.bind(0, midpoint))
+	Utils.custom_thread_call(chain_thread_1, load_range, [0, midpoint])
+	load_range.bind(midpoint, chain_data.size()).call()
+	#chain_thread_1.wait_to_finish()
+	Utils.custom_thread_wait_to_finish(chain_thread_1)
 
 static func load_chain_stack_v3(chain_data: Array) -> void:
 	var last_index := chain_data.size() - 1
@@ -340,19 +429,37 @@ static func load_beatmap(info: MapInfo, difficulty: DifficultyInfo, map_data: Di
 		return true
 	elif map_data.has("version"):
 		var version := Utils.get_str(map_data, "version", "")
-		if version.begins_with("3."):
-			#note_thread_0.start(load_note_stack_v3.bind(Utils.get_array(map_data, "colorNotes", [])))
-			Utils.custom_thread_call(note_thread_0, load_note_stack_v3, [Utils.get_array(map_data, "colorNotes", [])])
-			#bomb_thread_0.start(load_bomb_stack_v3.bind(Utils.get_array(map_data, "bombNotes", [])))
-			Utils.custom_thread_call(bomb_thread_0, load_bomb_stack_v3, [Utils.get_array(map_data, "bombNotes", [])])
-			#obstacle_thread_0.start(load_obstacle_stack_v3.bind(Utils.get_array(map_data, "obstacles", [])))
-			Utils.custom_thread_call(obstacle_thread_0, load_obstacle_stack_v3, [Utils.get_array(map_data, "obstacles", [])])
-			#arc_thread_0.start(load_arc_stack_v3.bind(Utils.get_array(map_data, "sliders", [])))
-			Utils.custom_thread_call(arc_thread_0, load_arc_stack_v3, [Utils.get_array(map_data, "sliders", [])])
-			#chain_thread_0.start(load_chain_stack_v3.bind(Utils.get_array(map_data, "burstSliders", [])))
-			Utils.custom_thread_call(chain_thread_0, load_chain_stack_v3, [Utils.get_array(map_data, "burstSliders", [])])
-			#event_thread_0.start(load_event_stack_v3.bind(Utils.get_array(map_data, "basicBeatmapEvents", [])))
-			Utils.custom_thread_call(event_thread_0, load_event_stack_v3, [Utils.get_array(map_data, "basicBeatmapEvents", [])])
+		if version.begins_with("3.") or version.begins_with("4."):
+			var v4 := version.begins_with("4.")
+			Utils.custom_thread_call(note_thread_0, load_note_stack_v3_v4, 
+				[Utils.get_array(map_data, "colorNotes", []),
+				 Utils.get_array(map_data, "colorNotesData", []) if v4 else []])
+			Utils.custom_thread_call(bomb_thread_0, load_bomb_stack_v3_v4, 
+				[Utils.get_array(map_data, "bombNotes", []),
+				 Utils.get_array(map_data, "bombNotesData", []) if v4 else []])
+			Utils.custom_thread_call(obstacle_thread_0, load_obstacle_stack_v3_v4, 
+				[Utils.get_array(map_data, "obstacles", []),
+				 Utils.get_array(map_data, "obstaclesData", []) if v4 else []])
+			if v4:
+				Utils.custom_thread_call(arc_thread_0, load_arc_stack_v4, 
+					[Utils.get_array(map_data, "arcs", []),
+					Utils.get_array(map_data, "arcsData", []),
+					Utils.get_array(map_data, "colorNotesData", [])
+					])
+			else:
+				Utils.custom_thread_call(arc_thread_0, load_arc_stack_v3, [Utils.get_array(map_data, "sliders", [])])
+			if v4:
+				Utils.custom_thread_call(chain_thread_0, load_chain_stack_v4, 
+					[Utils.get_array(map_data, "chains", []),
+					Utils.get_array(map_data, "chainsData", []),
+					Utils.get_array(map_data, "colorNotesData", [])
+					])
+			else:
+				Utils.custom_thread_call(chain_thread_0, load_chain_stack_v3, [Utils.get_array(map_data, "burstSliders", [])])
+			if v4:
+				pass #TODO
+			else:
+				Utils.custom_thread_call(event_thread_0, load_event_stack_v3, [Utils.get_array(map_data, "basicBeatmapEvents", [])])
 			current_info = info
 			current_difficulty = difficulty
 			one_saber = difficulty.characteristic == "OneSaber"

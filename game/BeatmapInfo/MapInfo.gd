@@ -68,6 +68,54 @@ func get_key() -> String:
 		level_author_name
 	]
 
+static func new_v4(info_dict: Dictionary, load_path: String) -> MapInfo:
+	# mix all the difficulty sets into a single one
+	var diffs: Array[DifficultyInfo] = []
+	var difficulty_beatmaps := Utils.get_array(info_dict, "difficultyBeatmaps", [])
+	if (difficulty_beatmaps.is_empty()):
+		vr.log_warning("No difficultyBeatmaps in info.dat")
+		
+	# todo: different authors for mappers and lighters on different levels
+	var level_mappers := "" 
+	
+	for beatmap: Variant in difficulty_beatmaps:
+		if beatmap is not Dictionary:
+			continue
+		var characteristic := Utils.get_str(beatmap as Dictionary, "characteristic", "")
+		if (characteristic == "Lawless" or 
+			characteristic == "Lightshow" or 
+			characteristic == "360Degree" or characteristic == "90Degree"):
+			continue
+		if level_mappers.length() == 0:
+			var authors := Utils.get_dict(beatmap as Dictionary, "beatmapAuthors", {})
+			var mappers := Utils.get_array(authors, "mappers", [])
+			for i in range(mappers.size()):
+				if level_mappers.length() > 0:
+					level_mappers += ", "
+				level_mappers += mappers[i]
+		diffs.append(DifficultyInfo.load_v4(beatmap as Dictionary))
+		
+	var song_dict := Utils.get_dict(info_dict, "song", {})
+	var audio_dict := Utils.get_dict(info_dict, "audio", {})
+	
+	return MapInfo.new(
+		Utils.get_str(info_dict, "version", "4.0.0"),
+		Utils.get_str(song_dict, "title", ""),
+		Utils.get_str(song_dict, "subTitle", ""),
+		Utils.get_str(song_dict, "author", ""),
+		level_mappers,
+		Utils.get_float(audio_dict, "bmp", 60.0),
+		Utils.get_float(audio_dict, "previewStartTime", 0.0),
+		Utils.get_float(audio_dict, "previewDuration", 0.0),
+		Utils.get_str(audio_dict, "songFilename", ""),
+		Utils.get_str(info_dict, "coverImageFilename", ""),
+		"", # TODO: environmentNames
+		0.0, # song time offset not supported in v4
+		Utils.get_dict(info_dict, "customData", {}), # TODO: should this be there?
+		load_path,
+		diffs
+	)
+
 static func new_v2(info_dict: Dictionary, load_path: String) -> MapInfo:
 	# mix all the difficulty sets into a single one
 	var diffs: Array[DifficultyInfo] = []

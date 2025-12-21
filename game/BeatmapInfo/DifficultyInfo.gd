@@ -58,3 +58,25 @@ static func load_v2(diff_dict: Dictionary, characteristic: String) -> Difficulty
 		name,
 		characteristic
 	)
+
+static func load_v4(diff_dict: Dictionary) -> DifficultyInfo:
+	var diff := Utils.get_str(diff_dict, "difficulty", "")
+	var data := Utils.get_dict(diff_dict, "customData", {})
+	
+	var name := ""
+	# not officially part of the spec, but used by mods a lot
+	if not data.is_empty():
+		name = Utils.get_str(data, "difficultyLabel", "")
+	if name.is_empty():
+		name = diff
+	
+	return DifficultyInfo.new(
+		diff,
+		0, # TODO: difficulty rank
+		Utils.get_str(diff_dict, "beatmapDataFilename", ""), # TODO: lightshow
+		Utils.get_float(diff_dict, "noteJumpMovementSpeed", 1.0),
+		Utils.get_float(diff_dict, "noteJumpStartBeatOffset", 0.0),
+		data,
+		name,
+		Utils.get_str(diff_dict, "characteristic", "")
+	)
