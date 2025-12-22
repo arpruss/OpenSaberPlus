@@ -43,14 +43,14 @@ func spawn(info: ArcInfo, current_beat: float, _activator_cube: BeepCube = null)
 	
 	var head_rotation: Vector2
 	var tail_rotation: Vector2
-	if info.head_cut_direction == 8:
+	if info.head_cut_angle >= Constants.DIRECTION8_COMPARE:
 		head_rotation = Vector2.ZERO
 	else:
-		head_rotation = Constants.ROTATION_UNIT_VECTORS[info.head_cut_direction] * info.head_control_point_length_multiplier
-	if info.tail_cut_direction == 8:
+		head_rotation = Utils.rotation_unit_vector(info.head_cut_angle) * info.head_control_point_length_multiplier
+	if info.tail_cut_angle >= Constants.DIRECTION8_COMPARE:
 		tail_rotation = Vector2.ZERO
 	else:
-		tail_rotation = -Constants.ROTATION_UNIT_VECTORS[info.tail_cut_direction] * info.tail_control_point_length_multiplier
+		tail_rotation = -Utils.rotation_unit_vector(info.tail_cut_angle) * info.tail_control_point_length_multiplier
 	
 	var curve := ($Path3D as Path3D).curve
 	curve.clear_points()
@@ -63,12 +63,12 @@ func spawn(info: ArcInfo, current_beat: float, _activator_cube: BeepCube = null)
 	if info.mid_anchor_mode > 0:
 		for midpoint_id in range(mid_points):
 			var range : float = (float(midpoint_id+1) / (mid_points+1))
-			var head_rot := Constants.CUBE_ROTATIONS[info.head_cut_direction]
+			var head_rot := Utils.rotation_unit_vector(info.head_cut_angle)
 			
 			var point_pos :=  head_pos.lerp(tail_pos, range)
 			point_pos += Vector3(head_rotation.x, head_rotation.y, 0.0).rotated(Vector3(0,0,1), 
 					(
-						(PI if info.head_cut_direction == info.tail_cut_direction else TAU)
+						(PI if Utils.close_angle(info.head_cut_angle, info.tail_angle) else TAU)
 						*(-range if info.mid_anchor_mode == 1 else range)
 					)
 				) * arc_angle_force

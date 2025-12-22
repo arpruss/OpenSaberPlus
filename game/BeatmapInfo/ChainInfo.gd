@@ -5,7 +5,7 @@ var color: int
 var head_beat: float
 var head_line_index: float
 var head_line_layer: float
-var head_cut_direction: int
+var head_cut_angle: float
 var tail_beat: float
 var tail_line_index: float
 var tail_line_layer: float
@@ -15,14 +15,14 @@ var squish_factor: float
 @warning_ignore("shadowed_variable")
 func _init(
 	color: int, head_beat: float, head_line_index: float, head_line_layer: float,
-	head_cut_direction: int, tail_beat: float, tail_line_index: float,
+	head_cut_angle: float, tail_beat: float, tail_line_index: float,
 	tail_line_layer: float, slice_count: int, squish_factor: float
 ) -> void:
 	self.color = color
 	self.head_beat = head_beat
 	self.head_line_index = head_line_index
 	self.head_line_layer = head_line_layer
-	self.head_cut_direction = head_cut_direction # TODO: precise angles
+	self.head_cut_angle = head_cut_angle
 	self.tail_beat = tail_beat
 	self.tail_line_index = tail_line_index
 	self.tail_line_layer = tail_line_layer
@@ -35,7 +35,7 @@ static func new_v3(chain_dict: Dictionary) -> ChainInfo:
 		Utils.get_float(chain_dict, "b", 0.0),
 		Utils.precise_measurement(Utils.get_float(chain_dict, "x", 0)),
 		Utils.precise_measurement(Utils.get_float(chain_dict, "y", 0)),
-		int(Utils.get_float(chain_dict, "d", 0)),
+		Utils.precise_angle_rad(Utils.get_float(chain_dict, "d", 0), Utils.get_float(chain_dict, "a", 0)),
 		Utils.get_float(chain_dict, "tb", 0.0),
 		Utils.precise_measurement(Utils.get_float(chain_dict, "tx", 0)),
 		Utils.precise_measurement(Utils.get_float(chain_dict, "ty", 0)),

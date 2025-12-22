@@ -54,7 +54,7 @@ static func construct_chain(chain_info: ChainInfo, current_beat: float, note_inf
 		Settings.LANE_DISTANCE_X * float(chain_info.tail_line_index) + Settings.LANE_ZERO_X,
 		Constants.LANE_DISTANCE_Y * float(chain_info.tail_line_layer) + Constants.LAYER_ZERO_Y
 	)
-	var mid_pos := head_pos + (Constants.ROTATION_UNIT_VECTORS[chain_info.head_cut_direction] * head_pos.distance_to(tail_pos) * 0.5)
+	var mid_pos := head_pos + Utils.rotation_unit_vector(chain_info.head_cut_angle) * head_pos.distance_to(tail_pos) * 0.5
 	i = 1
 	while i < chain_info.slice_count:
 		var chain_link := GlobalReferences.link_pool.acquire() as ChainLink

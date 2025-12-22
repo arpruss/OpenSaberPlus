@@ -9,6 +9,9 @@ const MISS_Z := 2.5
 const DEFAULT_WIDTH := 100
 const XWIDTH := 125
 const XXWIDTH := 150
+const DIRECTION8_OFFSET := 2 * TAU 
+const DIRECTION8_COMPARE := DIRECTION8_OFFSET - .001
+
 var CUBE_ROTATIONS := PackedFloat64Array([PI, 0.0, -TAU*0.25, TAU*0.25, -TAU*0.375, TAU*0.375, -TAU*0.125, TAU*0.125, 0.0])
 var ROTATION_UNIT_VECTORS := PackedVector2Array([
 	Vector2(0, 1), Vector2(0, -1), Vector2(-1, 0), Vector2(1, 0),

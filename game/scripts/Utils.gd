@@ -130,13 +130,23 @@ func precise_measurement(x : int) -> float:
 	else:
 		return (x-1000.)/1000.
 
-func precise_angle_rad(direction: int, offset: int) -> float:
+func precise_angle_rad(direction: float, offset: float) -> float:
 	var angle : float
 	if direction < 1000:
 		angle = Constants.CUBE_ROTATIONS[direction]
 	else:
 		angle = direction - 1000
-	return angle + offset * (PI/180.)
+	angle += offset * (PI/180.)
+	if angle < 0:
+		angle += TAU
+	elif angle >= TAU:
+		angle -= TAU
+	if direction == 8:
+		angle += Constants.DIRECTION8_OFFSET
+	return angle
 
 func rotation_unit_vector(angle: float) -> Vector2:
 	return Vector2(sin(angle), -cos(angle))
+
+func close_angle(angle1: float, angle2: float) -> bool:
+	return abs(angle1-angle2)<1e-5

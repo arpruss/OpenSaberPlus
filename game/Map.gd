@@ -20,6 +20,8 @@ static var color_right: Color
 static var last_beat := 0.
 static var one_saber := false
 
+const ROTATIONS_V2 := [ -PI/3., -PI/4., -PI/6., PI/6., PI/4., PI/3. ]
+
 # some simple multithreading, since larger maps can take a very long time to
 # load.  one particulary notable outlier is the beatmap of shrek, which took
 # around 48 milliseconds to load before even on a 7800x3d, and now takes around
@@ -78,10 +80,16 @@ static func set_colors_from_custom_data() -> void:
 	var custom_colors_found := false
 	if set_colors.call(info_data, "_envColor%sBoost"): custom_colors_found = true
 	if set_colors.call(diff_data, "_envColor%sBoost"): custom_colors_found = true
+	if set_colors.call(info_data, "envColor%sBoost"): custom_colors_found = true
+	if set_colors.call(diff_data, "envColor%sBoost"): custom_colors_found = true
 	if set_colors.call(info_data, "_envColor%s"): custom_colors_found = true
 	if set_colors.call(diff_data, "_envColor%s"): custom_colors_found = true
+	if set_colors.call(info_data, "envColor%s"): custom_colors_found = true
+	if set_colors.call(diff_data, "envColor%s"): custom_colors_found = true
 	if set_colors.call(info_data, "_color%s"): custom_colors_found = true
 	if set_colors.call(diff_data, "_color%s"): custom_colors_found = true
+	if set_colors.call(info_data, "color%s"): custom_colors_found = true
+	if set_colors.call(diff_data, "color%s"): custom_colors_found = true
 	if not custom_colors_found:
 		Map.color_left = Settings.color_left
 		Map.color_right = Settings.color_right
@@ -295,12 +303,14 @@ static func load_arc_stack_v4(arc_data: Array, meta: Array, meta_notes: Array) -
 					a3["y"] = Utils.get_float(m, "y", 0)
 					a3["c"] = Utils.get_float(m, "c", 0)
 					a3["d"] = Utils.get_float(m, "d", 0)
+					a3["head_angle_offset"]= Utils.get_float(m, "a", 0)
 				index = int(Utils.get_float(a, "ti", -1))
 				if 0 <= index and index < meta_notes.size() and meta_notes[index] is Dictionary:
 					var m := meta_notes[index] as Dictionary
 					a3["tx"] = Utils.get_float(m, "x", 0)
 					a3["ty"] = Utils.get_float(m, "y", 0)
-					a3["tc"] = Utils.get_float(m, "c", 0)
+					a3["tc"] = Utils.get_float(m, "d", 0)
+					a3["tail_angle_offset"]= Utils.get_float(m, "a", 0)
 				
 				arc_stack[last_index - i] = ArcInfo.new_v3(a3)
 			i += 1
@@ -342,10 +352,8 @@ static func load_chain_stack_v4(chain_data: Array, meta: Array, meta_notes: Arra
 			i += 1
 	var midpoint := chain_data.size() >> 1
 	chain_stack.resize(chain_data.size())
-	#chain_thread_1.start(load_range.bind(0, midpoint))
 	Utils.custom_thread_call(chain_thread_1, load_range, [0, midpoint])
 	load_range.bind(midpoint, chain_data.size()).call()
-	#chain_thread_1.wait_to_finish()
 	Utils.custom_thread_wait_to_finish(chain_thread_1)
 
 static func load_chain_stack_v3(chain_data: Array) -> void:
@@ -359,10 +367,8 @@ static func load_chain_stack_v3(chain_data: Array) -> void:
 			i += 1
 	var midpoint := chain_data.size() >> 1
 	chain_stack.resize(chain_data.size())
-	#chain_thread_1.start(load_range.bind(0, midpoint))
 	Utils.custom_thread_call(chain_thread_1, load_range, [0, midpoint])
 	load_range.bind(midpoint, chain_data.size()).call()
-	#chain_thread_1.wait_to_finish()
 	Utils.custom_thread_wait_to_finish(chain_thread_1)
 
 static func load_event_stack_v3(event_data: Array) -> void:
@@ -376,10 +382,8 @@ static func load_event_stack_v3(event_data: Array) -> void:
 			i += 1
 	var midpoint := event_data.size() >> 1
 	event_stack.resize(event_data.size())
-	#event_thread_1.start(load_range.bind(0, midpoint))
 	Utils.custom_thread_call(event_thread_1, load_range, [0, midpoint])
 	load_range.bind(midpoint, event_data.size()).call()
-	#event_thread_1.wait_to_finish()
 	Utils.custom_thread_wait_to_finish(event_thread_1)
 	
 static func get_last_beat() -> void:
@@ -394,6 +398,49 @@ static func get_last_beat() -> void:
 	for bomb in bomb_stack:
 		if bomb.beat > current_info.last_beat:
 			current_info.last_beat = bomb.beat
+	
+static func compare_times(a: Array, b: Array):
+	return a[0] < b[0]
+			
+static func get_rotations_v2(events: Array) -> Array:
+	var r := []
+	var angle := 0.
+	for e in events:
+		if e is Dictionary:
+			var t := Utils.get_float(e, "_time", 0.)
+			var type := int(Utils.get_float(e, "_type", 0))
+			if type != 14 and type != 15:
+				continue
+			if type == 15:
+				t += 1.e-5
+			var index := int(Utils.get_float(e, "_value", -1))
+			if index < 0 or index > 7:
+				continue
+			angle += ROTATIONS_V2[index]
+			if angle < 0:
+				angle += TAU
+			elif angle >= TAU:
+				angle -= TAU
+			r.append([t, angle])
+	r.sort_custom(compare_times)
+	return r
+
+static func get_rotations_v3(events: Array) -> Array:
+	var r := []
+	var angle := 0.
+	for e in events:
+		if e is Dictionary:
+			var t := Utils.get_float(e, "b", 0.)
+			if Utils.get_float(e, "e", 0.) > 0:
+				t += 1.e-5
+			angle += Utils.get_float(e, "r", 0.) * (PI / 180.)
+			if angle < 0:
+				angle += TAU
+			elif angle >= TAU:
+				angle -= TAU
+			r.append([t, angle])
+	r.sort_custom(compare_times)
+	return r
 
 static func load_beatmap(info: MapInfo, difficulty: DifficultyInfo, map_data: Dictionary) -> bool:
 	# Ensures the map_data dict has a version (some maps include the version only on info but not in the data)
@@ -404,26 +451,19 @@ static func load_beatmap(info: MapInfo, difficulty: DifficultyInfo, map_data: Di
 			map_data["version"] = info.version
 	
 	if map_data.has("_version"):
-		#note_thread_0.start(load_note_stack_v2.bind(Utils.get_array(map_data, "_notes", [])))
+		var rotations := get_rotations_v2(Utils.get_array(map_data, "_events", []))
 		Utils.custom_thread_call(note_thread_0, load_note_stack_v2, [Utils.get_array(map_data, "_notes", [])])
-		#obstacle_thread_0.start(load_obstacle_stack_v2.bind(Utils.get_array(map_data, "_obstacles", [])))
 		Utils.custom_thread_call(obstacle_thread_0, load_obstacle_stack_v2, [Utils.get_array(map_data, "_obstacles", [])])
-		#event_thread_0.start(load_event_stack_v2.bind(Utils.get_array(map_data, "_events", [])))
 		Utils.custom_thread_call(event_thread_0, load_event_stack_v2, [Utils.get_array(map_data, "_events", [])])
-		#arc_thread_0.start(load_arc_stack_v2.bind(Utils.get_array(map_data, "_sliders", [])))
 		Utils.custom_thread_call(arc_thread_0, load_arc_stack_v2, [Utils.get_array(map_data, "_sliders", [])])
 		chain_stack.clear()
 		current_info = info
 		current_difficulty = difficulty
 		one_saber = difficulty.characteristic == "OneSaber"
 		Map.set_colors_from_custom_data()
-		#note_thread_0.wait_to_finish()
 		Utils.custom_thread_wait_to_finish(note_thread_0)
-		#obstacle_thread_0.wait_to_finish()
 		Utils.custom_thread_wait_to_finish(obstacle_thread_0)
-		#event_thread_0.wait_to_finish()
 		Utils.custom_thread_wait_to_finish(event_thread_0)
-		#arc_thread_0.wait_to_finish()
 		Utils.custom_thread_wait_to_finish(arc_thread_0)
 		get_last_beat()
 		return true
@@ -431,6 +471,11 @@ static func load_beatmap(info: MapInfo, difficulty: DifficultyInfo, map_data: Di
 		var version := Utils.get_str(map_data, "version", "")
 		if version.begins_with("3.") or version.begins_with("4."):
 			var v4 := version.begins_with("4.")
+			var rotations : Array
+			if v4:
+				rotations = []
+			else:
+				rotations = get_rotations_v3(Utils.get_array(map_data, "rotationEvents", []))
 			Utils.custom_thread_call(note_thread_0, load_note_stack_v3_v4, 
 				[Utils.get_array(map_data, "colorNotes", []),
 				 Utils.get_array(map_data, "colorNotesData", []) if v4 else []])
@@ -464,17 +509,11 @@ static func load_beatmap(info: MapInfo, difficulty: DifficultyInfo, map_data: Di
 			current_difficulty = difficulty
 			one_saber = difficulty.characteristic == "OneSaber"
 			Map.set_colors_from_custom_data()
-			#note_thread_0.wait_to_finish()
 			Utils.custom_thread_wait_to_finish(note_thread_0)
-			#bomb_thread_0.wait_to_finish()
 			Utils.custom_thread_wait_to_finish(bomb_thread_0)
-			#obstacle_thread_0.wait_to_finish()
 			Utils.custom_thread_wait_to_finish(obstacle_thread_0)
-			#arc_thread_0.wait_to_finish()
 			Utils.custom_thread_wait_to_finish(arc_thread_0)
-			#chain_thread_0.wait_to_finish()
 			Utils.custom_thread_wait_to_finish(chain_thread_0)
-			#event_thread_0.wait_to_finish()
 			Utils.custom_thread_wait_to_finish(event_thread_0)
 			get_last_beat()
 			return true

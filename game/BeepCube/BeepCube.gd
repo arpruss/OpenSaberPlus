@@ -46,7 +46,7 @@ func spawn(note_info: ColorNoteInfo, current_beat: float) -> void:
 	speed = Constants.BEAT_DISTANCE * Map.current_info.beats_per_minute * 0.016666666666666667
 	beat = note_info.beat
 	which_saber = note_info.color
-	is_dot = note_info.cut_direction == 8
+	is_dot = note_info.cut_angle >= Constants.DIRECTION8_COMPARE
 	
 	if is_dot:
 		(collision_big.shape as BoxShape3D).size.y = 0.8
@@ -57,7 +57,7 @@ func spawn(note_info: ColorNoteInfo, current_beat: float) -> void:
 	transform.origin.y = Constants.LANE_DISTANCE_Y * float(note_info.line_layer) + Constants.LAYER_ZERO_Y
 	transform.origin.z = -(note_info.beat - current_beat) * Constants.BEAT_DISTANCE
 	
-	rotation.z = Constants.CUBE_ROTATIONS[note_info.cut_direction] + deg_to_rad(note_info.angle_offset)
+	rotation.z = note_info.cut_angle
 	
 	piece_left.set_color(color, is_dot)
 	piece_right.set_color(color, is_dot)
