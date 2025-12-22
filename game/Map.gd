@@ -20,7 +20,7 @@ static var color_right: Color
 static var last_beat := 0.
 static var one_saber := false
 
-const ROTATIONS_V2 := [ -PI/3., -PI/4., -PI/6., PI/6., PI/4., PI/3. ]
+const ROTATIONS_V2 := [ -60., -45., -30., -15., 15., 30., 45., 60. ]
 
 # some simple multithreading, since larger maps can take a very long time to
 # load.  one particulary notable outlier is the beatmap of shrek, which took
@@ -116,7 +116,7 @@ static func load_map_info(load_path: String) -> MapInfo:
 
 # speed for the speed gods.  please forgive me for this.
 # - steve hocktail
-static func load_note_stack_v2(note_data: Array) -> void:
+static func load_note_stack_v2(note_data: Array, rotations: Array) -> void:
 	var load_range := func(start: int, end: int) -> Array[Array]:
 		var note_array: Array[ColorNoteInfo] = []
 		var bomb_array: Array[BombInfo] = []
@@ -126,6 +126,7 @@ static func load_note_stack_v2(note_data: Array) -> void:
 			@warning_ignore("unsafe_cast")
 			var note_dict := note_data[i] as Dictionary
 			var note_type := int(Utils.get_float(note_dict, "_type", -1.0))
+			note_dict["r"] = get_rotation(rotations, Utils.get_float(note_dict, "_time", 0.))
 			if note_type == 3 and Settings.bombs_enabled:
 				bomb_array.append(BombInfo.new_v2(note_dict))
 			elif note_type == 0 or note_type == 1:
@@ -143,14 +144,16 @@ static func load_note_stack_v2(note_data: Array) -> void:
 	note_stack.reverse()
 	bomb_stack.reverse()
 
-static func load_obstacle_stack_v2(obstacle_data: Array) -> void:
+static func load_obstacle_stack_v2(obstacle_data: Array, rotations: Array) -> void:
 	var last_index := obstacle_data.size() - 1
 	var load_range := func(start: int, end: int) -> void:
 		var i := start
 		while i < end:
 			if obstacle_data[i] is Dictionary:
 				@warning_ignore("unsafe_cast")
-				obstacle_stack[last_index - i] = ObstacleInfo.new_v2(obstacle_data[i] as Dictionary)
+				var o := obstacle_data[i] as Dictionary
+				o["r"] = get_rotation(rotations, Utils.get_float(o, "_time", 0.))
+				obstacle_stack[last_index - i] = ObstacleInfo.new_v2(o)
 			i += 1
 	var midpoint := obstacle_data.size() >> 1
 	obstacle_stack.resize(obstacle_data.size())
@@ -160,21 +163,22 @@ static func load_obstacle_stack_v2(obstacle_data: Array) -> void:
 	#obstacle_thread_1.wait_to_finish()
 	Utils.custom_thread_wait_to_finish(obstacle_thread_1)
 
-static func load_arc_stack_v2(arc_data: Array) -> void:
+static func load_arc_stack_v2(arc_data: Array, rotations: Array) -> void:
 	var last_index := arc_data.size() - 1
 	var load_range := func(start: int, end: int) -> void:
 		var i := start
 		while i < end:
 			if arc_data[i] is Dictionary:
 				@warning_ignore("unsafe_cast")
-				arc_stack[last_index - i] = ArcInfo.new_v2(arc_data[i] as Dictionary)
+				var a := arc_data[i] as Dictionary
+				a["hr"] = get_rotation(rotations, Utils.get_float(a, "_time", 0.))
+				a["tr"] = a["hr"]
+				arc_stack[last_index - i] = ArcInfo.new_v2(a)
 			i += 1
 	var midpoint := arc_data.size() >> 1
 	arc_stack.resize(arc_data.size())
-	#arc_thread_1.start(load_range.bind(0, midpoint))
 	Utils.custom_thread_call(arc_thread_1, load_range, [0, midpoint])
 	load_range.bind(midpoint, arc_data.size()).call()
-	#arc_thread_1.wait_to_finish()
 	Utils.custom_thread_wait_to_finish(arc_thread_1)
 	
 
@@ -189,13 +193,34 @@ static func load_event_stack_v2(event_data: Array) -> void:
 			i += 1
 	var midpoint := event_data.size() >> 1
 	event_stack.resize(event_data.size())
-	#event_thread_1.start(load_range.bind(0, midpoint))
 	Utils.custom_thread_call(event_thread_1, load_range, [0, midpoint])
 	load_range.bind(midpoint, event_data.size()).call()
-	#event_thread_1.wait_to_finish()
 	Utils.custom_thread_wait_to_finish(event_thread_1)
+	
+static func get_rotation(rotations: Array, beat: float, start := 0, end := -1) -> float:
+	if rotations.size() == 0:
+		return 0
+	if end < 0:
+		end = rotations.size() - 1
+	if end <= start+1:
+		if rotations[end][0] <= beat:
+			return rotations[end][1]
+		elif rotations[start][0] <= beat:
+			return rotations[start][1]
+		elif start > 0:
+			return rotations[start-1][1]
+		else:
+			return 0
+	var midpoint = (end + start) / 2
+	var mt := rotations[midpoint][0] as float
+	if mt == beat:
+		return rotations[midpoint][1]
+	if mt < beat:
+		return get_rotation(rotations, beat, midpoint, end)
+	else:
+		return get_rotation(rotations, beat, start, midpoint)
 
-static func load_note_stack_v3_v4(note_data: Array, meta: Array) -> void:
+static func load_note_stack_v3_v4(note_data: Array, meta: Array, rotations: Array) -> void:
 	var last_index := note_data.size() - 1
 	var load_range := func(start: int, end: int) -> void:
 		var i := start
@@ -203,20 +228,20 @@ static func load_note_stack_v3_v4(note_data: Array, meta: Array) -> void:
 			if note_data[i] is Dictionary:
 				@warning_ignore("unsafe_cast")
 				var n := note_data[i] as Dictionary
-				var index := int(Utils.get_float(note_data[i], "i", -1))
+				var beat := Utils.get_float(n, "b", 0.)
+				n["r"] = Utils.get_float(n, "r", 0.) + get_rotation(rotations, beat)
+				var index := int(Utils.get_float(n, "i", -1))
 				if 0 <= index and index < meta.size() and meta[index] is Dictionary:
 					n.merge(meta[index])
 				note_stack[last_index - i] = ColorNoteInfo.new_v3(n as Dictionary)
 			i += 1
 	var midpoint := note_data.size() >> 1
 	note_stack.resize(note_data.size())
-	#note_thread_1.start(load_range.bind(0, midpoint))
 	Utils.custom_thread_call(note_thread_1, load_range, [0, midpoint])
 	load_range.bind(midpoint, note_data.size()).call()
-	#note_thread_1.wait_to_finish()
 	Utils.custom_thread_wait_to_finish(note_thread_1)
 
-static func load_bomb_stack_v3_v4(bomb_data: Array, meta: Array) -> void:
+static func load_bomb_stack_v3_v4(bomb_data: Array, meta: Array, rotations: Array) -> void:
 	if not Settings.bombs_enabled:
 		bomb_stack.clear()
 		return
@@ -227,6 +252,8 @@ static func load_bomb_stack_v3_v4(bomb_data: Array, meta: Array) -> void:
 			if bomb_data[i] is Dictionary:
 				@warning_ignore("unsafe_cast")
 				var b := bomb_data[i] as Dictionary
+				var beat := Utils.get_float(b, "b", 0.)
+				b["r"] = Utils.get_float(b, "r", 0.) + get_rotation(rotations, beat)
 				var index := int(Utils.get_float(b, "i", -1))
 				if 0 <= index and index < meta.size() and meta[index] is Dictionary:
 					b.merge(meta[index])
@@ -234,13 +261,11 @@ static func load_bomb_stack_v3_v4(bomb_data: Array, meta: Array) -> void:
 			i += 1
 	var midpoint := bomb_data.size() >> 1
 	bomb_stack.resize(bomb_data.size())
-	#bomb_thread_1.start(load_range.bind(0, midpoint))
 	Utils.custom_thread_call(bomb_thread_1, load_range, [0, midpoint])
 	load_range.bind(midpoint, bomb_data.size()).call()
-	#bomb_thread_1.wait_to_finish()
 	Utils.custom_thread_wait_to_finish(bomb_thread_1)
 
-static func load_obstacle_stack_v3_v4(obstacle_data: Array, meta: Array) -> void:
+static func load_obstacle_stack_v3_v4(obstacle_data: Array, meta: Array, rotations: Array) -> void:
 	var last_index := obstacle_data.size() - 1
 	var load_range := func(start: int, end: int) -> void:
 		var i := start
@@ -248,6 +273,8 @@ static func load_obstacle_stack_v3_v4(obstacle_data: Array, meta: Array) -> void
 			if obstacle_data[i] is Dictionary:
 				@warning_ignore("unsafe_cast")
 				var o := obstacle_data[i] as Dictionary
+				var beat := Utils.get_float(o, "b", 0.)
+				o["r"] = Utils.get_float(o, "r", 0.) + get_rotation(rotations, beat)
 				var index := int(Utils.get_float(o, "i", -1))
 				if 0 <= index and index < meta.size() and meta[index] is Dictionary:
 					o.merge(meta[index])
@@ -255,27 +282,27 @@ static func load_obstacle_stack_v3_v4(obstacle_data: Array, meta: Array) -> void
 			i += 1
 	var midpoint := obstacle_data.size() >> 1
 	obstacle_stack.resize(obstacle_data.size())
-	#obstacle_thread_1.start(load_range.bind(0, midpoint))
 	Utils.custom_thread_call(obstacle_thread_1, load_range, [0, midpoint])
 	load_range.bind(midpoint, obstacle_data.size()).call()
-	#obstacle_thread_1.wait_to_finish()
 	Utils.custom_thread_wait_to_finish(obstacle_thread_1)
 
-static func load_arc_stack_v3(arc_data: Array) -> void:
+static func load_arc_stack_v3(arc_data: Array, rotations: Array) -> void:
 	var last_index := arc_data.size() - 1
 	var load_range := func(start: int, end: int) -> void:
 		var i := start
 		while i < end:
 			if arc_data[i] is Dictionary:
 				@warning_ignore("unsafe_cast")
+				var a := arc_data[i] as Dictionary
+				var beat := Utils.get_float(a, "b", 0.)
+				a["hr"] = Utils.get_float(a, "r", 0.) + get_rotation(rotations, beat)
+				a["tr"] = a["hr"]
 				arc_stack[last_index - i] = ArcInfo.new_v3(arc_data[i] as Dictionary)
 			i += 1
 	var midpoint := arc_data.size() >> 1
 	arc_stack.resize(arc_data.size())
-	#arc_thread_1.start(load_range.bind(0, midpoint))
 	Utils.custom_thread_call(arc_thread_1, load_range, [0, midpoint])
 	load_range.bind(midpoint, arc_data.size()).call()
-	#arc_thread_1.wait_to_finish()
 	Utils.custom_thread_wait_to_finish(arc_thread_1)
 
 static func load_arc_stack_v4(arc_data: Array, meta: Array, meta_notes: Array) -> void:
@@ -316,10 +343,8 @@ static func load_arc_stack_v4(arc_data: Array, meta: Array, meta_notes: Array) -
 			i += 1
 	var midpoint := arc_data.size() >> 1
 	arc_stack.resize(arc_data.size())
-	#arc_thread_1.start(load_range.bind(0, midpoint))
 	Utils.custom_thread_call(arc_thread_1, load_range, [0, midpoint])
 	load_range.bind(midpoint, arc_data.size()).call()
-	#arc_thread_1.wait_to_finish()
 	Utils.custom_thread_wait_to_finish(arc_thread_1)
 
 static func load_chain_stack_v4(chain_data: Array, meta: Array, meta_notes: Array) -> void:
@@ -356,13 +381,17 @@ static func load_chain_stack_v4(chain_data: Array, meta: Array, meta_notes: Arra
 	load_range.bind(midpoint, chain_data.size()).call()
 	Utils.custom_thread_wait_to_finish(chain_thread_1)
 
-static func load_chain_stack_v3(chain_data: Array) -> void:
+static func load_chain_stack_v3(chain_data: Array, rotations: Array) -> void:
 	var last_index := chain_data.size() - 1
 	var load_range := func(start: int, end: int) -> void:
 		var i := start
 		while i < end:
 			if chain_data[i] is Dictionary:
 				@warning_ignore("unsafe_cast")
+				var c := chain_data[i] as Dictionary
+				var beat := Utils.get_float(c, "b", 0.)
+				c["hr"] = Utils.get_float(c, "r", 0.) + get_rotation(rotations, beat)
+				c["tr"] = c["hr"]
 				chain_stack[last_index - i] = ChainInfo.new_v3(chain_data[i] as Dictionary)
 			i += 1
 	var midpoint := chain_data.size() >> 1
@@ -433,11 +462,11 @@ static func get_rotations_v3(events: Array) -> Array:
 			var t := Utils.get_float(e, "b", 0.)
 			if Utils.get_float(e, "e", 0.) > 0:
 				t += 1.e-5
-			angle += Utils.get_float(e, "r", 0.) * (PI / 180.)
+			angle += Utils.get_float(e, "r", 0.)
 			if angle < 0:
-				angle += TAU
-			elif angle >= TAU:
-				angle -= TAU
+				angle += 360
+			elif angle >= 360:
+				angle -= 360
 			r.append([t, angle])
 	r.sort_custom(compare_times)
 	return r
@@ -452,10 +481,10 @@ static func load_beatmap(info: MapInfo, difficulty: DifficultyInfo, map_data: Di
 	
 	if map_data.has("_version"):
 		var rotations := get_rotations_v2(Utils.get_array(map_data, "_events", []))
-		Utils.custom_thread_call(note_thread_0, load_note_stack_v2, [Utils.get_array(map_data, "_notes", [])])
-		Utils.custom_thread_call(obstacle_thread_0, load_obstacle_stack_v2, [Utils.get_array(map_data, "_obstacles", [])])
+		Utils.custom_thread_call(note_thread_0, load_note_stack_v2, [Utils.get_array(map_data, "_notes", []), rotations])
+		Utils.custom_thread_call(obstacle_thread_0, load_obstacle_stack_v2, [Utils.get_array(map_data, "_obstacles", []), rotations])
 		Utils.custom_thread_call(event_thread_0, load_event_stack_v2, [Utils.get_array(map_data, "_events", [])])
-		Utils.custom_thread_call(arc_thread_0, load_arc_stack_v2, [Utils.get_array(map_data, "_sliders", [])])
+		Utils.custom_thread_call(arc_thread_0, load_arc_stack_v2, [Utils.get_array(map_data, "_sliders", []), rotations])
 		chain_stack.clear()
 		current_info = info
 		current_difficulty = difficulty
@@ -478,13 +507,19 @@ static func load_beatmap(info: MapInfo, difficulty: DifficultyInfo, map_data: Di
 				rotations = get_rotations_v3(Utils.get_array(map_data, "rotationEvents", []))
 			Utils.custom_thread_call(note_thread_0, load_note_stack_v3_v4, 
 				[Utils.get_array(map_data, "colorNotes", []),
-				 Utils.get_array(map_data, "colorNotesData", []) if v4 else []])
+				 Utils.get_array(map_data, "colorNotesData", []) if v4 else [],
+				 rotations
+				])
 			Utils.custom_thread_call(bomb_thread_0, load_bomb_stack_v3_v4, 
 				[Utils.get_array(map_data, "bombNotes", []),
-				 Utils.get_array(map_data, "bombNotesData", []) if v4 else []])
+				 Utils.get_array(map_data, "bombNotesData", []) if v4 else [],
+				 rotations
+				])
 			Utils.custom_thread_call(obstacle_thread_0, load_obstacle_stack_v3_v4, 
 				[Utils.get_array(map_data, "obstacles", []),
-				 Utils.get_array(map_data, "obstaclesData", []) if v4 else []])
+				 Utils.get_array(map_data, "obstaclesData", []) if v4 else [],
+				 rotations
+				])
 			if v4:
 				Utils.custom_thread_call(arc_thread_0, load_arc_stack_v4, 
 					[Utils.get_array(map_data, "arcs", []),
@@ -492,7 +527,8 @@ static func load_beatmap(info: MapInfo, difficulty: DifficultyInfo, map_data: Di
 					Utils.get_array(map_data, "colorNotesData", [])
 					])
 			else:
-				Utils.custom_thread_call(arc_thread_0, load_arc_stack_v3, [Utils.get_array(map_data, "sliders", [])])
+				Utils.custom_thread_call(arc_thread_0, load_arc_stack_v3, 
+					[Utils.get_array(map_data, "sliders", []), rotations])
 			if v4:
 				Utils.custom_thread_call(chain_thread_0, load_chain_stack_v4, 
 					[Utils.get_array(map_data, "chains", []),
@@ -500,7 +536,10 @@ static func load_beatmap(info: MapInfo, difficulty: DifficultyInfo, map_data: Di
 					Utils.get_array(map_data, "colorNotesData", [])
 					])
 			else:
-				Utils.custom_thread_call(chain_thread_0, load_chain_stack_v3, [Utils.get_array(map_data, "burstSliders", [])])
+				Utils.custom_thread_call(chain_thread_0, load_chain_stack_v3, 
+					[Utils.get_array(map_data, "burstSliders", []),
+					rotations
+					])
 			if v4:
 				pass #TODO
 			else:

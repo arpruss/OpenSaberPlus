@@ -47,5 +47,5 @@ static func new_v3(chain_dict: Dictionary) -> ChainInfo:
 		Utils.precise_measurement(Utils.get_float(chain_dict, "ty", 0)),
 		int(Utils.get_float(chain_dict, "sc", 0)),
 		Utils.get_float(chain_dict, "s", 1.0),
-		0.
+		Utils.get_float(chain_dict, "r", 0)
 	)

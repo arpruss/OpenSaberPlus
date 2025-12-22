@@ -82,8 +82,7 @@ static func new_v4(info_dict: Dictionary, load_path: String) -> MapInfo:
 		if beatmap is not Dictionary:
 			continue
 		var characteristic := Utils.get_str(beatmap as Dictionary, "characteristic", "")
-		if (characteristic == "Lightshow" or 
-			characteristic == "360Degree" or characteristic == "90Degree"):
+		if characteristic == "Lightshow":
 			continue
 		if level_mappers.length() == 0:
 			var authors := Utils.get_dict(beatmap as Dictionary, "beatmapAuthors", {})
@@ -124,8 +123,7 @@ static func new_v2(info_dict: Dictionary, load_path: String) -> MapInfo:
 	
 	for difficulty_set: Variant in difficulty_beatmap_sets:
 		var characteristic := Utils.get_str(difficulty_set, "_beatmapCharacteristicName", "")
-		if (characteristic == "Lightshow" or 
-			characteristic == "360Degree" or characteristic == "90Degree"):
+		if characteristic == "Lightshow":
 			continue
 		if difficulty_set is Dictionary:
 			var beatmaps := Utils.get_array(difficulty_set as Dictionary, "_difficultyBeatmaps", [])

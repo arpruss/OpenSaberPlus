@@ -21,7 +21,7 @@ static func new_v2(bomb_dict: Dictionary) -> BombInfo:
 		Utils.get_float(bomb_dict, "_time", 0.0),
 		int(Utils.get_float(bomb_dict, "_lineIndex", 0)),
 		int(Utils.get_float(bomb_dict, "_lineLayer", 0)),
-		0.
+		Utils.get_float(bomb_dict, "r", 0)
 	)
 
 static func new_v3(bomb_dict: Dictionary) -> BombInfo:
@@ -29,5 +29,5 @@ static func new_v3(bomb_dict: Dictionary) -> BombInfo:
 		Utils.get_float(bomb_dict, "b", 0.0),
 		int(Utils.get_float(bomb_dict, "x", 0)),
 		int(Utils.get_float(bomb_dict, "y", 0)),
-		0.
+		Utils.get_float(bomb_dict, "r", 0)
 	)

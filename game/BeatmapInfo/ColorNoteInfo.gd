@@ -26,7 +26,7 @@ static func new_v2(note_dict: Dictionary) -> ColorNoteInfo:
 		Utils.precise_measurement(Utils.get_float(note_dict, "_lineLayer", 0)),
 		int(Utils.get_float(note_dict, "_type", -1.0)),
 		Utils.precise_angle_rad(Utils.get_float(note_dict, "_cutDirection", 0), 0),
-		0
+		Utils.get_float(note_dict, "r", 0)
 	)
 
 static func new_v3(note_dict: Dictionary) -> ColorNoteInfo:
@@ -36,5 +36,5 @@ static func new_v3(note_dict: Dictionary) -> ColorNoteInfo:
 		Utils.precise_measurement(Utils.get_float(note_dict, "y", 0)),
 		int(Utils.get_float(note_dict, "c", 0)),
 		Utils.precise_angle_rad(Utils.get_float(note_dict, "d", 0), Utils.get_float(note_dict, "a", 0)),
-		0
+		Utils.get_float(note_dict, "r", 0)
 	)

@@ -42,7 +42,7 @@ static func new_v2(obstacle_dict: Dictionary) -> ObstacleInfo:
 		y,
 		Utils.precise_measurement(Utils.get_float(obstacle_dict, "_width", 0)),
 		h,
-		0
+		Utils.get_float(obstacle_dict, "r", 0)
 	)
 
 static func new_v3(obstacle_dict: Dictionary) -> ObstacleInfo:
@@ -53,5 +53,5 @@ static func new_v3(obstacle_dict: Dictionary) -> ObstacleInfo:
 		Utils.precise_measurement(Utils.get_float(obstacle_dict, "y", 0)),
 		Utils.precise_measurement(Utils.get_float(obstacle_dict, "w", 0)),
 		Utils.precise_measurement(Utils.get_float(obstacle_dict, "h", 0)),
-		0
+		Utils.get_float(obstacle_dict, "r", 0)
 	)

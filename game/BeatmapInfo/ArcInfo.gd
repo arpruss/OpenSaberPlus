@@ -60,8 +60,8 @@ static func new_v2(arc_dict: Dictionary) -> ArcInfo:
 		Utils.precise_angle_rad(Utils.get_float(arc_dict, "_tailCutDirection", 0), 0),
 		Utils.get_float(arc_dict, "_tailControlPointLengthMultiplier", 1.0),
 		int(Utils.get_float(arc_dict, "_sliderMidAnchorMode", 0)),
-		0.,
-		0.
+		Utils.get_float(arc_dict, "hr", 0),
+		Utils.get_float(arc_dict, "tr", 0)
 	)
 
 static func new_v3(arc_dict: Dictionary) -> ArcInfo:
@@ -78,6 +78,6 @@ static func new_v3(arc_dict: Dictionary) -> ArcInfo:
 		Utils.precise_angle_rad(Utils.get_float(arc_dict, "tc", 0), Utils.get_float(arc_dict, "tail_angle_offset", 0)),
 		Utils.get_float(arc_dict, "tmu", 1.0),
 		int(Utils.get_float(arc_dict, "m", 0)),
-		0.,
-		0.
+		Utils.get_float(arc_dict, "hr", 0),
+		Utils.get_float(arc_dict, "tr", 0)
 	)
