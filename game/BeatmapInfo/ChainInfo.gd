@@ -11,12 +11,14 @@ var tail_line_index: float
 var tail_line_layer: float
 var slice_count: int
 var squish_factor: float
+var rotation: float
 
 @warning_ignore("shadowed_variable")
 func _init(
 	color: int, head_beat: float, head_line_index: float, head_line_layer: float,
 	head_cut_angle: float, tail_beat: float, tail_line_index: float,
-	tail_line_layer: float, slice_count: int, squish_factor: float
+	tail_line_layer: float, slice_count: int, squish_factor: float,
+	rotation_degrees: float
 ) -> void:
 	self.color = color
 	self.head_beat = head_beat
@@ -28,6 +30,10 @@ func _init(
 	self.tail_line_layer = tail_line_layer
 	self.slice_count = slice_count
 	self.squish_factor = squish_factor
+	self.rotation = rotation_degrees * (PI/180.)
+	if abs(Settings.gradual_rotation) > 1e-5:
+		self.rotation += Settings.gradual_rotation * head_beat
+
 
 static func new_v3(chain_dict: Dictionary) -> ChainInfo:
 	return ChainInfo.new(
@@ -40,5 +46,6 @@ static func new_v3(chain_dict: Dictionary) -> ChainInfo:
 		Utils.precise_measurement(Utils.get_float(chain_dict, "tx", 0)),
 		Utils.precise_measurement(Utils.get_float(chain_dict, "ty", 0)),
 		int(Utils.get_float(chain_dict, "sc", 0)),
-		Utils.get_float(chain_dict, "s", 1.0)
+		Utils.get_float(chain_dict, "s", 1.0),
+		0.
 	)

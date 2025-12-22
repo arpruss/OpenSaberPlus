@@ -6,11 +6,20 @@ var speed: float
 
 func _physics_process(delta: float) -> void:
 	if Scoreboard.paused: return
-	transform.origin.z += speed * delta
+	
+	#transform.origin.z += speed * delta
 	
 	# remove children that go to far
-	if transform.origin.z > despawn_z:
+	#if transform.origin.z > despawn_z:
+	#	queue_free()
+	
+	transform.origin.x += speed * delta * sin(rotation.y)
+	transform.origin.z += speed * delta * cos(rotation.y)
+	
+	var rz := global_transform.rotated(Vector3(0,1,0), -rotation.y).origin.z
+	if rz > despawn_z:
 		queue_free()
+	
 
 func spawn(wall_info: ObstacleInfo, current_beat: float) -> void:
 	var mesh := $WallMeshOrientation/WallMesh as MeshInstance3D
@@ -31,9 +40,26 @@ func spawn(wall_info: ObstacleInfo, current_beat: float) -> void:
 	despawn_z = Constants.MISS_Z + depth
 	(mesh.material_override as ShaderMaterial).set_shader_parameter(&"size", Vector3(x_size, y_size, z_size))
 	
-	transform.origin.x = (0.5 * wall_info.width + wall_info.line_index - 2) * Settings.LANE_DISTANCE_X
-	transform.origin.y = (0.5 * wall_info.height + wall_info.line_layer) * Constants.LANE_DISTANCE_Y
-	transform.origin.z = (current_beat - wall_info.beat) * Constants.BEAT_DISTANCE - depth
+	#transform.origin.x = (0.5 * wall_info.width + wall_info.line_index - 2) * Settings.LANE_DISTANCE_X
+	#transform.origin.y = (0.5 * wall_info.height + wall_info.line_layer) * Constants.LANE_DISTANCE_Y
+	#transform.origin.z = (current_beat - wall_info.beat) * Constants.BEAT_DISTANCE - depth
+	
+	var x := (0.5 * wall_info.width + wall_info.line_index - 2) * Settings.LANE_DISTANCE_X
+	var y := (0.5 * wall_info.height + wall_info.line_layer) * Constants.LANE_DISTANCE_Y
+	var z := (current_beat - wall_info.beat) * Constants.BEAT_DISTANCE - depth
+	
+	var c := cos(wall_info.rotation)
+	var s := sin(wall_info.rotation)
+	
+	transform.origin.x = c * x - s * z
+	transform.origin.y = y
+	transform.origin.z = s * x + c * z
+	
+	#transform.origin.x = Settings.LANE_DISTANCE_X * float(note_info.line_index) + Settings.LANE_ZERO_X
+	#transform.origin.y = Constants.LANE_DISTANCE_Y * float(note_info.line_layer) + Constants.LAYER_ZERO_Y
+	#transform.origin.z = -(note_info.beat - current_beat) * Constants.BEAT_DISTANCE
+	
+	rotation.y = -wall_info.rotation
 	
 	speed = Constants.BEAT_DISTANCE * Map.current_info.beats_per_minute / 60.0
 	($AnimationPlayer as AnimationPlayer).play(&"Spawn")

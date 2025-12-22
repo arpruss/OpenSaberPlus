@@ -20,6 +20,12 @@ var despawn_z: float
 
 func spawn(info: ArcInfo, current_beat: float, _activator_cube: BeepCube = null) -> void:
 	arc_info = info
+	
+	if abs(arc_info.head_rotation) > 1e-5 or abs(arc_info.tail_rotation) > 1e-5:
+		# TODO: arcs will twist if rotation is on, and I don't know how to do that efficiently
+		queue_free()
+		return
+	
 	speed = Constants.BEAT_DISTANCE * Map.current_info.beats_per_minute * 0.016666666666666667
 	visual = $Path3D/Visual
 	visual.material_override = right_material if arc_info.color == 1 else left_material

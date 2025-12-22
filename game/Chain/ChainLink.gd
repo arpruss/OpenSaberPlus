@@ -81,6 +81,8 @@ func spawn(chain_info: ChainInfo, current_beat: float, head_pos: Vector2, tail_p
 	transform.origin.y = bezier_pos.y
 	transform.origin.z = -(beat - current_beat) * Constants.BEAT_DISTANCE
 	
+	add_lane_rotation(chain_info.rotation)
+	
 	rotation.z = q0.angle_to_point(q1) - TAU*0.25
 	
 	# little bit of forgiveness.  if the chain link is more than a meter away
@@ -119,6 +121,7 @@ func hide_cube() -> void:
 	process_mode = Node.PROCESS_MODE_DISABLED # disable to help with performance
 
 func cut(saber: LightSaber, _cut_speed: Vector3, cut_plane: Plane, _controller: BeepSaberController) -> void:
+	#_cut_speed = _cut_speed.rotated(Vector3(0,1,0),-rotation.x)
 	if saber.type == which_saber:
 		Scoreboard.chain_link_cut(transform.origin)
 	else:

@@ -25,6 +25,8 @@ func spawn(info: BombInfo, current_beat: float) -> void:
 	transform.origin.y = Constants.LANE_DISTANCE_Y * float(info.line_layer) + Constants.LAYER_ZERO_Y
 	transform.origin.z = -distance * Constants.BEAT_DISTANCE
 	
+	add_lane_rotation(info.rotation)
+	
 	var anim := $AnimationPlayer as AnimationPlayer
 	var anim_speed := Map.current_difficulty.note_jump_movement_speed / 9.0
 	anim.speed_scale = maxf(min_speed, anim_speed)

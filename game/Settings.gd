@@ -39,6 +39,10 @@ var color_right: Color:
 	set(value):
 		color_right = value
 		set_and_emit(&"color_right", value)
+var gradual_rotation: float:
+	set(value):
+		gradual_rotation = value
+		set_and_emit(&"gradual_rotation", value)
 var saber_visual: int:
 	set(value):
 		saber_visual = value
@@ -53,7 +57,6 @@ var width: int:
 		LANE_DISTANCE_X = Constants.DEFAULT_LANE_DISTANCE_X * width / Constants.DEFAULT_WIDTH
 		LANE_ZERO_X = Constants.DEFAULT_LANE_ZERO_X * width / Constants.DEFAULT_WIDTH
 		set_and_emit(&"width", value)
-		vr.log_info("width "+str(value))
 var left_saber_offset_pos: Vector3:
 	set(value):
 		left_saber_offset_pos = value
@@ -195,6 +198,7 @@ var default_values = {
 	color_left = Color("1a1aff"),
 	color_right = Color("ff1a1a"),
 	saber_tail = true,
+	gradual_rotation = 0.,
 	glare = true,
 	show_debug_info = false,
 	mixed_reality = false,

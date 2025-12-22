@@ -7,15 +7,20 @@ var line_index: float
 var line_layer: float
 var width: float
 var height: float
+var rotation: = 0.
 
 @warning_ignore("shadowed_variable")
-func _init(beat: float, duration: float, line_index: float, line_layer: float, width: float, height: float) -> void:
+func _init(beat: float, duration: float, line_index: float, line_layer: float, 
+		width: float, height: float, rotation_degrees: float) -> void:
 	self.beat = beat
 	self.duration = duration
 	self.line_index = line_index
 	self.line_layer = line_layer
 	self.width = width
 	self.height = height
+	self.rotation = rotation_degrees * (PI/180.)
+	if abs(Settings.gradual_rotation) > 1e-5:
+		self.rotation += Settings.gradual_rotation * beat
 
 static func new_v2(obstacle_dict: Dictionary) -> ObstacleInfo:
 	var y: float = 0
@@ -36,7 +41,8 @@ static func new_v2(obstacle_dict: Dictionary) -> ObstacleInfo:
 		Utils.precise_measurement(Utils.get_float(obstacle_dict, "_lineIndex", 0)),
 		y,
 		Utils.precise_measurement(Utils.get_float(obstacle_dict, "_width", 0)),
-		h
+		h,
+		0
 	)
 
 static func new_v3(obstacle_dict: Dictionary) -> ObstacleInfo:
@@ -46,5 +52,6 @@ static func new_v3(obstacle_dict: Dictionary) -> ObstacleInfo:
 		Utils.precise_measurement(Utils.get_float(obstacle_dict, "x", 0)),
 		Utils.precise_measurement(Utils.get_float(obstacle_dict, "y", 0)),
 		Utils.precise_measurement(Utils.get_float(obstacle_dict, "w", 0)),
-		Utils.precise_measurement(Utils.get_float(obstacle_dict, "h", 0))
+		Utils.precise_measurement(Utils.get_float(obstacle_dict, "h", 0)),
+		0
 	)

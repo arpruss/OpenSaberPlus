@@ -57,6 +57,8 @@ func spawn(note_info: ColorNoteInfo, current_beat: float) -> void:
 	transform.origin.y = Constants.LANE_DISTANCE_Y * float(note_info.line_layer) + Constants.LAYER_ZERO_Y
 	transform.origin.z = -(note_info.beat - current_beat) * Constants.BEAT_DISTANCE
 	
+	add_lane_rotation(note_info.rotation)
+	
 	rotation.z = note_info.cut_angle
 	
 	piece_left.set_color(color, is_dot)
@@ -131,6 +133,7 @@ func set_arc_tail() -> void:
 
 func cut(saber: LightSaber, cut_speed: Vector3, cut_plane: Plane, controller: BeepSaberController) -> void:
 	# compute the angle between the cube orientation and the cut direction
+	cut_speed = cut_speed.rotated(Vector3(0,1,0), -rotation.y)
 	var cut_direction_xy := -Vector3(cut_speed.x, cut_speed.y, 0.0).normalized()
 	var base_cut_angle_accuracy := global_transform.basis.y.dot(cut_direction_xy)
 	var cut_distance := cut_plane.distance_to(global_transform.origin)

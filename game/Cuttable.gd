@@ -1,6 +1,8 @@
 extends PooledNode3D
 class_name Cuttable
 
+var speed_x: float
+var speed_z: float
 var speed: float
 var beat: float
 
@@ -26,15 +28,37 @@ func _on_cut_piece_died():
 	_piece_death_count += 1
 	if _piece_death_count >= 2:
 		release()
+		
+func add_lane_rotation(angle):
+	var c := cos(angle)
+	var s := sin(angle)
+	
+	speed_x = -speed * s
+	speed_z = speed * c
+
+	var x := transform.origin.x
+	var z := transform.origin.z 	
+	transform.origin.x = c * x - s * z
+	transform.origin.z = s * x + c * z
+	
+	rotation.y = -angle
+	#transform = transform.rotated(Vector3(0,0,1), note_info.cut_angle).translated(Vector3(x,y,z)).rotated(Vector3(0,1,0), beat/30.)
 
 func _physics_process(delta: float) -> void:
 	if Scoreboard.paused or not is_visible_in_tree() or not Map.current_info: return
-	transform.origin.z += speed * delta
+	transform.origin.x += speed_x * delta
+	transform.origin.z += speed_z * delta
 	
 	# enable collisions when cuttable gets close enough to player
-	if global_transform.origin.z > -3.0:
-		set_collision_disabled(false)
+	#if global_transform.origin.z > -3.0:
+	#	set_collision_disabled(false)
 	
 	# remove children that go to far
-	if global_transform.origin.z > Constants.MISS_Z:
+	#if global_transform.origin.z > Constants.MISS_Z:
+	#	on_miss()
+
+	var rz := global_transform.rotated(Vector3(0,1,0), -rotation.y).origin.z
+	if rz > -3.0:
+		set_collision_disabled(false)
+	if rz > Constants.MISS_Z:
 		on_miss()

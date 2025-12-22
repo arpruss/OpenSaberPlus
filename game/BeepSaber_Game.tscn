@@ -116,7 +116,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.00581, -5.78464)
 visible = false
 
 [node name="Bomb" parent="pre_renderer" instance=ExtResource("24")]
-min_speed = null
 
 [node name="Wall" parent="pre_renderer" instance=ExtResource("3_73652")]
 

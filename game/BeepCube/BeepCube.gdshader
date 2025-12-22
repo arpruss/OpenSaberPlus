@@ -44,7 +44,7 @@ void fragment() {
 	ROUGHNESS = roughness;
 	if (FRONT_FACING) {
 		vec2 dot_uv = vec2(UV.x+0.5, UV.y);
-		if (is_dot || arrows_enabled) 
+		if (is_dot || arrows_enabled)
 			EMISSION = (color.rgb * sub_emission_energy) + texture(texture_emission, is_dot ? dot_uv : UV).rgb;
 		else
 			EMISSION = (color.rgb * sub_emission_energy);

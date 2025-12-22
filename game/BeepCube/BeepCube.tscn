@@ -72,7 +72,7 @@ _data = {
 "Spawn": SubResource("3")
 }
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_lnaj2"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yum2f"]
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("3_7slj3")
@@ -92,6 +92,7 @@ shader_parameter/texture_emission = ExtResource("4_10m2m")
 
 [node name="BeepCube" type="Node3D"]
 script = ExtResource("1_7mymb")
+min_speed = null
 
 [node name="BeepCube_Big" type="Area3D" parent="." groups=["beepcube"]]
 monitoring = false
@@ -117,6 +118,6 @@ libraries = {
 [node name="BeepCubeMesh" parent="." instance=ExtResource("2_sbb11")]
 transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 0, 0, 0)
 layers = 3
-material_override = SubResource("ShaderMaterial_lnaj2")
+material_override = SubResource("ShaderMaterial_yum2f")
 
 [node name="SliceParticles" parent="." instance=ExtResource("5_tissj")]
