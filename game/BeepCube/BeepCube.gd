@@ -117,7 +117,7 @@ func make_chain_head() -> void:
 	chain_head = true
 
 func on_miss() -> void:
-	Scoreboard.bad_cut(global_transform.origin+Vector3(0,0,-3.5), "miss")
+	Scoreboard.bad_cut(global_transform.origin+Vector3(0,0,-3.5), lane_rotation, "miss")
 	hide_cube()
 	release()
 
@@ -147,10 +147,10 @@ func cut(saber: LightSaber, cut_speed: Vector3, cut_plane: Plane, controller: Be
 		travel_distance_factor = clampf((travel_distance_factor-0.5)/0.5, 0.0, 1.0)
 		# allows a bit of save margin where the beat is considered 100% correct
 		var beat_accuracy := clampf((1.0 - absf(global_transform.origin.z)) / 0.5, 0.0, 1.0)
-		Scoreboard.note_cut(saber, transform.origin, beat_accuracy, cut_angle_accuracy, cut_distance_accuracy, travel_distance_factor, arc_head, arc_tail, chain_head)
+		Scoreboard.note_cut(saber, transform.origin, lane_rotation, beat_accuracy, cut_angle_accuracy, cut_distance_accuracy, travel_distance_factor, arc_head, arc_tail, chain_head)
 		cutted.emit(true)
 	else:
-		Scoreboard.bad_cut(transform.origin, "wrong saber")
+		Scoreboard.bad_cut(transform.origin, lane_rotation, "wrong saber")
 		cutted.emit(false)
 	
 	# reset the movement tracking volume for the next cut

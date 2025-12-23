@@ -1,7 +1,7 @@
 extends Node
 
 signal score_changed()
-signal points_awarded(position: Vector3, amount: String)
+signal points_awarded(position: Vector3, rotation: float, amount: String)
 
 var points: int
 var combo: int
@@ -57,7 +57,7 @@ func exit_wall() -> void:
 	in_wall = false
 	last_in_wall_time = -1000.
 
-func add_points(position: Vector3, amount: int, comment: String = "") -> void:
+func add_points(position: Vector3, _rotation: float, amount: int, comment: String = "") -> void:
 	if amount > 0:
 		GlobalReferences.main_game_scene.update_health(Constants.HEALTH_HIT)
 	
@@ -67,7 +67,7 @@ func add_points(position: Vector3, amount: int, comment: String = "") -> void:
 		multiplier = 1 + mini(combo / 10, 7)
 	points += amount * multiplier
 	
-	points_awarded.emit(position, str(amount)+(comment if Settings.explain else ""))
+	points_awarded.emit(position, _rotation, str(amount)+(comment if Settings.explain else ""))
 	score_changed.emit()
 	# track accuracy percent
 	var good = Constants.SWING_GOOD_SCORE if Settings.swing_scoring else Constants.OPENSABER_GOOD_SCORE
@@ -75,25 +75,25 @@ func add_points(position: Vector3, amount: int, comment: String = "") -> void:
 	right_notes += normalized_points
 	wrong_notes += 1.0-normalized_points
 	
-func add_swing_score(position: Vector3, accuracy: float, preswing: float, followthrough: float) -> void:
+func add_swing_score(position: Vector3, _rotation: float, accuracy: float, preswing: float, followthrough: float) -> void:
 	var score := int(roundf(accuracy + 
 					clampf(preswing/Constants.TARGET_PRESWING_ANGLE,0,1.)*Constants.SWING_PRESWING_SCORE + 
 					clampf(followthrough/Constants.TARGET_FOLLOWTHROUGH_ANGLE,0.,1.)*Constants.SWING_FOLLOWTHROUGH_SCORE))
-	add_points(position, score, "  (%d %d %d)" % [int(roundf(accuracy)),int(roundf(preswing)),int(roundf(followthrough))])
+	add_points(position, _rotation, score, "  (%d %d %d)" % [int(roundf(accuracy)),int(roundf(preswing)),int(roundf(followthrough))])
 
-func chain_link_cut(position: Vector3) -> void:
-	add_points(position, Constants.SWING_CHAIN_LINK_SCORE if Settings.swing_scoring else Constants.OPENSABER_CHAIN_LINK_SCORE)
+func chain_link_cut(position: Vector3, _rotation: float) -> void:
+	add_points(position, _rotation, Constants.SWING_CHAIN_LINK_SCORE if Settings.swing_scoring else Constants.OPENSABER_CHAIN_LINK_SCORE)
 
-func note_cut(saber: LightSaber, position: Vector3, beat_accuracy: float, cut_angle_accuracy: float, cut_distance_accuracy: float, 
+func note_cut(saber: LightSaber, position: Vector3, _rotation: float, beat_accuracy: float, cut_angle_accuracy: float, cut_distance_accuracy: float, 
 		travel_distance_factor: float, arc_head: bool, arc_tail: bool, chain_head: bool) -> void:
 	
 	if cut_angle_accuracy >= 1e-10: # and cut_distance_accuracy >= 1e-10:
 		if Settings.swing_scoring:
 			if chain_head:
-				saber.add_chain_head_score(position, cut_distance_accuracy * Constants.SWING_ACCURACY_SCORE)
+				saber.add_chain_head_score(position, _rotation, cut_distance_accuracy * Constants.SWING_ACCURACY_SCORE)
 			else:
 				# unless we have arc_head, we need to wait for followthrough to finish scoring
-				saber.add_score(position, cut_distance_accuracy * Constants.SWING_ACCURACY_SCORE, arc_head, arc_tail)
+				saber.add_score(position, _rotation, cut_distance_accuracy * Constants.SWING_ACCURACY_SCORE, arc_head, arc_tail)
 		else:
 			# point computation based on the accuracy of the swing
 			var points_new := beat_accuracy * Constants.OPENSABER_BEAT_ACCURACY_SCORE;
@@ -101,11 +101,11 @@ func note_cut(saber: LightSaber, position: Vector3, beat_accuracy: float, cut_an
 			points_new += cut_distance_accuracy * Constants.OPENSABER_DISTANCE_ACCURACY_SCORE;
 			points_new += points_new * travel_distance_factor
 			points_new = roundf(points_new)
-			add_points(position, int(points_new))
+			add_points(position, _rotation, int(points_new))
 	else:
-		bad_cut(position, "bad angle")
+		bad_cut(position, _rotation, "bad angle")
 
-func bad_cut(position: Vector3, description: String) -> void:
+func bad_cut(position: Vector3, _rotation: float, description: String) -> void:
 	if description == "bomb":
 		reset_combo(false)
 		GlobalReferences.main_game_scene.update_health(Constants.HEALTH_BOMB)
@@ -117,4 +117,4 @@ func bad_cut(position: Vector3, description: String) -> void:
 	else:
 		reset_combo(true)
 		GlobalReferences.main_game_scene.update_health(Constants.HEALTH_BAD_CUT)
-	points_awarded.emit(position, description if Settings.explain else "x")
+	points_awarded.emit(position, _rotation, description if Settings.explain else "x")

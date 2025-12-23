@@ -123,9 +123,9 @@ func hide_cube() -> void:
 func cut(saber: LightSaber, _cut_speed: Vector3, cut_plane: Plane, _controller: BeepSaberController) -> void:
 	#_cut_speed = _cut_speed.rotated(Vector3(0,1,0),-rotation.x)
 	if saber.type == which_saber:
-		Scoreboard.chain_link_cut(transform.origin)
+		Scoreboard.chain_link_cut(transform.origin, lane_rotation)
 	else:
-		Scoreboard.bad_cut(transform.origin, "wrong saber")
+		Scoreboard.bad_cut(transform.origin, lane_rotation, "wrong saber")
 	
 	hide_cube()
 	if Settings.cube_cuts_falloff:
@@ -135,7 +135,7 @@ func cut(saber: LightSaber, _cut_speed: Vector3, cut_plane: Plane, _controller: 
 		release()# release now instead of waiting for cut pieces to die off
 
 func on_miss() -> void:
-	Scoreboard.bad_cut(transform.origin, "miss")
+	Scoreboard.bad_cut(transform.origin, lane_rotation, "miss")
 	hide_cube()
 	release()
 

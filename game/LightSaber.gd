@@ -128,20 +128,20 @@ func _update_history(time: int) -> void:
 	else:
 		history[history_tail] = [time, get_pointing()]
 	
-func add_score(position: Vector3, accuracy: float, arc_head: bool, arc_tail: bool) -> void:
+func add_score(position: Vector3, lane_rotation: float, accuracy: float, arc_head: bool, arc_tail: bool) -> void:
 	var time = Time.get_ticks_msec()
 	var pointing := get_pointing()
 	var preswing := get_preswing_angle(time, pointing) if not arc_head else Constants.TARGET_PRESWING_ANGLE
 	if arc_tail:
-		Scoreboard.add_swing_score(position, accuracy, preswing, Constants.TARGET_FOLLOWTHROUGH_ANGLE)
+		Scoreboard.add_swing_score(position, lane_rotation, accuracy, preswing, Constants.TARGET_FOLLOWTHROUGH_ANGLE)
 	else:
-		score_queue.append([Time.get_ticks_msec(), position, get_pointing(), preswing, accuracy])
+		score_queue.append([Time.get_ticks_msec(), position, lane_rotation, get_pointing(), preswing, accuracy])
 	
-func add_chain_head_score(position: Vector3, accuracy: float) -> void:
+func add_chain_head_score(position: Vector3, lane_rotation: float, accuracy: float) -> void:
 	var time = Time.get_ticks_msec()
 	var pointing := get_pointing()
 	var preswing := get_preswing_angle(time, pointing)
-	Scoreboard.add_swing_score(position, accuracy, preswing, 0.)
+	Scoreboard.add_swing_score(position, lane_rotation, accuracy, preswing, 0.)
 	
 func get_preswing_angle(time: int, pointing: Vector3) -> float:
 	if history[history_tail].size() == 0:
@@ -170,11 +170,12 @@ func get_followthrough_angle(time: int, pointing: Vector3) -> float:
 	
 func _update_score(score_entry) -> void:
 	var position := score_entry[1] as Vector3
-	var pointing := score_entry[2] as Vector3
-	var preswing := score_entry[3] as float
-	var other_component := score_entry[4] as float
+	var lane_rotation := score_entry[2] as float
+	var pointing := score_entry[3] as Vector3
+	var preswing := score_entry[4] as float
+	var other_component := score_entry[5] as float
 	var followthrough := get_followthrough_angle(score_entry[0], pointing)
-	Scoreboard.add_swing_score(position, other_component, preswing, followthrough)
+	Scoreboard.add_swing_score(position, lane_rotation, other_component, preswing, followthrough)
 	
 func _update_scores() -> void:
 	var start_time = Time.get_ticks_msec() - followthrough_time

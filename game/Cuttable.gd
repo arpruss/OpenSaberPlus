@@ -3,6 +3,7 @@ class_name Cuttable
 
 var speed: float
 var beat: float
+var lane_rotation := 0.
 
 # used to release the cube once both of it's cut pieces have died off
 # Note: serves no purpose for bombs
@@ -37,6 +38,8 @@ func add_lane_rotation(angle):
 	transform.origin.z = s * x + c * z
 	
 	rotation.y = -angle
+	
+	lane_rotation = angle
 
 func _physics_process(delta: float) -> void:
 	if Scoreboard.paused or not is_visible_in_tree() or not Map.current_info: return
