@@ -21,6 +21,7 @@ static var last_beat := 0.
 static var one_saber := false
 
 const ROTATIONS_V2 := [ -60., -45., -30., -15., 15., 30., 45., 60. ]
+const ROTATE_ALL := 0 # for testing
 
 # some simple multithreading, since larger maps can take a very long time to
 # load.  one particulary notable outlier is the beatmap of shrek, which took
@@ -432,6 +433,8 @@ static func compare_times(a: Array, b: Array):
 	return a[0] < b[0]
 			
 static func get_rotations_v2(events: Array) -> Array:
+	if abs(ROTATE_ALL) > Constants.ROTATION_EPS:
+		return [[0.,ROTATE_ALL]]
 	var r := []
 	var angle := 0.
 	for e in events:
@@ -455,6 +458,8 @@ static func get_rotations_v2(events: Array) -> Array:
 	return r
 
 static func get_rotations_v3(events: Array) -> Array:
+	if abs(ROTATE_ALL) > Constants.ROTATION_EPS:
+		return [[0.,ROTATE_ALL]]
 	var r := []
 	var angle := 0.
 	for e in events:

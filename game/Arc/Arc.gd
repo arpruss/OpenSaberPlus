@@ -21,9 +21,8 @@ var despawn_z: float
 func spawn(info: ArcInfo, current_beat: float, _activator_cube: BeepCube = null) -> void:
 	arc_info = info
 	
-	if abs(arc_info.head_rotation) > Constants.ROTATION_EPS or abs(arc_info.tail_rotation) > Constants.ROTATION_EPS:
-		# TODO: arcs will twist if rotations are different; if they are the same, it should
-		# be possible to make the arcs work, but I haven't figure out how yet
+	if abs(arc_info.head_rotation-arc_info.tail_rotation) > Constants.ROTATION_EPS: # or abs(arc_info.tail_rotation) > Constants.ROTATION_EPS:
+		# TODO: arcs will twist if rotations are different
 		queue_free()
 		return
 	
@@ -97,6 +96,8 @@ func spawn(info: ArcInfo, current_beat: float, _activator_cube: BeepCube = null)
 	
 	curve.add_point(tail_pos - tail_pos, Vector3(tail_cut_rotation.x, tail_cut_rotation.y, 0.0) * arc_angle_force, Vector3.ZERO)
 
+	rotation.y = -arc_info.head_rotation
+
 func _on_activator_cube_cutted(correct_saber: bool) -> void:
 	if activator_cube and activator_cube.cutted.is_connected(_on_activator_cube_cutted):
 		activator_cube.cutted.disconnect(_on_activator_cube_cutted)
@@ -110,8 +111,8 @@ func start_magnet() -> void:
 
 func _process(delta: float) -> void:
 	if Scoreboard.paused or not is_visible_in_tree() or not Map.current_info: return
-	transform.origin.z += speed * delta
-	if transform.origin.z >= despawn_z:
+	transform.origin += speed * delta * transform.basis.z
+	if transform.origin.dot(transform.basis.z) >= despawn_z:
 		if activator_cube and activator_cube.cutted.is_connected(_on_activator_cube_cutted):
 			activator_cube.cutted.disconnect(_on_activator_cube_cutted)
 		queue_free()

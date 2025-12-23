@@ -111,7 +111,6 @@ script = SubResource("GDScript_u17fx")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3.34241)
 
 [node name="BeepCube" parent="." instance=ExtResource("1_o0b4s")]
-min_speed = 0.5
 
 [node name="Timer" type="Timer" parent="."]
 one_shot = true
