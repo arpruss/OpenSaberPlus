@@ -1,8 +1,6 @@
 extends PooledNode3D
 class_name Cuttable
 
-var speed_x: float
-var speed_z: float
 var speed: float
 var beat: float
 
@@ -33,16 +31,12 @@ func add_lane_rotation(angle):
 	var c := cos(angle)
 	var s := sin(angle)
 	
-	speed_x = -speed * s
-	speed_z = speed * c
-
 	var x := transform.origin.x
 	var z := transform.origin.z
 	transform.origin.x = c * x - s * z
 	transform.origin.z = s * x + c * z
 	
 	rotation.y = -angle
-	#transform = transform.rotated(Vector3(0,0,1), note_info.cut_angle).translated(Vector3(x,y,z)).rotated(Vector3(0,1,0), beat/30.)
 
 func _physics_process(delta: float) -> void:
 	if Scoreboard.paused or not is_visible_in_tree() or not Map.current_info: return
