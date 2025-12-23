@@ -21,8 +21,9 @@ var despawn_z: float
 func spawn(info: ArcInfo, current_beat: float, _activator_cube: BeepCube = null) -> void:
 	arc_info = info
 	
-	if abs(arc_info.head_rotation) > 1e-5 or abs(arc_info.tail_rotation) > 1e-5:
-		# TODO: arcs will twist if rotation is on, and I don't know how to do that efficiently
+	if abs(arc_info.head_rotation) > Constants.ROTATION_EPS or abs(arc_info.tail_rotation) > Constants.ROTATION_EPS:
+		# TODO: arcs will twist if rotations are different; if they are the same, it should
+		# be possible to make the arcs work, but I haven't figure out how yet
 		queue_free()
 		return
 	
@@ -47,16 +48,16 @@ func spawn(info: ArcInfo, current_beat: float, _activator_cube: BeepCube = null)
 	)
 	despawn_z = Constants.MISS_Z - tail_pos.z
 	
-	var head_rotation: Vector2
-	var tail_rotation: Vector2
+	var head_cut_rotation: Vector2
+	var tail_cut_rotation: Vector2
 	if info.head_cut_angle >= Constants.DIRECTION8_COMPARE:
-		head_rotation = Vector2.ZERO
+		head_cut_rotation = Vector2.ZERO
 	else:
-		head_rotation = Utils.rotation_unit_vector(info.head_cut_angle) * info.head_control_point_length_multiplier
+		head_cut_rotation = Utils.rotation_unit_vector(info.head_cut_angle) * info.head_control_point_length_multiplier
 	if info.tail_cut_angle >= Constants.DIRECTION8_COMPARE:
-		tail_rotation = Vector2.ZERO
+		tail_cut_rotation = Vector2.ZERO
 	else:
-		tail_rotation = -Utils.rotation_unit_vector(info.tail_cut_angle) * info.tail_control_point_length_multiplier
+		tail_cut_rotation = -Utils.rotation_unit_vector(info.tail_cut_angle) * info.tail_control_point_length_multiplier
 	
 	var curve := ($Path3D as Path3D).curve
 	curve.clear_points()
@@ -64,7 +65,7 @@ func spawn(info: ArcInfo, current_beat: float, _activator_cube: BeepCube = null)
 	# sets the origin of the tail at the tail point to use in the shader for a fade out effect
 	$Path3D.position = tail_pos
 	
-	curve.add_point(head_pos - tail_pos, Vector3.ZERO, Vector3(head_rotation.x, head_rotation.y, 0.0) * arc_angle_force)
+	curve.add_point(head_pos - tail_pos, Vector3.ZERO, Vector3(head_cut_rotation.x, head_cut_rotation.y, 0.0) * arc_angle_force)
 	
 	if info.mid_anchor_mode > 0:
 		for midpoint_id in range(mid_points):
@@ -72,7 +73,7 @@ func spawn(info: ArcInfo, current_beat: float, _activator_cube: BeepCube = null)
 			var head_rot := Utils.rotation_unit_vector(info.head_cut_angle)
 			
 			var point_pos :=  head_pos.lerp(tail_pos, range)
-			point_pos += Vector3(head_rotation.x, head_rotation.y, 0.0).rotated(Vector3(0,0,1), 
+			point_pos += Vector3(head_cut_rotation.x, head_cut_rotation.y, 0.0).rotated(Vector3(0,0,1), 
 					(
 						(PI if Utils.close_angle(info.head_cut_angle, info.tail_angle) else TAU)
 						*(-range if info.mid_anchor_mode == 1 else range)
@@ -94,7 +95,7 @@ func spawn(info: ArcInfo, current_beat: float, _activator_cube: BeepCube = null)
 			curve.set_point_in(smoothpoint_id + 1, smooth_dir * -distance)
 			curve.set_point_out(smoothpoint_id + 1, smooth_dir * distance)
 	
-	curve.add_point(tail_pos - tail_pos, Vector3(tail_rotation.x, tail_rotation.y, 0.0) * arc_angle_force, Vector3.ZERO)
+	curve.add_point(tail_pos - tail_pos, Vector3(tail_cut_rotation.x, tail_cut_rotation.y, 0.0) * arc_angle_force, Vector3.ZERO)
 
 func _on_activator_cube_cutted(correct_saber: bool) -> void:
 	if activator_cube and activator_cube.cutted.is_connected(_on_activator_cube_cutted):

@@ -37,7 +37,7 @@ func add_lane_rotation(angle):
 	speed_z = speed * c
 
 	var x := transform.origin.x
-	var z := transform.origin.z 	
+	var z := transform.origin.z
 	transform.origin.x = c * x - s * z
 	transform.origin.z = s * x + c * z
 	
@@ -46,9 +46,15 @@ func add_lane_rotation(angle):
 
 func _physics_process(delta: float) -> void:
 	if Scoreboard.paused or not is_visible_in_tree() or not Map.current_info: return
-	transform.origin.x += speed_x * delta
-	transform.origin.z += speed_z * delta
 	
+	transform.origin += speed * delta * transform.basis.z
+	var rz := global_transform.origin.dot(transform.basis.z)
+	
+	if rz > -3.0:
+		set_collision_disabled(false)
+	if rz > Constants.MISS_Z:
+		on_miss()
+
 	# enable collisions when cuttable gets close enough to player
 	#if global_transform.origin.z > -3.0:
 	#	set_collision_disabled(false)
@@ -57,8 +63,4 @@ func _physics_process(delta: float) -> void:
 	#if global_transform.origin.z > Constants.MISS_Z:
 	#	on_miss()
 
-	var rz := global_transform.rotated(Vector3(0,1,0), -rotation.y).origin.z
-	if rz > -3.0:
-		set_collision_disabled(false)
-	if rz > Constants.MISS_Z:
-		on_miss()
+	#var rz := global_transform.rotated(Vector3(0,1,0), -rotation.y).origin.z

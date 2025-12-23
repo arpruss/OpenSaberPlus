@@ -13,12 +13,18 @@ func _physics_process(delta: float) -> void:
 	#if transform.origin.z > despawn_z:
 	#	queue_free()
 	
-	transform.origin.x += speed * delta * sin(rotation.y)
-	transform.origin.z += speed * delta * cos(rotation.y)
+	transform.origin += speed * delta * transform.basis.z
+	var rz := global_transform.origin.dot(transform.basis.z)
 	
-	var rz := global_transform.rotated(Vector3(0,1,0), -rotation.y).origin.z
 	if rz > despawn_z:
 		queue_free()
+
+	#transform.origin.x += speed * delta * sin(rotation.y)
+	#transform.origin.z += speed * delta * cos(rotation.y)
+	#
+	#var rz := global_transform.rotated(Vector3(0,1,0), -rotation.y).origin.z
+	#if rz > despawn_z:
+	#	queue_free()
 	
 
 func spawn(wall_info: ObstacleInfo, current_beat: float) -> void:
@@ -27,7 +33,6 @@ func spawn(wall_info: ObstacleInfo, current_beat: float) -> void:
 	var shape := ($WallMeshOrientation/WallArea/CollisionShape3D as CollisionShape3D).shape as BoxShape3D
 	
 	var x_size := wall_info.width * Settings.LANE_DISTANCE_X
-	# ARP: TODO is this right?
 	var y_size := wall_info.height * Constants.LANE_DISTANCE_Y
 	var z_size := wall_info.duration * Constants.BEAT_DISTANCE
 	var depth := z_size * 0.5
