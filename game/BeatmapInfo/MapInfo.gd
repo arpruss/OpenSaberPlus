@@ -75,8 +75,7 @@ static func new_v4(info_dict: Dictionary, load_path: String) -> MapInfo:
 	if (difficulty_beatmaps.is_empty()):
 		vr.log_warning("No difficultyBeatmaps in info.dat")
 		
-	# todo: different authors for mappers and lighters on different levels
-	var level_mappers := "" 
+	var level_mappers := []
 	
 	for beatmap: Variant in difficulty_beatmaps:
 		if beatmap is not Dictionary:
@@ -84,13 +83,11 @@ static func new_v4(info_dict: Dictionary, load_path: String) -> MapInfo:
 		var characteristic := Utils.get_str(beatmap as Dictionary, "characteristic", "")
 		if characteristic == "Lightshow":
 			continue
-		if level_mappers.length() == 0:
-			var authors := Utils.get_dict(beatmap as Dictionary, "beatmapAuthors", {})
-			var mappers := Utils.get_array(authors, "mappers", [])
-			for i in range(mappers.size()):
-				if level_mappers.length() > 0:
-					level_mappers += ", "
-				level_mappers += mappers[i]
+		var authors := Utils.get_dict(beatmap as Dictionary, "beatmapAuthors", {})
+		var mappers := Utils.get_array(authors, "mappers", [])
+		for m in mappers:
+			if not level_mappers.has(m):
+				level_mappers.append(m)
 		diffs.append(DifficultyInfo.load_v4(beatmap as Dictionary))
 		
 	var song_dict := Utils.get_dict(info_dict, "song", {})
@@ -101,7 +98,7 @@ static func new_v4(info_dict: Dictionary, load_path: String) -> MapInfo:
 		Utils.get_str(song_dict, "title", ""),
 		Utils.get_str(song_dict, "subTitle", ""),
 		Utils.get_str(song_dict, "author", ""),
-		level_mappers,
+		", ".join(level_mappers),
 		Utils.get_float(audio_dict, "bmp", 60.0),
 		Utils.get_float(audio_dict, "previewStartTime", 0.0),
 		Utils.get_float(audio_dict, "previewDuration", 0.0),
