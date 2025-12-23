@@ -291,20 +291,11 @@ flat = true
 [node name="DifficultyMenu" type="ItemList" parent="."]
 layout_mode = 0
 offset_left = 864.0
-offset_top = 49.0
+offset_top = 20.0
 offset_right = 1118.0
 offset_bottom = 308.0
 theme = SubResource("12")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-
-[node name="Songs_Label2" type="Label" parent="."]
-layout_mode = 0
-offset_left = 864.0
-offset_top = 16.0
-offset_right = 1040.0
-offset_bottom = 50.0
-theme_override_font_sizes/font_size = 20
-text = "Difficulty"
 
 [node name="LoadPlaylists_Button" type="Button" parent="."]
 layout_mode = 0
