@@ -22,6 +22,8 @@ var right_color: Color
 @onready var right_waving_lasers_material := ($Level/RightWavingLasers/laser1/Bar7 as MeshInstance3D).material_override as StandardMaterial3D
 @onready var track_lights_material := ($Level/TrackLights/Bar1 as MeshInstance3D).material_override as StandardMaterial3D
 @onready var floor_material := ($Level/floor as MeshInstance3D).material_override as StandardMaterial3D
+@onready var track_lights_right := $Level/TrackLights/Bar1 as MeshInstance3D
+@onready var track_lights_left := $Level/TrackLights/Bar2 as MeshInstance3D
 
 @onready var ring_anim_player := $Level/rings/AnimationPlayer as AnimationPlayer
 @onready var left_laser_anim_player := $Level/LeftWavingLasers/AnimationPlayer as AnimationPlayer
@@ -53,6 +55,17 @@ func set_background_texture() -> void:
 	sphere_material.set_shader_parameter("bg_base", texture)
 
 func set_background() -> void:
+	var width_scale := float(Settings.width) / Constants.DEFAULT_WIDTH
+	track_lights_right.transform.origin.x = 3. * width_scale
+	track_lights_left.transform.origin.x = -3. * width_scale
+	#($Level/floor/line1).global_transform.origin.x = -1.5 * width_scale
+	#($Level/floor/line2).global_transform.origin.x = 1.5 * width_scale
+	#($Level/floor/line3).global_transform.origin.x = 3 * width_scale
+	#($Level/floor/line4).global_transform.origin.x = -3 * width_scale
+	($Level/floor).scale = Vector3(24, 1, 3 * width_scale)
+	
+	#($Level/floor/line2).transform.origin.x = 0.5
+	
 	if Settings.background == "simple":
 		ring_holder.hide()
 		diagonal_lasers_holder.hide()

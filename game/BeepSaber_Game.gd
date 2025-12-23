@@ -279,6 +279,8 @@ func on_settings_changed(key: StringName) -> void:
 			update_left_color(Settings.color_left)
 		&"color_right":
 			update_right_color(Settings.color_right)
+		&"width":
+			event_driver.set_background()
 		&"background":
 			event_driver.set_background()
 		&"background_texture":
