@@ -22,7 +22,7 @@ func _init(parent: Node3D, mesh_in: Mesh, mat_in: ShaderMaterial, bouncy: bool) 
 	collision_mask = CollisionLayerConstants.Floor_mask
 	gravity_scale = 1
 	if bouncy:
-		# set a phyiscs material for some more bouncy behaviour
+		# set a physics material for some more bouncy behaviour
 		physics_material_override = cube_phys_mat
 	
 	mesh.mesh = mesh_in
@@ -43,6 +43,7 @@ func start_cut_plane(normal: Vector3, dist: float) -> void:
 	# can behave weirdly (ex. AnimationPlayer won't always play correctly)
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	
+	mesh.scale = Vector3(Constants.SMALL_SIZE,Constants.SMALL_SIZE,Constants.SMALL_SIZE) if Settings.small else Vector3(1,1,1)
 	lifetime = 0.0
 	visible = true
 	angular_velocity = Vector3()
@@ -50,10 +51,11 @@ func start_cut_plane(normal: Vector3, dist: float) -> void:
 	
 	normal = normal.rotated(Vector3(0,0,1), -parent_cube.rotation.z) # ARP: fix rot
 	mesh.material_override.set_shader_parameter(&"cut_plane_normal", normal)
-	if dist > .25:
-		dist = .25
-	elif dist < -.25:
-		dist = -.25
+	var s := Constants.SMALL_SIZE if Settings.small else 1.
+	if dist > .25 * s:
+		dist = .25 * s 
+	elif dist < -.25 * s:
+		dist = -.25 * s
 	mesh.material_override.set_shader_parameter(&"cut_plane_dist", dist) 
 
 func set_color(new_color: Color, is_dot: bool) -> void:

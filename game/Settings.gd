@@ -166,6 +166,10 @@ var arrows_enabled: bool:
 	set(value):
 		arrows_enabled = value
 		set_and_emit(&"arrows_enabled", value)
+var small: bool:
+	set(value):
+		small = value
+		set_and_emit(&"small", value)
 
 func _ready() -> void:
 	DirAccess.make_dir_recursive_absolute(Constants.CONFIG_ROOT_PATH)
@@ -226,6 +230,7 @@ var default_values = {
 	background_texture = "res://game/data/background/nightsky.jpg",
 	health_mode = false,
 	arrows_enabled = true,
+	small = false,
 	claws = false
 }
 

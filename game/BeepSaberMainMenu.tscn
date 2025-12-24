@@ -127,49 +127,55 @@ script = ExtResource("3")
 layout_mode = 0
 offset_left = 863.0
 offset_top = 322.0
-offset_right = 1070.0
+offset_right = 960.0
 offset_bottom = 409.0
 
-[node name="Health" type="CheckBox" parent="Modifiers"]
+[node name="Health" type="CheckButton" parent="Modifiers"]
 layout_mode = 0
-offset_right = 24.0
-offset_bottom = 24.0
+offset_right = 95.0
+offset_bottom = 27.0
 text = "Health"
 
-[node name="Bombs" type="CheckBox" parent="Modifiers/Health"]
+[node name="Bombs" type="CheckButton" parent="Modifiers/Health"]
 layout_mode = 0
 offset_top = 27.0
-offset_right = 79.0
+offset_right = 99.0
 offset_bottom = 54.0
 text = "Bombs"
 
-[node name="Arrows" type="CheckBox" parent="Modifiers/Health/Bombs"]
+[node name="Arrows" type="CheckButton" parent="Modifiers/Health/Bombs"]
 layout_mode = 0
 offset_top = 27.0
-offset_right = 79.0
+offset_right = 99.0
 offset_bottom = 54.0
 text = "Arrows"
 
-[node name="Claws" type="CheckBox" parent="Modifiers"]
+[node name="Modifiers2" type="Panel" parent="."]
 layout_mode = 0
-offset_left = 90.0
-offset_right = 207.0
+offset_left = 966.0
+offset_top = 322.0
+offset_right = 1102.0
+offset_bottom = 409.0
+
+[node name="Claws" type="CheckButton" parent="Modifiers2"]
+layout_mode = 0
+offset_right = 137.0
 offset_bottom = 27.0
 text = "Short Sword"
 
-[node name="XWidth" type="CheckBox" parent="Modifiers/Claws"]
+[node name="Small" type="CheckButton" parent="Modifiers2/Claws"]
 layout_mode = 0
 offset_top = 27.0
-offset_right = 84.0
+offset_right = 117.0
 offset_bottom = 54.0
-text = "XWidth	"
+text = "Small"
 
-[node name="XXWidth" type="CheckBox" parent="Modifiers/Claws/XWidth"]
+[node name="Width" type="Button" parent="Modifiers2/Claws/Small"]
 layout_mode = 0
 offset_top = 27.0
-offset_right = 94.0
+offset_right = 97.0
 offset_bottom = 54.0
-text = "XXWidth	"
+text = "Stretch 100%"
 
 [node name="Play_Button" type="Button" parent="."]
 layout_mode = 0
@@ -391,9 +397,10 @@ text = "X"
 [connection signal="toggled" from="Modifiers/Health" to="." method="_on_health_toggled"]
 [connection signal="toggled" from="Modifiers/Health/Bombs" to="." method="_on_bombs_toggled"]
 [connection signal="toggled" from="Modifiers/Health/Bombs/Arrows" to="." method="_on_arrows_toggled"]
-[connection signal="toggled" from="Modifiers/Claws" to="." method="_on_claws_toggled"]
-[connection signal="toggled" from="Modifiers/Claws/XWidth" to="." method="_on_xwidth_toggled"]
-[connection signal="toggled" from="Modifiers/Claws/XWidth/XXWidth" to="." method="_on_xxwidth_toggled"]
+[connection signal="toggled" from="Modifiers2/Claws" to="." method="_on_claws_toggled"]
+[connection signal="toggled" from="Modifiers2/Claws/Small" to="." method="_on_small_toggled"]
+[connection signal="button_down" from="Modifiers2/Claws/Small/Width" to="." method="_on_width_button_pressed"]
+[connection signal="pressed" from="Modifiers2/Claws/Small/Width" to="." method="_on_width_pressed"]
 [connection signal="pressed" from="Play_Button" to="." method="_on_Play_Button_pressed"]
 [connection signal="button_up" from="Delete_Button" to="." method="_on_Delete_Button_button_up"]
 [connection signal="pressed" from="Exit_Button" to="." method="_on_Exit_Button_pressed"]

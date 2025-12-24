@@ -18,6 +18,7 @@ uniform bool is_chain_head = false;
 
 uniform vec3 cut_plane_normal = vec3(0,0,0);
 uniform float cut_plane_dist = 0;
+uniform float scale = 1;
 
 varying float cut_interp;
 varying float chain_interp;

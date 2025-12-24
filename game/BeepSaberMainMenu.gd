@@ -28,12 +28,12 @@ const FAVORITE_MASK := 0x4000000000000000
 @onready var songs_menu := $SongsMenu as ItemList
 @onready var diff_menu := $DifficultyMenu as ItemList
 @onready var delete_button := $Delete_Button as Button
-@onready var health_control := $Modifiers/Health as CheckBox
-@onready var bombs_control := $Modifiers/Health/Bombs as CheckBox
-@onready var arrows_control := $Modifiers/Health/Bombs/Arrows as CheckBox
-@onready var claws_control := $Modifiers/Claws as CheckBox
-@onready var xwidth_control := $Modifiers/Claws/XWidth as CheckBox
-@onready var xxwidth_control := $Modifiers/Claws/XWidth/XXWidth as CheckBox
+@onready var health_control := $Modifiers/Health as CheckButton
+@onready var bombs_control := $Modifiers/Health/Bombs as CheckButton
+@onready var arrows_control := $Modifiers/Health/Bombs/Arrows as CheckButton
+@onready var claws_control := $Modifiers2/Claws as CheckButton
+@onready var small_control := $Modifiers2/Claws/Small as CheckButton
+@onready var width_control := $Modifiers2/Claws/Small/Width as Button
 @onready var favorite_button := $Favorite_Button as Button
 
 @onready var song_preview := $song_prev as AudioStreamPlayer
@@ -354,10 +354,10 @@ func _delete_map(map: MapInfo) -> void:
 func _ready() -> void:
 	health_control.button_pressed = Settings.health_mode
 	arrows_control.button_pressed = Settings.arrows_enabled
+	small_control.button_pressed = Settings.small
 	bombs_control.button_pressed = Settings.bombs_enabled
 	claws_control.button_pressed = Settings.claws
-	xwidth_control.button_pressed = Settings.width == Constants.XWIDTH
-	xxwidth_control.button_pressed = Settings.width == Constants.XXWIDTH
+	width_control.text = "Stretch %d%%" % Settings.width
 	favorite_button.hide()
 	
 	UI_AudioEngine.attach_children(self)
@@ -527,18 +527,6 @@ func _on_arrows_toggled(value: bool) -> void:
 	Settings.arrows_enabled = value
 	update_view()
 
-func _on_xwidth_toggled(value: bool) -> void:
-	xxwidth_control.button_pressed = false
-	xwidth_control.button_pressed = value
-	Settings.width = Constants.XWIDTH if value else Constants.DEFAULT_WIDTH
-	update_view()
-	
-func _on_xxwidth_toggled(value: bool) -> void:
-	xwidth_control.button_pressed = false
-	Settings.width = Constants.XXWIDTH if value else Constants.DEFAULT_WIDTH
-	xxwidth_control.button_pressed = value
-	update_view()
-	
 func _set_favorite_icon(value: bool) -> void:
 	favorite_button.text = "\u2605" if value else "\u2606"
 	var color := Color.YELLOW if value else Color.WHITE
@@ -557,3 +545,17 @@ func _on_favorite_button_pressed() -> void:
 	_sort_songs()
 	update_view()
 	
+func _on_width_button_pressed() -> void:
+	for i in range(Constants.WIDTHS.size()):
+		if Settings.width == Constants.WIDTHS[i][0]:
+			Settings.width = Constants.WIDTHS[(i+1) % Constants.WIDTHS.size()][0]
+			width_control.text = "Stretch %d%%" % Settings.width
+			return
+	Settings.width = Constants.DEFAULT_WIDTH
+	width_control.text = "Stretch %d%%" % Settings.width
+	update_view()
+
+
+func _on_small_toggled(value: bool) -> void:
+	Settings.small = value
+	update_view()

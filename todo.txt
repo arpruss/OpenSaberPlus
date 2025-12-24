@@ -1,3 +1,4 @@
 Chain plane cut
 Fix preview image disappearance (maybe after deleting map)
 Show high scores after game without having to click on map name
+left handed mode

@@ -52,7 +52,11 @@ func spawn(note_info: ColorNoteInfo, current_beat: float) -> void:
 		(collision_big.shape as BoxShape3D).size.y = 0.8
 	else:
 		(collision_big.shape as BoxShape3D).size.y = 0.5
-	
+		
+	if Settings.small:
+		scale = Vector3(Constants.SMALL_SIZE,Constants.SMALL_SIZE,Constants.SMALL_SIZE)
+	else:
+		scale = Vector3(1,1,1)
 	transform.origin.x = Settings.LANE_DISTANCE_X * float(note_info.line_index) + Settings.LANE_ZERO_X
 	transform.origin.y = Constants.LANE_DISTANCE_Y * float(note_info.line_layer) + Constants.LAYER_ZERO_Y
 	transform.origin.z = -(note_info.beat - current_beat) * Constants.BEAT_DISTANCE
@@ -166,6 +170,12 @@ func cut(saber: LightSaber, cut_speed: Vector3, cut_plane: Plane, controller: Be
 # cut the cube by creating two rigid bodies and using a CSGBox to create
 # the cut plane
 func _start_cut_pieces(cutplane: Plane) -> void:
+	if Settings.small:
+		piece_left.scale = Vector3(Constants.SMALL_SIZE,Constants.SMALL_SIZE,Constants.SMALL_SIZE)
+		piece_right.scale = Vector3(Constants.SMALL_SIZE,Constants.SMALL_SIZE,Constants.SMALL_SIZE)
+	else:
+		piece_left.scale = Vector3(1,1,1)
+		piece_right.scale = Vector3(1,1,1)
 	piece_left.global_transform = global_transform
 	piece_right.global_transform = global_transform
 	

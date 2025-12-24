@@ -55,11 +55,18 @@ static func get_rank_key(diff_rank: int) -> int:
 		diff_rank |= Constants.DIFFICULTY_BOMBS
 	if Settings.claws:
 		diff_rank |= Constants.DIFFICULTY_CLAWS
-	if Settings.width == Constants.XWIDTH:
-		diff_rank |= Constants.DIFFICULTY_XWIDTH
-	elif Settings.width == Constants.XXWIDTH:
-		diff_rank |= Constants.DIFFICULTY_XXWIDTH
+	diff_rank = diff_rank & ~Constants.DIFFICULTY_WIDTH_MASK
+	for i in range(Constants.WIDTHS.size()):
+		if Settings.width == Constants.WIDTHS[i][0]:
+			diff_rank |= Constants.WIDTHS[i][1]
 	return diff_rank
+	
+static func get_width_from_rank(diff_rank: int) -> int:
+	var wr := diff_rank & Constants.DIFFICULTY_WIDTH_MASK
+	for ww in Constants.WIDTHS:
+		if ww[1] == wr:
+			return ww[1]
+	return Constants.DEFAULT_WIDTH
 	
 # adds a new score record to the table. if the score is not a highscore
 # then the record will not be stored.
