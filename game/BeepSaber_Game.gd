@@ -5,7 +5,7 @@
 extends Node3D
 class_name BeepSaber_Game
 
-var version := "0.7.31"
+var version := "0.7.32"
 
 var gamestate_bootup := GameState.new()
 var gamestate_mapcomplete := GameStateMapComplete.new()
@@ -275,6 +275,13 @@ func on_settings_changed(key: StringName) -> void:
 	# ensures proper initialization of tree for proper first frame setting loading
 	await get_tree().process_frame
 	match key:
+		&"left_handed":
+			if Settings.left_handed:
+				left_ui_raycast.active = true
+				right_ui_raycast.active = false
+			else:
+				left_ui_raycast.active = false
+				right_ui_raycast.active = true
 		&"color_left":
 			update_left_color(Settings.color_left)
 		&"color_right":

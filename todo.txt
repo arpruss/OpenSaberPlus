@@ -1,4 +1,5 @@
 Chain plane cut
 Fix preview image disappearance (maybe after deleting map)
 Show high scores after game without having to click on map name
-left handed mode
+fix awkward saber stuff in OneSaber pause menu
+do better job switching between left and right handed modes

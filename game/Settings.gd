@@ -97,6 +97,10 @@ var explain: bool:
 	set(value):
 		explain = value
 		set_and_emit(&"explain", value)
+var left_handed: bool:
+	set(value):
+		left_handed = value
+		set_and_emit(&"left_handed", value)
 var not_music_dl: bool:
 	set(value):
 		not_music_dl = value
@@ -207,6 +211,7 @@ var default_values = {
 	show_debug_info = false,
 	mixed_reality = false,
 	explain = false,
+	left_handed = false,
 	not_music_dl = false,
 	swing_scoring = true,
 	bombs_enabled = true,

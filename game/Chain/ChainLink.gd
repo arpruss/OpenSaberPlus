@@ -125,7 +125,7 @@ func hide_cube() -> void:
 
 func cut(saber: LightSaber, _cut_speed: Vector3, cut_plane: Plane, _controller: BeepSaberController) -> void:
 	#_cut_speed = _cut_speed.rotated(Vector3(0,1,0),-rotation.x)
-	if saber.type == which_saber:
+	if saber.type == which_saber or Map.one_saber:
 		Scoreboard.chain_link_cut(transform.origin, lane_rotation)
 	else:
 		Scoreboard.bad_cut(transform.origin, lane_rotation, "wrong saber")

@@ -14,6 +14,7 @@ signal apply()
 @onready var show_debug_control := $ScrollContainer/VBox/show_debug as CheckButton
 @onready var mixed_reality_control := $ScrollContainer/VBox/mixed_reality as CheckButton
 @onready var explain_control := $ScrollContainer/VBox/explain as CheckButton
+@onready var left_handed_control := $ScrollContainer/VBox/left_handed as CheckButton
 @onready var not_music_dl_control := $ScrollContainer/VBox/not_music_dl as CheckButton
 @onready var swing_scoring_control := $ScrollContainer/VBox/swing_scoring as CheckButton
 @onready var show_collisions := $ScrollContainer/VBox/show_collisions as CheckButton
@@ -97,6 +98,7 @@ func set_controls_from_settings() -> void:
 	show_debug_control.button_pressed = Settings.show_debug_info
 	mixed_reality_control.button_pressed = Settings.mixed_reality
 	explain_control.button_pressed = Settings.explain
+	left_handed_control.button_pressed = Settings.left_handed
 	not_music_dl_control.button_pressed = Settings.not_music_dl
 	swing_scoring_control.button_pressed = Settings.swing_scoring
 	ui_volume_slider.value = Settings.ui_volume
@@ -298,3 +300,6 @@ func _on_background_texture_selected(item: int) -> void:
 
 func _on_background_mode_selected(item: int) -> void:
 	Settings.background = Settings.BACKGROUND_MODES[item][0]
+
+func _on_left_handed_toggled(value: bool) -> void:
+	Settings.left_handed = value
