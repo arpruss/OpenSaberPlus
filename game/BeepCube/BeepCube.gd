@@ -141,12 +141,13 @@ func cut(saber: LightSaber, cut_speed: Vector3, cut_plane: Plane, controller: Be
 	var cut_direction_xy := -Vector3(cut_speed.x, cut_speed.y, 0.0).normalized()
 	var base_cut_angle_accuracy := global_transform.basis.y.dot(cut_direction_xy)
 	var cut_distance := cut_plane.distance_to(global_transform.origin)
+	var distance_scale := 1./Constants.SMALL_SIZE if Settings.small else 1.
 	
 	if saber.type == which_saber or Map.one_saber:
 		var cut_angle_accuracy := clampf((base_cut_angle_accuracy-0.7)/0.3, 0.0, 1.0)
 		if is_dot or not Settings.arrows_enabled: #ignore angle if is a dot
 			cut_angle_accuracy = 1.0
-		var cut_distance_accuracy := clampf((0.1 - absf(cut_distance))/0.1, 0.0, 1.0)
+		var cut_distance_accuracy := clampf((0.1 - absf(cut_distance*distance_scale))/0.1, 0.0, 1.0)
 		var travel_distance_factor := controller.movement_aabb.get_longest_axis_size()
 		travel_distance_factor = clampf((travel_distance_factor-0.5)/0.5, 0.0, 1.0)
 		# allows a bit of save margin where the beat is considered 100% correct
