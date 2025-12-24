@@ -502,6 +502,10 @@ func _on_licenses_pressed() -> void:
 	
 func update_view() -> void:
 	if current_selected >= 0 and len(_currently_selected_songlist_ref):
+		if current_selected >= len(_currently_selected_songlist_ref):
+			current_selected = 0
+		if _map_difficulty >= len(_currently_selected_songlist_ref[current_selected].difficulty_beatmaps):
+			_map_difficulty = 0
 		var difficulty := _currently_selected_songlist_ref[current_selected].difficulty_beatmaps[_map_difficulty]
 		difficulty_changed.emit(_currently_selected_songlist_ref[current_selected], difficulty.difficulty_rank)
 	else:	

@@ -174,7 +174,7 @@ func _start_cut_pieces(cutplane: Plane) -> void:
 	
 	_piece_death_count = 0
 
-	var p := global_transform * cutplane	
+	var p := global_transform * cutplane # ARP: fix rot
 	piece_left.start_cut_plane(-p.normal, -p.d)
 	piece_right.start_cut_plane(p.normal, p.d)
 	
