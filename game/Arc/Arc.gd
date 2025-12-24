@@ -74,7 +74,7 @@ func spawn(info: ArcInfo, current_beat: float, _activator_cube: BeepCube = null)
 			var point_pos :=  head_pos.lerp(tail_pos, range)
 			point_pos += Vector3(head_cut_rotation.x, head_cut_rotation.y, 0.0).rotated(Vector3(0,0,1), 
 					(
-						(PI if Utils.close_angle(info.head_cut_angle, info.tail_angle) else TAU)
+						(PI if Utils.close_angle(info.head_cut_angle, info.tail_cut_angle) else TAU)
 						*(-range if info.mid_anchor_mode == 1 else range)
 					)
 				) * arc_angle_force

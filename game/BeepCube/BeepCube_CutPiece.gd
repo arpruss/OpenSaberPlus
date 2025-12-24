@@ -48,7 +48,7 @@ func start_cut_plane(normal: Vector3, dist: float) -> void:
 	angular_velocity = Vector3()
 	linear_velocity = Vector3()
 	
-	#normal = normal.rotated(Vector3(0,0,1), -parent_cube.rotation.z) # ARP: fix rot
+	normal = normal.rotated(Vector3(0,0,1), -parent_cube.rotation.z) # ARP: fix rot
 	mesh.material_override.set_shader_parameter(&"cut_plane_normal", normal)
 	if dist > .25:
 		dist = .25
