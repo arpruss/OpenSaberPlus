@@ -32,8 +32,8 @@ const FAVORITE_MASK := 0x4000000000000000
 @onready var bombs_control := $Modifiers/Health/Bombs as CheckButton
 @onready var arrows_control := $Modifiers/Health/Bombs/Arrows as CheckButton
 @onready var claws_control := $Modifiers2/Claws as CheckButton
-@onready var small_control := $Modifiers2/Claws/Small as CheckButton
-@onready var width_control := $Modifiers2/Claws/Small/Width as Button
+@onready var small_control := $Modifiers2/Claws/Small as Button
+@onready var width_control := $Modifiers2/Claws/Small/Width as OptionButton
 @onready var favorite_button := $Favorite_Button as Button
 
 @onready var song_preview := $song_prev as AudioStreamPlayer
@@ -355,9 +355,14 @@ func _ready() -> void:
 	health_control.button_pressed = Settings.health_mode
 	arrows_control.button_pressed = Settings.arrows_enabled
 	small_control.button_pressed = Settings.small
+	width_control.clear()
+	for i in range(Constants.WIDTHS.size()):
+		width_control.add_item("Stretch %d%%" % Constants.WIDTHS[i][0])
+		if Constants.WIDTHS[i][0] == Settings.width:
+			width_control.selected = i
+	
 	bombs_control.button_pressed = Settings.bombs_enabled
 	claws_control.button_pressed = Settings.claws
-	width_control.text = "Stretch %d%%" % Settings.width
 	favorite_button.hide()
 	
 	UI_AudioEngine.attach_children(self)
@@ -545,17 +550,10 @@ func _on_favorite_button_pressed() -> void:
 	_sort_songs()
 	update_view()
 	
-func _on_width_button_pressed() -> void:
-	for i in range(Constants.WIDTHS.size()):
-		if Settings.width == Constants.WIDTHS[i][0]:
-			Settings.width = Constants.WIDTHS[(i+1) % Constants.WIDTHS.size()][0]
-			width_control.text = "Stretch %d%%" % Settings.width
-			return
-	Settings.width = Constants.DEFAULT_WIDTH
-	width_control.text = "Stretch %d%%" % Settings.width
-	update_view()
-
-
 func _on_small_toggled(value: bool) -> void:
 	Settings.small = value
 	update_view()
+
+func _on_width_item_selected(index: int) -> void:
+	Settings.width = Constants.WIDTHS[index][0]
+	pass # Replace with function body.

@@ -170,12 +170,19 @@ offset_right = 117.0
 offset_bottom = 54.0
 text = "Small"
 
-[node name="Width" type="Button" parent="Modifiers2/Claws/Small"]
+[node name="Width" type="OptionButton" parent="Modifiers2/Claws/Small"]
 layout_mode = 0
 offset_top = 27.0
-offset_right = 97.0
+offset_right = 103.0
 offset_bottom = 54.0
-text = "Stretch 100%"
+item_count = 4
+popup/item_0/text = "Stretch 100%"
+popup/item_1/text = "Stretch 125%"
+popup/item_1/id = 1
+popup/item_2/text = "Stretch 150%"
+popup/item_2/id = 2
+popup/item_3/text = "Stretch 175%"
+popup/item_3/id = 3
 
 [node name="Play_Button" type="Button" parent="."]
 layout_mode = 0
@@ -399,8 +406,7 @@ text = "X"
 [connection signal="toggled" from="Modifiers/Health/Bombs/Arrows" to="." method="_on_arrows_toggled"]
 [connection signal="toggled" from="Modifiers2/Claws" to="." method="_on_claws_toggled"]
 [connection signal="toggled" from="Modifiers2/Claws/Small" to="." method="_on_small_toggled"]
-[connection signal="button_down" from="Modifiers2/Claws/Small/Width" to="." method="_on_width_button_pressed"]
-[connection signal="pressed" from="Modifiers2/Claws/Small/Width" to="." method="_on_width_pressed"]
+[connection signal="item_selected" from="Modifiers2/Claws/Small/Width" to="." method="_on_width_item_selected"]
 [connection signal="pressed" from="Play_Button" to="." method="_on_Play_Button_pressed"]
 [connection signal="button_up" from="Delete_Button" to="." method="_on_Delete_Button_button_up"]
 [connection signal="pressed" from="Exit_Button" to="." method="_on_Exit_Button_pressed"]

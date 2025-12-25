@@ -96,9 +96,9 @@ func note_cut(saber: LightSaber, position: Vector3, _rotation: float, beat_accur
 				saber.add_score(position, _rotation, cut_distance_accuracy * Constants.SWING_ACCURACY_SCORE, arc_head, arc_tail)
 		else:
 			# point computation based on the accuracy of the swing
-			var points_new := beat_accuracy * Constants.OPENSABER_BEAT_ACCURACY_SCORE;
-			points_new += cut_angle_accuracy * Constants.OPENSABER_ANGLE_ACCURACY_SCORE;
-			points_new += cut_distance_accuracy * Constants.OPENSABER_DISTANCE_ACCURACY_SCORE;
+			var points_new := beat_accuracy * Constants.OPENSABER_BEAT_ACCURACY_SCORE
+			points_new += cut_angle_accuracy * Constants.OPENSABER_ANGLE_ACCURACY_SCORE
+			points_new += cut_distance_accuracy * Constants.OPENSABER_DISTANCE_ACCURACY_SCORE
 			points_new += points_new * travel_distance_factor
 			points_new = roundf(points_new)
 			add_points(position, _rotation, int(points_new))
