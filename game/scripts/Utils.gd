@@ -1,6 +1,6 @@
 extends Node
 
-func get_str(dict: Dictionary, key: String, default: String, platform_defaults: Dictionary = {}) -> String:
+static func get_str(dict: Dictionary, key: String, default: String, platform_defaults: Dictionary = {}) -> String:
 	if dict.has(key) and dict[key] is String:
 		@warning_ignore("unsafe_cast")
 		return dict[key] as String
@@ -8,7 +8,7 @@ func get_str(dict: Dictionary, key: String, default: String, platform_defaults: 
 		return platform_defaults[OS.get_name()]
 	return default
 
-func get_bool(dict: Dictionary, key: String, default: bool, platform_defaults: Dictionary = {}) -> bool:
+static func get_bool(dict: Dictionary, key: String, default: bool, platform_defaults: Dictionary = {}) -> bool:
 	if dict.has(key) and dict[key] is bool:
 		@warning_ignore("unsafe_cast")
 		return dict[key] as bool
@@ -16,7 +16,7 @@ func get_bool(dict: Dictionary, key: String, default: bool, platform_defaults: D
 		return platform_defaults[OS.get_name()]
 	return default
 
-func get_float(dict: Dictionary, key: String, default: float, platform_defaults: Dictionary = {}) -> float:
+static func get_float(dict: Dictionary, key: String, default: float, platform_defaults: Dictionary = {}) -> float:
 	if dict.has(key) and dict[key] is float:
 		@warning_ignore("unsafe_cast")
 		return dict[key] as float
@@ -24,7 +24,7 @@ func get_float(dict: Dictionary, key: String, default: float, platform_defaults:
 		return platform_defaults[OS.get_name()]
 	return default
 
-func get_array(dict: Dictionary, key: String, default: Array, platform_defaults: Dictionary = {}) -> Array:
+static func get_array(dict: Dictionary, key: String, default: Array, platform_defaults: Dictionary = {}) -> Array:
 	if dict.has(key) and dict[key] is Array:
 		@warning_ignore("unsafe_cast")
 		return dict[key] as Array
@@ -32,7 +32,7 @@ func get_array(dict: Dictionary, key: String, default: Array, platform_defaults:
 		return platform_defaults[OS.get_name()]
 	return default
 
-func get_dict(dict: Dictionary, key: String, default: Dictionary, platform_defaults: Dictionary = {}) -> Dictionary:
+static func get_dict(dict: Dictionary, key: String, default: Dictionary, platform_defaults: Dictionary = {}) -> Dictionary:
 	if dict.has(key) and dict[key] is Dictionary:
 		@warning_ignore("unsafe_cast")
 		return dict[key] as Dictionary
@@ -40,13 +40,13 @@ func get_dict(dict: Dictionary, key: String, default: Dictionary, platform_defau
 		return platform_defaults[OS.get_name()]
 	return default
 	
-func ends_in(name: String, exts: Array) -> bool:
+static func ends_in(name: String, exts: Array) -> bool:
 	for ext in exts:
 		if name.to_lower().ends_with(ext.to_lower()):
 			return true
 	return false
 
-func unzip(zip_file: String, destination: String) -> void:
+static func unzip(zip_file: String, destination: String) -> void:
 	var zreader := ZIPReader.new()
 	if zreader.open(zip_file) != OK:
 		vr.log_warning("unable to open zip file %s" % zip_file)
@@ -61,7 +61,7 @@ func unzip(zip_file: String, destination: String) -> void:
 	@warning_ignore("return_value_discarded")
 	zreader.close()
 	
-func file_exists(base: String, file: String) -> bool:
+static func file_exists(base: String, file: String) -> bool:
 	if DirAccess.dir_exists_absolute(base):
 		var path : String
 		if base.ends_with("/"):
@@ -76,9 +76,8 @@ func file_exists(base: String, file: String) -> bool:
 			zreader.close()
 			return exists
 	return false
-	
-		
-func read_binary_file(base: String, file: String) -> PackedByteArray:
+			
+static func read_binary_file(base: String, file: String) -> PackedByteArray:
 	if DirAccess.dir_exists_absolute(base):
 		var path : String
 		if base.ends_with("/"):
@@ -95,17 +94,17 @@ func read_binary_file(base: String, file: String) -> PackedByteArray:
 				return data
 	return PackedByteArray()
 	
-func binary_to_json(data: PackedByteArray) -> Dictionary:
+static func binary_to_json(data: PackedByteArray) -> Dictionary:
 	if len(data) == 0:
 		return {}
 	else:
 		var dict := JSON.parse_string(data.get_string_from_ascii()) as Dictionary
 		return dict
 	
-var thread_finished : Array[Thread] = []
-var fake_thread_finished = {}
+static var thread_finished : Array[Thread] = []
+static var fake_thread_finished = {}
 
-func custom_thread_wait_to_finish(thread : Thread):
+static func custom_thread_wait_to_finish(thread : Thread):
 	if thread in thread_finished:
 		var r = thread.wait_to_finish()
 		thread_finished.remove_at(thread_finished.find(thread))
@@ -116,7 +115,7 @@ func custom_thread_wait_to_finish(thread : Thread):
 		return r
 	return null
 
-func custom_thread_call(thread : Thread, function : Callable, params := []):
+static func custom_thread_call(thread : Thread, function : Callable, params := []):
 	if OS.get_name() == &"Web":
 		fake_thread_finished[thread] = function.callv(params)
 		return 0
@@ -124,13 +123,13 @@ func custom_thread_call(thread : Thread, function : Callable, params := []):
 		thread_finished.append(thread)
 		return thread.start(function.bindv(params))
 
-func precise_measurement(x : int) -> float:
+static func precise_measurement(x : int) -> float:
 	if x < 1000:
 		return x
 	else:
 		return (x-1000.)/1000.
 
-func precise_angle_rad(direction: float, offset: float) -> float:
+static func precise_angle_rad(direction: float, offset: float) -> float:
 	var angle : float
 	if direction < 1000:
 		angle = Constants.CUBE_ROTATIONS[direction]
@@ -145,8 +144,9 @@ func precise_angle_rad(direction: float, offset: float) -> float:
 		angle += Constants.DIRECTION8_OFFSET
 	return angle
 
-func rotation_unit_vector(angle: float) -> Vector2:
+static func rotation_unit_vector(angle: float) -> Vector2:
 	return Vector2(sin(angle), -cos(angle))
 
-func close_angle(angle1: float, angle2: float) -> bool:
+static func close_angle(angle1: float, angle2: float) -> bool:
 	return abs(angle1-angle2)<1e-5
+	
