@@ -21,6 +21,7 @@ var right_color: Color
 @onready var left_waving_lasers_material := ($Level/LeftWavingLasers/laser1/Bar7 as MeshInstance3D).material_override as StandardMaterial3D
 @onready var right_waving_lasers_material := ($Level/RightWavingLasers/laser1/Bar7 as MeshInstance3D).material_override as StandardMaterial3D
 @onready var track_lights_material := ($Level/TrackLights/Bar1 as MeshInstance3D).material_override as StandardMaterial3D
+@onready var floor_mesh := ($Level/floor as MeshInstance3D).mesh as PlaneMesh
 @onready var floor_material := ($Level/floor as MeshInstance3D).material_override as StandardMaterial3D
 @onready var track_lights_right := $Level/TrackLights/Bar1 as MeshInstance3D
 @onready var track_lights_left := $Level/TrackLights/Bar2 as MeshInstance3D
@@ -56,17 +57,17 @@ func set_background_texture() -> void:
 	sphere_material.set_shader_parameter("bg_base", texture)
 
 func set_background() -> void:
-	var width_scale := Settings.width / 100. * (2 * Constants.DEFAULT_LANE_DISTANCE_X / 3.)
-	end_path.scale.z = 3.00028*width_scale
-	track_lights_right.transform.origin.x = 3. * width_scale
-	track_lights_left.transform.origin.x = -3. * width_scale
-	#($Level/floor/line1).global_transform.origin.x = -1.5 * width_scale
-	#($Level/floor/line2).global_transform.origin.x = 1.5 * width_scale
-	#($Level/floor/line3).global_transform.origin.x = 3 * width_scale
-	#($Level/floor/line4).global_transform.origin.x = -3 * width_scale
-	($Level/floor).scale.z = 3 * width_scale
-	
-	#($Level/floor/line2).transform.origin.x = 0.5
+	var width_scale := 2 * Settings.LANE_DISTANCE_X / 3.
+	var track_lights_width := track_lights_right.get_aabb().size.x
+	track_lights_right.transform.origin.x = track_lights_width / 2 + 2 * Settings.LANE_DISTANCE_X - .01
+	track_lights_left.transform.origin.x = -track_lights_right.transform.origin.x
+	end_path.scale.z = track_lights_right.transform.origin.x + track_lights_width / 2 - .01
+	floor_mesh.size.y = 4 * Settings.LANE_DISTANCE_X
+	($Level/floor/line1).global_transform.origin.x = Settings.LANE_DISTANCE_X
+	($Level/floor/line2).global_transform.origin.x = -Settings.LANE_DISTANCE_X
+	($Level/floor/line3).global_transform.origin.x = 2 * Settings.LANE_DISTANCE_X
+	($Level/floor/line4).global_transform.origin.x = -2 * Settings.LANE_DISTANCE_X
+	($Level/floor).scale.z = 1
 	
 	if Settings.background == "simple":
 		ring_holder.hide()

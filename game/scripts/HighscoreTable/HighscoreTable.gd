@@ -71,14 +71,14 @@ static func get_width_from_rank(diff_rank: int) -> int:
 	var wr := diff_rank & Constants.DIFFICULTY_WIDTH_MASK
 	for ww in Constants.WIDTHS:
 		if ww[1] == wr:
-			return ww[1]
+			return ww[0]
 	return 100
 	
 static func get_speed_from_rank(diff_rank: int) -> int:
 	var sr := diff_rank & Constants.DIFFICULTY_SPEED_MASK
 	for ss in Constants.SPEEDS:
 		if ss[1] == sr:
-			return ss[1]
+			return ss[0]
 	return 100
 	
 # adds a new score record to the table. if the score is not a highscore

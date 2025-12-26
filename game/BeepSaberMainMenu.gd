@@ -427,6 +427,10 @@ func on_settings_changed(key: StringName) -> void:
 		&"music_speed":
 			song_preview.pitch_scale = Settings.music_speed / 100.
 
+func difficulty_modifier_changed() -> void:
+	pass
+			
+
 func _on_Play_Button_pressed() -> void:
 	song_preview.stop()
 	Settings.save()
@@ -584,10 +588,12 @@ func _on_small_toggled(value: bool) -> void:
 
 func _on_width_item_selected(index: int) -> void:
 	Settings.width = Constants.WIDTHS[index][0]
-
+	update_view()
 
 func _on_speed_item_selected(index: int) -> void:
 	Settings.music_speed = Constants.SPEEDS[index][0]
+	update_view()
 
 func _on_flip_item_selected(index: int) -> void:
 	Settings.flip = Constants.FLIPS[index][0]
+	update_view()
