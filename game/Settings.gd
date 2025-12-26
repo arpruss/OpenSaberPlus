@@ -54,9 +54,13 @@ var ui_volume: float:
 var width: int:
 	set(value):
 		width = value
-		LANE_DISTANCE_X = Constants.DEFAULT_LANE_DISTANCE_X * width / Constants.DEFAULT_WIDTH
-		LANE_ZERO_X = Constants.DEFAULT_LANE_ZERO_X * width / Constants.DEFAULT_WIDTH
+		LANE_DISTANCE_X = Constants.DEFAULT_LANE_DISTANCE_X * width / 100.
+		LANE_ZERO_X = Constants.DEFAULT_LANE_ZERO_X * width / 100.
 		set_and_emit(&"width", value)
+var flip: int:
+	set(value):
+		flip = value
+		set_and_emit(&"flip", value)
 var left_saber_offset_pos: Vector3:
 	set(value):
 		left_saber_offset_pos = value
@@ -130,16 +134,26 @@ var audio_master: float:
 		audio_master = value
 		AudioServer.set_bus_volume_db(AudioServer.get_bus_index(&"Master"), linear_to_db(value))
 		set_and_emit(&"audio_master", value)
+		Utils.update_bus_speed(&"Music")
+		Utils.update_bus_speed(&"MusicPreview")
 var audio_music: float:
 	set(value):
 		audio_music = value
 		AudioServer.set_bus_volume_db(AudioServer.get_bus_index(&"Music"), linear_to_db(value))
 		set_and_emit(&"audio_music", value)
+		Utils.update_bus_speed(&"Music")
+var music_speed: int:
+	set(value):
+		music_speed = value
+		set_and_emit(&"music_speed", value)
+		Utils.update_bus_speed(&"Music")
+		Utils.update_bus_speed(&"MusicPreview")
 var audio_music_preview: float:
 	set(value):
 		audio_music_preview = value
 		AudioServer.set_bus_volume_db(AudioServer.get_bus_index(&"MusicPreview"), linear_to_db(value))
 		set_and_emit(&"audio_music_preview", value)
+		Utils.update_bus_speed(&"MusicPreview")
 var audio_sfx: float:
 	set(value):
 		audio_sfx = value
@@ -218,7 +232,8 @@ var default_values = {
 	events = true,
 	saber_visual = 0,
 	ui_volume = 10.0,
-	width = Constants.DEFAULT_WIDTH,
+	width = 100,
+	flip = 0,
 	left_saber_offset_pos = Vector3.ZERO,
 	left_saber_offset_rot = Vector3.ZERO,
 	right_saber_offset_pos = Vector3.ZERO,
@@ -227,6 +242,7 @@ var default_values = {
 	player_height_offset = 0.0,
 	audio_master = 0.8,
 	audio_music = 0.8,
+	music_speed = 1,
 	audio_music_preview = 0.6,
 	audio_sfx = 0.8,
 	spectator_view = false,

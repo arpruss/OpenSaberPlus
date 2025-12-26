@@ -492,6 +492,7 @@ static func load_beatmap(info: MapInfo, difficulty: DifficultyInfo, map_data: Di
 		Utils.custom_thread_call(arc_thread_0, load_arc_stack_v2, [Utils.get_array(map_data, "_sliders", []), rotations])
 		chain_stack.clear()
 		current_info = info
+		current_info.beats_per_minute *= Settings.music_speed / 100.
 		current_difficulty = difficulty
 		one_saber = difficulty.characteristic == "OneSaber"
 		Map.set_colors_from_custom_data()
@@ -550,6 +551,7 @@ static func load_beatmap(info: MapInfo, difficulty: DifficultyInfo, map_data: Di
 			else:
 				Utils.custom_thread_call(event_thread_0, load_event_stack_v3, [Utils.get_array(map_data, "basicBeatmapEvents", [])])
 			current_info = info
+			current_info.beats_per_minute *= Settings.music_speed / 100.
 			current_difficulty = difficulty
 			one_saber = difficulty.characteristic == "OneSaber"
 			Map.set_colors_from_custom_data()

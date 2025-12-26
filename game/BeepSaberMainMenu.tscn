@@ -126,9 +126,9 @@ script = ExtResource("3")
 [node name="Modifiers" type="Panel" parent="."]
 layout_mode = 0
 offset_left = 863.0
-offset_top = 322.0
-offset_right = 960.0
-offset_bottom = 409.0
+offset_top = 318.0
+offset_right = 993.0
+offset_bottom = 421.0
 
 [node name="Health" type="CheckButton" parent="Modifiers"]
 layout_mode = 0
@@ -150,12 +150,26 @@ offset_right = 99.0
 offset_bottom = 54.0
 text = "Arrows"
 
+[node name="Flip" type="OptionButton" parent="Modifiers/Health/Bombs/Arrows"]
+layout_mode = 0
+offset_top = 27.0
+offset_right = 127.0
+offset_bottom = 54.0
+item_count = 4
+popup/item_0/text = "Stretch 100%"
+popup/item_1/text = "Stretch 125%"
+popup/item_1/id = 1
+popup/item_2/text = "Stretch 150%"
+popup/item_2/id = 2
+popup/item_3/text = "Stretch 175%"
+popup/item_3/id = 3
+
 [node name="Modifiers2" type="Panel" parent="."]
 layout_mode = 0
-offset_left = 966.0
-offset_top = 322.0
-offset_right = 1102.0
-offset_bottom = 409.0
+offset_left = 1000.0
+offset_top = 318.0
+offset_right = 1140.0
+offset_bottom = 421.0
 
 [node name="Claws" type="CheckButton" parent="Modifiers2"]
 layout_mode = 0
@@ -168,12 +182,26 @@ layout_mode = 0
 offset_top = 27.0
 offset_right = 117.0
 offset_bottom = 54.0
-text = "Small"
+text = "Mini Blocks"
 
 [node name="Width" type="OptionButton" parent="Modifiers2/Claws/Small"]
 layout_mode = 0
 offset_top = 27.0
 offset_right = 103.0
+offset_bottom = 54.0
+item_count = 4
+popup/item_0/text = "Stretch 100%"
+popup/item_1/text = "Stretch 125%"
+popup/item_1/id = 1
+popup/item_2/text = "Stretch 150%"
+popup/item_2/id = 2
+popup/item_3/text = "Stretch 175%"
+popup/item_3/id = 3
+
+[node name="Speed" type="OptionButton" parent="Modifiers2/Claws/Small/Width"]
+layout_mode = 0
+offset_top = 27.0
+offset_right = 127.0
 offset_bottom = 54.0
 item_count = 4
 popup/item_0/text = "Stretch 100%"
@@ -198,9 +226,9 @@ text = "Play!"
 [node name="Delete_Button" type="Button" parent="."]
 layout_mode = 0
 offset_left = 864.0
-offset_top = 511.0
+offset_top = 521.0
 offset_right = 1040.0
-offset_bottom = 559.0
+offset_bottom = 569.0
 theme_override_styles/disabled = SubResource("5")
 theme_override_styles/hover = SubResource("2")
 theme_override_styles/pressed = SubResource("3")
@@ -272,10 +300,10 @@ stretch_mode = 5
 
 [node name="SongInfo_Label" type="Label" parent="."]
 layout_mode = 0
-offset_left = 864.0
-offset_top = 415.0
-offset_right = 1328.0
-offset_bottom = 504.0
+offset_left = 861.0
+offset_top = 427.0
+offset_right = 1325.0
+offset_bottom = 516.0
 text = "Song Author: TheFatRat
 Song Title: Time Lapse
 Beatmap Author: Timeweaver
@@ -404,9 +432,11 @@ text = "X"
 [connection signal="toggled" from="Modifiers/Health" to="." method="_on_health_toggled"]
 [connection signal="toggled" from="Modifiers/Health/Bombs" to="." method="_on_bombs_toggled"]
 [connection signal="toggled" from="Modifiers/Health/Bombs/Arrows" to="." method="_on_arrows_toggled"]
+[connection signal="item_selected" from="Modifiers/Health/Bombs/Arrows/Flip" to="." method="_on_flip_item_selected"]
 [connection signal="toggled" from="Modifiers2/Claws" to="." method="_on_claws_toggled"]
 [connection signal="toggled" from="Modifiers2/Claws/Small" to="." method="_on_small_toggled"]
 [connection signal="item_selected" from="Modifiers2/Claws/Small/Width" to="." method="_on_width_item_selected"]
+[connection signal="item_selected" from="Modifiers2/Claws/Small/Width/Speed" to="." method="_on_speed_item_selected"]
 [connection signal="pressed" from="Play_Button" to="." method="_on_Play_Button_pressed"]
 [connection signal="button_up" from="Delete_Button" to="." method="_on_Delete_Button_button_up"]
 [connection signal="pressed" from="Exit_Button" to="." method="_on_Exit_Button_pressed"]

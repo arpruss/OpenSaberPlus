@@ -14,11 +14,17 @@ func _init(beat: float, duration: float, line_index: float, line_layer: float,
 		width: float, height: float, rotation_degrees: float) -> void:
 	self.beat = beat
 	self.duration = duration
-	self.line_index = line_index
-	self.line_layer = line_layer
 	self.width = width
+	if Settings.flip & Constants.FLIP_HORIZONTAL:
+		self.line_index = (3+1)-line_index-width
+	else:
+		self.line_index = line_index
 	self.height = height
-	self.rotation = rotation_degrees * (PI/180.)
+	if Settings.flip & Constants.FLIP_VERTICAL:
+		self.line_layer = (2+1)-line_layer-height
+	else:
+		self.line_layer = line_layer
+	self.rotation = Utils.adjust_lane_rotation(rotation_degrees * (PI/180.))
 	if abs(Settings.gradual_rotation) > 1e-5:
 		self.rotation += Settings.gradual_rotation * beat
 

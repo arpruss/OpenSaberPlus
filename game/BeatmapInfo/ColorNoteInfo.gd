@@ -11,11 +11,11 @@ var rotation: float
 @warning_ignore("shadowed_variable")
 func _init(beat: float, line_index: float, line_layer: float, color: int, cut_angle: float, rotation_degrees: float) -> void:
 	self.beat = beat
-	self.line_index = line_index
-	self.line_layer = line_layer
-	self.color = color
+	self.line_index = Utils.adjust_horizontal(line_index)
+	self.line_layer = Utils.adjust_vertical(line_layer)
+	self.color = Utils.adjust_color(color)
 	self.cut_angle = cut_angle
-	self.rotation = rotation_degrees * (PI/180.)
+	self.rotation = Utils.adjust_lane_rotation(rotation_degrees * (PI/180.))
 	if abs(Settings.gradual_rotation) > 1e-5:
 		self.rotation += Settings.gradual_rotation * beat
 

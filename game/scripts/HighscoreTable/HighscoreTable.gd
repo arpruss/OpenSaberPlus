@@ -59,6 +59,10 @@ static func get_rank_key(diff_rank: int) -> int:
 	for i in range(Constants.WIDTHS.size()):
 		if Settings.width == Constants.WIDTHS[i][0]:
 			diff_rank |= Constants.WIDTHS[i][1]
+	diff_rank = diff_rank & ~Constants.DIFFICULTY_SPEED_MASK
+	for i in range(Constants.SPEEDS.size()):
+		if Settings.music_speed == Constants.SPEEDS[i][0]:
+			diff_rank |= Constants.SPEEDS[i][1]
 	return diff_rank
 	
 static func get_width_from_rank(diff_rank: int) -> int:
@@ -66,7 +70,14 @@ static func get_width_from_rank(diff_rank: int) -> int:
 	for ww in Constants.WIDTHS:
 		if ww[1] == wr:
 			return ww[1]
-	return Constants.DEFAULT_WIDTH
+	return 100
+	
+static func get_speed_from_rank(diff_rank: int) -> int:
+	var sr := diff_rank & Constants.DIFFICULTY_SPEED_MASK
+	for ss in Constants.SPEEDS:
+		if ss[1] == sr:
+			return ss[1]
+	return 100
 	
 # adds a new score record to the table. if the score is not a highscore
 # then the record will not be stored.

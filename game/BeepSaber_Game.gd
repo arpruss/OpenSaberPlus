@@ -126,6 +126,7 @@ func start_map(info: MapInfo, map_difficulty: DifficultyInfo) -> void:
 	_audio_synced_after_restart = false
 	song_player.play(0.0)
 	song_player.volume_db = 0.0
+	song_player.pitch_scale = Settings.music_speed / 100.
 	_in_wall = false
 	Scoreboard.restart()
 	

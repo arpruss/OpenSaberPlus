@@ -140,6 +140,12 @@ static func precise_angle_rad(direction: float, offset: float) -> float:
 		angle += TAU
 	elif angle >= TAU:
 		angle -= TAU
+	if Settings.flip & Constants.FLIP_VERTICAL:
+		angle = PI - angle
+	if Settings.flip & Constants.FLIP_HORIZONTAL:
+		angle = -angle
+		if angle < 0:
+			angle += TAU
 	if direction == 8:
 		angle += Constants.DIRECTION8_OFFSET
 	return angle
@@ -150,3 +156,52 @@ static func rotation_unit_vector(angle: float) -> Vector2:
 static func close_angle(angle1: float, angle2: float) -> bool:
 	return abs(angle1-angle2)<1e-5
 	
+static func update_bus_speed(bus_name: String) -> void:
+	var speed := Settings.music_speed / 100.
+	if (Settings.audio_master == 0. or 
+			(bus_name == &"Music" and Settings.audio_music == 0.) or 
+			(bus_name == &"MusicPreview" and Settings.audio_music == 0.)):
+		# ignore when silent
+		speed = 1.
+	
+	var bus := AudioServer.get_bus_index(bus_name)
+	if bus < 0:
+		vr.log_error("Unknown bus "+bus_name)
+		return
+	for i in range(AudioServer.get_bus_effect_count(bus)):
+		var effect := AudioServer.get_bus_effect(bus, i)
+		if effect is AudioEffectPitchShift:
+			if speed == 1.:
+				AudioServer.remove_bus_effect(bus, i)
+			else:
+				(effect as AudioEffectPitchShift).pitch_scale = 1./Settings.music_speed
+			return
+	if speed == 1.:
+		return
+	var effect := AudioEffectPitchShift.new()
+	effect.pitch_scale = 1./speed
+	AudioServer.add_bus_effect(bus, effect)
+
+static func adjust_vertical(y: int) -> int:
+	if Settings.flip & Constants.FLIP_VERTICAL:
+		return 2-y
+	else:
+		return y
+
+static func adjust_horizontal(x: int) -> int:
+	if Settings.flip & Constants.FLIP_HORIZONTAL:
+		return 3-x
+	else:
+		return x
+		
+static func adjust_color(c: int) -> int:
+	if Settings.flip & Constants.FLIP_HORIZONTAL:
+		return 1-c
+	else:
+		return c
+		
+static func adjust_lane_rotation(theta: float) -> float:
+	if Settings.flip & Constants.FLIP_HORIZONTAL:
+		return -theta
+	else:
+		return theta

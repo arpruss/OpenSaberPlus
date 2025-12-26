@@ -28,20 +28,20 @@ func _init(
 	tail_cut_angle: float, tail_control_point_length_multiplier: float,
 	mid_anchor_mode: int, head_rotation_degrees: float, tail_rotation_degrees: float
 ) -> void:
-	self.color = color
+	self.color = Utils.adjust_color(color)
 	self.head_beat = head_beat
-	self.head_line_index = Utils.precise_measurement(head_line_index)
-	self.head_line_layer = head_line_layer
+	self.head_line_index = Utils.adjust_horizontal(head_line_index)
+	self.head_line_layer = Utils.adjust_vertical(head_line_layer)
 	self.head_cut_angle = head_cut_angle
 	self.head_control_point_length_multiplier = head_control_point_length_multiplier
 	self.tail_beat = tail_beat
-	self.tail_line_index = tail_line_index
-	self.tail_line_layer = tail_line_layer
+	self.tail_line_index = Utils.adjust_horizontal(tail_line_index)
+	self.tail_line_layer = Utils.adjust_vertical(tail_line_layer)
 	self.tail_cut_angle = tail_cut_angle
 	self.tail_control_point_length_multiplier = tail_control_point_length_multiplier
 	self.mid_anchor_mode = mid_anchor_mode
-	self.head_rotation = head_rotation_degrees * (PI/180.)
-	self.tail_rotation = tail_rotation_degrees * (PI/180.)
+	self.head_rotation = Utils.adjust_lane_rotation(head_rotation_degrees * (PI/180.))
+	self.tail_rotation = Utils.adjust_lane_rotation(tail_rotation_degrees * (PI/180.))
 	if abs(Settings.gradual_rotation) > 1e-5:
 		self.head_rotation += Settings.gradual_rotation * head_beat
 		self.tail_rotation += Settings.gradual_rotation * tail_beat

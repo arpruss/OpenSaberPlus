@@ -59,12 +59,14 @@ func _clear_list():
 func _get_difficulty_name(map_info: MapInfo, diff_rank: int) -> String:
 	var difficulty := diff_rank & Constants.DIFFICULTY_MASK
 	var width := HighscoreTable.get_width_from_rank(diff_rank)
+	var speed := HighscoreTable.get_speed_from_rank(diff_rank)
 	var game_type := ( ("Health" if (diff_rank & Constants.DIFFICULTY_HEALTH) != 0 else "No Health") +
 					 ("" if (diff_rank & Constants.DIFFICULTY_BOMBS) != 0 else ", No Bombs") + 
 					 ("" if (diff_rank & Constants.DIFFICULTY_ARROWS) != 0 else ", No Arrows") +
 					 (", Small" if (diff_rank & Constants.DIFFICULTY_SMALL) != 0 else "") +
 					 (", Short Sword" if (diff_rank & Constants.DIFFICULTY_CLAWS) != 0 else "") +
-					 ((", Stretch %d%% " % width) if (width != Constants.DEFAULT_WIDTH) else "") 
+					 ((", Stretch %d%% " % width) if (width != 100) else "") +
+					 ((", Speed %d%% " % speed) if (speed != 100) else "") 
 					 )
 	for beat_map in map_info.difficulty_beatmaps:
 		if beat_map.difficulty_rank == (diff_rank & Constants.DIFFICULTY_MASK):

@@ -31,9 +31,11 @@ const FAVORITE_MASK := 0x4000000000000000
 @onready var health_control := $Modifiers/Health as CheckButton
 @onready var bombs_control := $Modifiers/Health/Bombs as CheckButton
 @onready var arrows_control := $Modifiers/Health/Bombs/Arrows as CheckButton
+@onready var flip_control := $Modifiers/Health/Bombs/Arrows/Flip as OptionButton
 @onready var claws_control := $Modifiers2/Claws as CheckButton
 @onready var small_control := $Modifiers2/Claws/Small as Button
 @onready var width_control := $Modifiers2/Claws/Small/Width as OptionButton
+@onready var speed_control := $Modifiers2/Claws/Small/Width/Speed as OptionButton
 @onready var favorite_button := $Favorite_Button as Button
 
 @onready var song_preview := $song_prev as AudioStreamPlayer
@@ -249,9 +251,11 @@ func play_preview(buffer: PackedByteArray, start_time: float = 0.0, duration: fl
 		song_preview.stream = stream
 		var song_prev_Tween := song_preview.create_tween().set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_IN_OUT)
 		@warning_ignore("return_value_discarded")
+		# TODO: is this a good idea with higher speeds?
 		song_prev_Tween.tween_property(song_preview, ^"volume_db", 0, song_preview_transition_time)
 		song_prev_Tween.play()
 		song_preview.play(start_time)
+		song_preview.pitch_scale = Settings.music_speed / 100.
 		($song_prev/stop_prev as Timer).start(duration)
 
 func _select_song(id: int) -> void:
@@ -352,21 +356,31 @@ func _delete_map(map: MapInfo) -> void:
 		_on_LoadPlaylists_Button_pressed()
 
 func _ready() -> void:
+	Settings.changed.connect(on_settings_changed)
 	health_control.button_pressed = Settings.health_mode
 	arrows_control.button_pressed = Settings.arrows_enabled
 	small_control.button_pressed = Settings.small
+	flip_control.clear()
+	for i in range(Constants.FLIPS.size()):
+		flip_control.add_item(Constants.FLIPS[i][1])
+		if Constants.FLIPS[i][0] == Settings.flip:
+			flip_control.selected = i
 	width_control.clear()
 	for i in range(Constants.WIDTHS.size()):
 		width_control.add_item("Stretch %d%%" % Constants.WIDTHS[i][0])
 		if Constants.WIDTHS[i][0] == Settings.width:
 			width_control.selected = i
+	speed_control.clear()
+	for i in range(Constants.WIDTHS.size()):
+		speed_control.add_item("Speed %d%%" % Constants.SPEEDS[i][0])
+		if Constants.SPEEDS[i][0] == Settings.music_speed:
+			speed_control.selected = i
 	
 	bombs_control.button_pressed = Settings.bombs_enabled
 	claws_control.button_pressed = Settings.claws
 	favorite_button.hide()
 	
 	UI_AudioEngine.attach_children(self)
-	vr.log_info("BeepSaber search path is " + Constants.APPDATA_PATH)
 	
 	playlist_selector.clear()
 	playlist_selector.add_item("All Songs")
@@ -398,6 +412,11 @@ func _ready() -> void:
 	$version.text = beepsaber_game.version
 	if OS.get_name() == &"Web":
 		$Exit_Button.hide()
+
+func on_settings_changed(key: StringName) -> void:
+	match key:
+		&"music_speed":
+			song_preview.pitch_scale = Settings.music_speed / 100.
 
 func _on_Play_Button_pressed() -> void:
 	song_preview.stop()
@@ -556,4 +575,10 @@ func _on_small_toggled(value: bool) -> void:
 
 func _on_width_item_selected(index: int) -> void:
 	Settings.width = Constants.WIDTHS[index][0]
-	pass # Replace with function body.
+
+
+func _on_speed_item_selected(index: int) -> void:
+	Settings.music_speed = Constants.SPEEDS[index][0]
+
+func _on_flip_item_selected(index: int) -> void:
+	Settings.flip = Constants.FLIPS[index][0]
