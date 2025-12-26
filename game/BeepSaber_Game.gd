@@ -5,7 +5,7 @@
 extends Node3D
 class_name BeepSaber_Game
 
-var version := "0.7.40"
+var version := "0.7.41"
 
 var gamestate_bootup := GameState.new()
 var gamestate_mapcomplete := GameStateMapComplete.new()
@@ -74,13 +74,6 @@ var _in_wall := false
 
 #prevents the song for starting from the start when pausing and unpausing
 var pause_position := 0.0
-
-func _difficulty_and_health() -> int:
-	var dh := Map.current_difficulty.difficulty_rank
-	if Settings.health_mode:
-		return dh | Constants.DIFFICULTY_HEALTH
-	else:
-		return dh
 
 func start_map(info: MapInfo, map_difficulty: DifficultyInfo) -> void:
 	var map_data := Utils.binary_to_json(Utils.read_binary_file(info.filepath, map_difficulty.beatmap_filename))
@@ -170,7 +163,7 @@ func _submit_highscore(player_name: String) -> void:
 	if gamestate == gamestate_newhighscore:
 		Highscores.add_highscore(
 			Map.current_info,
-			_difficulty_and_health(),
+			Map.current_difficulty.difficulty_rank,
 			player_name,
 			Scoreboard.points)
 			
@@ -384,7 +377,7 @@ func _on_song_ended() -> void:
 	PlayCount.increment_play_count(Map.current_info,Map.current_difficulty.difficulty_rank)
 	
 	var new_record := false
-	var highscore := Highscores.get_highscore(Map.current_info,_difficulty_and_health())
+	var highscore := Highscores.get_highscore(Map.current_info,Map.current_difficulty.difficulty_rank)
 	if highscore == -1:
 		# no highscores exist yet
 		highscore = Scoreboard.points
@@ -411,7 +404,7 @@ func _on_song_ended() -> void:
 		new_record
 	)
 	
-	if Highscores.is_new_highscore(Map.current_info,_difficulty_and_health(),Scoreboard.points):
+	if Highscores.is_new_highscore(Map.current_info,Map.current_difficulty.difficulty_rank,Scoreboard.points):
 		_transition_game_state(gamestate_newhighscore)
 	else:
 		_transition_game_state(gamestate_mapcomplete)

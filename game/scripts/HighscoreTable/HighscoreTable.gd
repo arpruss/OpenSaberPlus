@@ -43,7 +43,7 @@ func is_new_highscore(map_info: MapInfo, diff_rank: int, score: int) -> bool:
 	if score == 0:
 		return false
 	var hs_key := map_info.get_key()
-	return _is_new_highscore(hs_key, diff_rank, score)
+	return _is_new_highscore(hs_key, get_rank_key(diff_rank), score)
 	
 static func get_rank_key(diff_rank: int) -> int:
 	diff_rank &= Constants.DIFFICULTY_MASK
@@ -121,7 +121,7 @@ func get_records(map_info: MapInfo, diff_rank: int) -> Array:
 # returned if no record exist for this song yet
 func get_highscore(map_info: MapInfo, diff_rank: int) -> int:
 	var hs_key := map_info.get_key()
-	var records := _get_records(hs_key,diff_rank)
+	var records := _get_records(hs_key,get_rank_key(diff_rank))
 	if records.size() == 0:
 		return -1
 	else:
