@@ -10,6 +10,18 @@ var right_color: Color
 
 @onready var ring_holder := $Level/rings as Node3D
 @onready var diagonal_lasers_holder := $Level/DiagonalLasers as Node3D
+@onready var diagonal_lasers := [
+	$Level/DiagonalLasers/laser1,
+	$Level/DiagonalLasers/laser2,
+	$Level/DiagonalLasers/laser3,
+	$Level/DiagonalLasers/laser4,
+	$Level/DiagonalLasers/laser5,
+	$Level/DiagonalLasers/laser6,
+	$Level/DiagonalLasers/laser7,
+	$Level/DiagonalLasers/laser8,
+	$Level/DiagonalLasers/laser9,
+	$Level/DiagonalLasers/laser10
+]
 @onready var square_lasers_holder := $Level/SquareLasers as Node3D
 @onready var left_waving_lasers_holder := $Level/LeftWavingLasers as Node3D
 @onready var right_waving_lasers_holder := $Level/RightWavingLasers as Node3D
@@ -59,15 +71,17 @@ func set_background_texture() -> void:
 func set_background() -> void:
 	var width_scale := 2 * Settings.LANE_DISTANCE_X / 3.
 	var track_lights_width := track_lights_right.get_aabb().size.x
-	track_lights_right.transform.origin.x = track_lights_width / 2 + 2 * Settings.LANE_DISTANCE_X - .01
-	track_lights_left.transform.origin.x = -track_lights_right.transform.origin.x
-	end_path.scale.z = track_lights_right.transform.origin.x + track_lights_width / 2 - .01
+	track_lights_right.global_transform.origin.x = track_lights_width / 2 + 2 * Settings.LANE_DISTANCE_X - .01
+	track_lights_left.global_transform.origin.x = -track_lights_right.transform.origin.x
+	end_path.scale.z = track_lights_right.global_transform.origin.x + track_lights_width / 2 - .01
 	floor_mesh.size.y = 4 * Settings.LANE_DISTANCE_X
 	($Level/floor/line1).global_transform.origin.x = Settings.LANE_DISTANCE_X
 	($Level/floor/line2).global_transform.origin.x = -Settings.LANE_DISTANCE_X
 	($Level/floor/line3).global_transform.origin.x = 2 * Settings.LANE_DISTANCE_X
 	($Level/floor/line4).global_transform.origin.x = -2 * Settings.LANE_DISTANCE_X
 	($Level/floor).scale.z = 1
+	for laser in diagonal_lasers:
+		laser.transform.origin.x = 4.5 * width_scale * sign(laser.transform.origin.x)
 	
 	if Settings.background == "simple":
 		ring_holder.hide()

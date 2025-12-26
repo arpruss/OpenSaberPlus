@@ -809,7 +809,7 @@ mesh = SubResource("10")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)
 
 [node name="laser1" type="Node3D" parent="Level/LeftWavingLasers"]
-transform = Transform3D(0.871635, -5.611e-09, -0.490155, -0.490155, -2.14254e-08, -0.871635, -5.611e-09, 1, -2.14254e-08, -12.4292, -1.26002, -11)
+transform = Transform3D(0.988014, -5.23933e-10, -0.154366, -0.154366, -6.74754e-09, -0.988014, -5.23933e-10, 1, -6.74754e-09, -12.4292, -1.26002, -11)
 
 [node name="Bar7" type="MeshInstance3D" parent="Level/LeftWavingLasers/laser1"]
 transform = Transform3D(1, 0, -7.02255e-16, 0, 1, 0, 2.34085e-16, 0, 3, 0, 9.53674e-07, -9)
@@ -818,7 +818,7 @@ material_override = SubResource("12")
 mesh = SubResource("10")
 
 [node name="laser2" type="Node3D" parent="Level/LeftWavingLasers"]
-transform = Transform3D(0.970231, -1.30123e-09, -0.24218, -0.24218, -1.0586e-08, -0.970231, -1.30123e-09, 1, -1.0586e-08, -12.4292, -1.26002, -14)
+transform = Transform3D(0.915241, -3.70492e-09, 0.402906, 0.402906, 1.76116e-08, -0.915241, -3.70492e-09, 1, 1.76116e-08, -12.4292, -1.26002, -14)
 
 [node name="Bar7" type="MeshInstance3D" parent="Level/LeftWavingLasers/laser2"]
 transform = Transform3D(1, 0, -7.02255e-16, 0, 1, 0, 2.34085e-16, 0, 3, 0, 9.53674e-07, -9)
@@ -827,7 +827,7 @@ material_override = SubResource("12")
 mesh = SubResource("10")
 
 [node name="laser3" type="Node3D" parent="Level/LeftWavingLasers"]
-transform = Transform3D(0.97756, -9.8089e-10, -0.210658, -0.210658, -9.20814e-09, -0.97756, -9.8089e-10, 1, -9.20814e-09, -12.4292, -1.26002, -17)
+transform = Transform3D(0.880312, -5.23174e-09, -0.474396, -0.474396, -2.07365e-08, -0.880312, -5.23174e-09, 1, -2.07365e-08, -12.4292, -1.26002, -17)
 
 [node name="Bar7" type="MeshInstance3D" parent="Level/LeftWavingLasers/laser3"]
 transform = Transform3D(1, 0, -7.02255e-16, 0, 1, 0, 2.34085e-16, 0, 3, 0, 0, -9)
@@ -836,7 +836,7 @@ material_override = SubResource("12")
 mesh = SubResource("10")
 
 [node name="laser4" type="Node3D" parent="Level/LeftWavingLasers"]
-transform = Transform3D(0.998162, -8.03233e-11, -0.0605953, -0.0605953, -2.6487e-09, -0.998162, -8.03233e-11, 1, -2.6487e-09, -12.4292, -1.26002, -20)
+transform = Transform3D(0.866025, -5.85622e-09, -0.5, -0.5, -2.18557e-08, -0.866025, -5.85621e-09, 1, -2.18557e-08, -12.4292, -1.26002, -20)
 
 [node name="Bar7" type="MeshInstance3D" parent="Level/LeftWavingLasers/laser4"]
 transform = Transform3D(1, 0, -7.02255e-16, 0, 1, 0, 2.34085e-16, 0, 3, 0, 0, -9)
