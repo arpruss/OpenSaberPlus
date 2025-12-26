@@ -56,7 +56,7 @@ func set_background_texture() -> void:
 	sphere_material.set_shader_parameter("bg_base", texture)
 
 func set_background() -> void:
-	var width_scale := Settings.width / 100. 
+	var width_scale := Settings.width / 100. * (2 * Constants.DEFAULT_LANE_DISTANCE_X / 3.)
 	end_path.scale.z = 3.00028*width_scale
 	track_lights_right.transform.origin.x = 3. * width_scale
 	track_lights_left.transform.origin.x = -3. * width_scale

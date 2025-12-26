@@ -360,21 +360,30 @@ func _ready() -> void:
 	health_control.button_pressed = Settings.health_mode
 	arrows_control.button_pressed = Settings.arrows_enabled
 	small_control.button_pressed = Settings.small
+	
 	flip_control.clear()
+	var index := 0
 	for i in range(Constants.FLIPS.size()):
 		flip_control.add_item(Constants.FLIPS[i][1])
 		if Constants.FLIPS[i][0] == Settings.flip:
-			flip_control.selected = i
+			index = i
+	flip_control.selected = index
+	
 	width_control.clear()
+	index = 0
 	for i in range(Constants.WIDTHS.size()):
 		width_control.add_item("Stretch %d%%" % Constants.WIDTHS[i][0])
 		if Constants.WIDTHS[i][0] == Settings.width:
-			width_control.selected = i
+			index = i
+	width_control.selected = index
+	
 	speed_control.clear()
+	index = 1
 	for i in range(Constants.WIDTHS.size()):
 		speed_control.add_item("Speed %d%%" % Constants.SPEEDS[i][0])
 		if Constants.SPEEDS[i][0] == Settings.music_speed:
-			speed_control.selected = i
+			index = i
+	speed_control.selected = index
 	
 	bombs_control.button_pressed = Settings.bombs_enabled
 	claws_control.button_pressed = Settings.claws

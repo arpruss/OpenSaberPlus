@@ -66,7 +66,8 @@ func _get_difficulty_name(map_info: MapInfo, diff_rank: int) -> String:
 					 (", Small" if (diff_rank & Constants.DIFFICULTY_SMALL) != 0 else "") +
 					 (", Short Sword" if (diff_rank & Constants.DIFFICULTY_CLAWS) != 0 else "") +
 					 ((", Stretch %d%% " % width) if (width != 100) else "") +
-					 ((", Speed %d%% " % speed) if (speed != 100) else "") 
+					 ((", Speed %d%% " % speed) if (speed != 100) else "") +
+					 ((", %s " % Constants.FLIPS[Settings.flip] if Settings.flip != 0 else ""))
 					 )
 	for beat_map in map_info.difficulty_beatmaps:
 		if beat_map.difficulty_rank == (diff_rank & Constants.DIFFICULTY_MASK):
