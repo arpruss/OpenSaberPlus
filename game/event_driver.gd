@@ -67,6 +67,7 @@ func set_background_texture() -> void:
 	if not Settings.background_texture.begins_with("res:"):
 		var img := Image.new()
 		if OK == img.load(Constants.APPDATA_PATH + "Backgrounds/" + Settings.background_texture):
+			img.flip_x()
 			sphere_material.set_shader_parameter("bg_base", ImageTexture.create_from_image(img))
 			return
 		Settings.background_texture = Settings.default_values["background_texture"]

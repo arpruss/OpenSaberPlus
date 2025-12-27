@@ -49,11 +49,9 @@ func _load_img_threaded(req: ImgLoadRequest) -> void:
 		if req.file.to_lower().ends_with(".png"):
 			img = Image.new()
 			img.load_png_from_buffer(data)
-			img.flip_x()
 		elif req.file.to_lower().ends_with(".jpg") or req.file.to_lower().ends_with(".jpeg"):
 			img = Image.new()
 			img.load_jpg_from_buffer(data)
-			img.flip_x()
 		else:
 			img = Image.load_from_file(req.path + req.file)
 		var tex := ImageTexture.create_from_image(img)
