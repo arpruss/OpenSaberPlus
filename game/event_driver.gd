@@ -64,9 +64,15 @@ func _ready() -> void:
 			)
 
 func set_background_texture() -> void:
+	if not Settings.background_texture.begins_with("res:"):
+		var img := Image.new()
+		if OK == img.load(Constants.APPDATA_PATH + "Backgrounds/" + Settings.background_texture):
+			sphere_material.set_shader_parameter("bg_base", ImageTexture.create_from_image(img))
+			return
+		Settings.background_texture = Settings.default_values["background_texture"]
 	var texture : Resource = null
 	texture = load(Settings.background_texture)
-	sphere_material.set_shader_parameter("bg_base", texture)
+	sphere_material.set_shader_parameter("bg_base", texture)	
 
 func set_background() -> void:
 	var width_scale := 2 * Settings.LANE_DISTANCE_X / 3.

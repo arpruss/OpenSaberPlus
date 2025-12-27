@@ -46,6 +46,8 @@ var _play_ui_sound_demo := false
 var left_saber_col_state := false
 var right_saber_col_state := false
 
+@export var main_menu_ref : MainMenu
+
 func _ready() -> void:
 	UI_AudioEngine.attach_children(self)
 	
@@ -59,12 +61,8 @@ func _ready() -> void:
 			background_mode_control.selected = i
 	background_mode_control.connect("item_selected", _on_background_mode_selected)
 	
-	for i in len(Settings.BACKGROUND_TEXTURES):
-		background_texture_control.add_item(Settings.BACKGROUND_TEXTURES[i][1])
-		if Settings.background_texture == Settings.BACKGROUND_TEXTURES[i][0]:
-			background_texture_control.selected = i
-	background_texture_control.connect("item_selected", _on_background_texture_selected)
-	
+	_update_backgrounds()
+
 	set_controls_from_settings()
 	_play_ui_sound_demo = true
 	for picker in [left_saber_col.get_picker(),right_saber_col.get_picker()]:
@@ -77,7 +75,29 @@ func _ready() -> void:
 	if OS.get_name() == &"Web":
 		# way too heavy for webxr
 		$ScrollContainer/VBox/glare.hide()
-
+		
+func _update_backgrounds() -> void:
+	var selected := 0
+	background_texture_control.clear()
+	for i in len(Settings.BACKGROUND_TEXTURES):
+		background_texture_control.add_item(Settings.BACKGROUND_TEXTURES[i][1])
+		if Settings.background_texture == Settings.BACKGROUND_TEXTURES[i][0]:
+			selected = i
+	var dir := DirAccess.open(Constants.APPDATA_PATH + "Backgrounds")
+	var i := len(Settings.BACKGROUND_TEXTURES)
+	if dir:
+		dir.list_dir_begin()
+		var name := dir.get_next()
+		while name != "":
+			if not dir.current_is_dir():
+				background_texture_control.add_item(name)
+				if Settings.background_texture == name:
+					selected = i
+				i += 1
+			name = dir.get_next()
+	background_texture_control.selected = selected
+	background_texture_control.connect("item_selected", _on_background_texture_selected)
+	
 func set_controls_from_settings() -> void:
 	saber_control.clear()
 	for s in Settings.SABER_VISUALS:
@@ -296,7 +316,10 @@ func _on_static_toggled(button_pressed: bool) -> void:
 		Settings.background = "static"
 
 func _on_background_texture_selected(item: int) -> void:
-	Settings.background_texture = Settings.BACKGROUND_TEXTURES[item][0]
+	if item < len(Settings.BACKGROUND_TEXTURES):
+		Settings.background_texture = Settings.BACKGROUND_TEXTURES[item][0]
+	else:
+		Settings.background_texture = background_texture_control.get_item_text(item)
 
 func _on_background_mode_selected(item: int) -> void:
 	Settings.background = Settings.BACKGROUND_MODES[item][0]

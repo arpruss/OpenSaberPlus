@@ -448,6 +448,7 @@ func _on_BeepSaberMainMenu_difficulty_changed(map_info: MapInfo, diff_rank: int)
 	highscore_panel.load_highscores(map_info,diff_rank)
 
 func _settings_button() -> void:
+	settings_panel._update_backgrounds()
 	_transition_game_state(gamestate_settings)
 
 func _on_settings_Panel_apply() -> void:

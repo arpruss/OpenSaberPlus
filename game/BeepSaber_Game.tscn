@@ -318,7 +318,6 @@ is_name_input = true
 
 [node name="SongUploader" type="Node" parent="." node_paths=PackedStringArray("main_menu_ref")]
 script = ExtResource("33_l0uxg")
-PORT = null
 main_menu_ref = NodePath("../MainMenu_OQ_UI2DCanvas/BeepSaberMainMenu")
 
 [connection signal="finished" from="SongPlayer" to="." method="_on_song_ended"]

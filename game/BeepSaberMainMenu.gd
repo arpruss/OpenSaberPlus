@@ -131,7 +131,6 @@ func _sort_songs() -> void:
 func _load_playlists() -> void:
 	#copy sample songs to main playlist folder on first run
 	current_selected = -1
-	DirAccess.make_dir_recursive_absolute(Constants.APPDATA_PATH+"Songs/")
 	if not FileAccess.file_exists(Settings.CONFIG_PATH):
 		@warning_ignore("return_value_discarded")
 		const maps_path := "res://game/data/maps/"
@@ -352,10 +351,15 @@ func _delete_map(map: MapInfo) -> void:
 			delete_button.disabled = true
 			favorite_button.hide()
 		else:
-			vr.log_info("Error removing song " + map.filepath)
-		_on_LoadPlaylists_Button_pressed()
+			DirAccess.remove_absolute(map.filepath)
+			delete_button.disabled = true
+			favorite_button.hide()
+	_on_LoadPlaylists_Button_pressed()
 
 func _ready() -> void:
+	DirAccess.make_dir_recursive_absolute(Constants.APPDATA_PATH+"Backgrounds/")
+	DirAccess.make_dir_recursive_absolute(Constants.APPDATA_PATH+"Songs/")
+
 	Settings.changed.connect(on_settings_changed)
 	health_control.button_pressed = Settings.health_mode
 	arrows_control.button_pressed = Settings.arrows_enabled
