@@ -416,7 +416,7 @@ func _ready() -> void:
 	playlist_selector.item_selected.emit(1)
 	
 	if song_uploader_ref and song_uploader_ref.active:
-		$upload_url.text = "Manually Upload Custom Songs: \n%s"%[
+		$upload_url.text = "Manually Upload Songs/Backgrounds: \n%s"%[
 			song_uploader_ref.get_server_url()
 		]
 	else:
