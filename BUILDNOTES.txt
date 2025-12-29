@@ -1,5 +1,8 @@
-Put godotopenxrvendors (for Godot 4.3) in BeepSaber/addons
+Tested with Godot 4.5.1.
+
+Get a godotopenxrvendors.zip file for Godot 4.4 or later from:
+  https://github.com/GodotVR/godot_openxr_vendors/releases
+  
+Put the asset/addons/godotopenxrvendors folder from the zip in your BeepSaber/addons folder.
 
 Do Project | Install Android build template
-
-In the Export window, under Resources, add *.html and *.css to "Filters to export..."

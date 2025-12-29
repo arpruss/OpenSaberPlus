@@ -1,7 +1,7 @@
 [gd_scene load_steps=15 format=3 uid="uid://biylg2wsontn3"]
 
 [ext_resource type="FontFile" uid="uid://01k27lk2a4bw" path="res://OQ_Toolkit/OQ_UI2D/theme/RobotoMono-Medium.ttf" id="1"]
-[ext_resource type="Script" path="res://game/settings_Panel.gd" id="2"]
+[ext_resource type="Script" uid="uid://cpwy2bk3ecxqb" path="res://game/settings_Panel.gd" id="2"]
 [ext_resource type="FontFile" uid="uid://cdsnr8tscm8y6" path="res://OQ_Toolkit/OQ_UI2D/theme/Roboto-Medium.ttf" id="3"]
 [ext_resource type="PackedScene" uid="uid://dtipmx5ep1dkk" path="res://game/vr_slider.tscn" id="4"]
 
@@ -202,8 +202,8 @@ cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
 [sub_resource type="Theme" id="7"]
 default_font = SubResource("6")
 
-[sub_resource type="StyleBoxFlat" id="8"]
-bg_color = Color(0.14902, 0.14902, 0.14902, 1)
+[sub_resource type="StyleBoxFlat" id="10"]
+bg_color = Color(0, 0, 0, 1)
 border_width_left = 5
 border_width_top = 5
 border_width_right = 5
@@ -218,8 +218,8 @@ border_width_right = 5
 border_width_bottom = 5
 border_color = Color(1, 1, 1, 1)
 
-[sub_resource type="StyleBoxFlat" id="10"]
-bg_color = Color(0, 0, 0, 1)
+[sub_resource type="StyleBoxFlat" id="8"]
+bg_color = Color(0.14902, 0.14902, 0.14902, 1)
 border_width_left = 5
 border_width_top = 5
 border_width_right = 5
@@ -252,7 +252,7 @@ text = "Settings
 "
 
 [node name="note" type="Label" parent="."]
-layout_mode = 2
+layout_mode = 0
 offset_left = 27.0
 offset_top = 36.0
 offset_right = 859.0
@@ -323,8 +323,7 @@ size_flags_horizontal = 3
 [node name="music_label" type="Label" parent="ScrollContainer/VBox/audio/music"]
 layout_mode = 2
 theme = SubResource("3")
-text = "Music
-"
+text = "Music"
 
 [node name="music_slider" type="HSlider" parent="ScrollContainer/VBox/audio/music"]
 layout_mode = 2
@@ -343,8 +342,7 @@ size_flags_horizontal = 3
 [node name="music_preview_label" type="Label" parent="ScrollContainer/VBox/audio/music_preview"]
 layout_mode = 2
 theme = SubResource("3")
-text = "Music Preview
-"
+text = "Music Preview"
 
 [node name="music_preview_slider" type="HSlider" parent="ScrollContainer/VBox/audio/music_preview"]
 layout_mode = 2
@@ -666,9 +664,9 @@ offset_top = 596.0
 offset_right = 692.283
 offset_bottom = 636.0
 theme = SubResource("7")
-theme_override_styles/hover = SubResource("8")
-theme_override_styles/pressed = SubResource("9")
 theme_override_styles/normal = SubResource("10")
+theme_override_styles/pressed = SubResource("9")
+theme_override_styles/hover = SubResource("8")
 text = "Default"
 
 [node name="apply" type="Button" parent="."]
@@ -678,9 +676,9 @@ offset_top = 596.0
 offset_right = 865.136
 offset_bottom = 636.0
 theme = SubResource("7")
-theme_override_styles/hover = SubResource("8")
-theme_override_styles/pressed = SubResource("9")
 theme_override_styles/normal = SubResource("10")
+theme_override_styles/pressed = SubResource("9")
+theme_override_styles/hover = SubResource("8")
 text = "Apply"
 
 [node name="vr_slider" parent="." instance=ExtResource("4")]
