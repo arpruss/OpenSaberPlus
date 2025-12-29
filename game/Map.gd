@@ -21,7 +21,7 @@ static var last_beat := 0.
 static var one_saber := false
 
 const ROTATIONS_V2 := [ -60., -45., -30., -15., 15., 30., 45., 60. ]
-const ROTATE_ALL := 0 # for testing
+const ROTATE_ALL := 0. # for testing
 
 # some simple multithreading, since larger maps can take a very long time to
 # load.  one particulary notable outlier is the beatmap of shrek, which took
@@ -340,6 +340,9 @@ static func load_arc_stack_v4(arc_data: Array, meta: Array, meta_notes: Array) -
 					a3["tc"] = Utils.get_float(m, "d", 0)
 					a3["tail_angle_offset"]= Utils.get_float(m, "a", 0)
 				
+				if abs(ROTATE_ALL) > Constants.ROTATION_EPS_DEGREES:
+					a3["hr"] = ROTATE_ALL
+					a3["tr"] = ROTATE_ALL
 				arc_stack[last_index - i] = ArcInfo.new_v3(a3)
 			i += 1
 	var midpoint := arc_data.size() >> 1
@@ -433,7 +436,7 @@ static func compare_times(a: Array, b: Array):
 	return a[0] < b[0]
 			
 static func get_rotations_v2(events: Array) -> Array:
-	if abs(ROTATE_ALL) > Constants.ROTATION_EPS:
+	if abs(ROTATE_ALL) > Constants.ROTATION_EPS * 180/PI:
 		return [[0.,ROTATE_ALL]]
 	var r := []
 	var angle := 0.
@@ -458,7 +461,7 @@ static func get_rotations_v2(events: Array) -> Array:
 	return r
 
 static func get_rotations_v3(events: Array) -> Array:
-	if abs(ROTATE_ALL) > Constants.ROTATION_EPS:
+	if abs(ROTATE_ALL) > Constants.ROTATION_EPS * 180 / PI:
 		return [[0.,ROTATE_ALL]]
 	var r := []
 	var angle := 0.
@@ -508,7 +511,7 @@ static func load_beatmap(info: MapInfo, difficulty: DifficultyInfo, map_data: Di
 			var v4 := version.begins_with("4.")
 			var rotations : Array
 			if v4:
-				rotations = []
+				rotations = [] if abs(ROTATE_ALL) <= Constants.ROTATION_EPS_DEGREES else [[0.,ROTATE_ALL]]
 			else:
 				rotations = get_rotations_v3(Utils.get_array(map_data, "rotationEvents", []))
 			Utils.custom_thread_call(note_thread_0, load_note_stack_v3_v4, 

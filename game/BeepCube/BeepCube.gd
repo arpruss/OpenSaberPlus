@@ -139,7 +139,7 @@ func cut(saber: LightSaber, cut_speed: Vector3, cut_plane: Plane, controller: Be
 	# compute the angle between the cube orientation and the cut direction
 	cut_speed = cut_speed.rotated(Vector3(0,1,0), -rotation.y)
 	var cut_direction_xy := -Vector3(cut_speed.x, cut_speed.y, 0.0).normalized()
-	var base_cut_angle_accuracy := global_transform.basis.y.dot(cut_direction_xy)
+	var base_cut_angle_accuracy := global_transform.basis.orthonormalized().y.dot(cut_direction_xy)
 	var cut_distance := cut_plane.distance_to(global_transform.origin)
 	var distance_scale := 1./Constants.SMALL_SIZE if Settings.small else 1.
 	

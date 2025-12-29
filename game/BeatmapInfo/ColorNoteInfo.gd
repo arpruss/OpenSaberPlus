@@ -16,7 +16,7 @@ func _init(beat: float, line_index: float, line_layer: float, color: int, cut_an
 	self.color = Utils.adjust_color(color)
 	self.cut_angle = cut_angle
 	self.rotation = Utils.adjust_lane_rotation(rotation_degrees * (PI/180.))
-	if abs(Settings.gradual_rotation) > 1e-5:
+	if abs(Settings.gradual_rotation) > Constants.ROTATION_EPS:
 		self.rotation += Settings.gradual_rotation * beat
 
 static func new_v2(note_dict: Dictionary) -> ColorNoteInfo:

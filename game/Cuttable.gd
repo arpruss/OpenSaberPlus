@@ -44,8 +44,8 @@ func add_lane_rotation(angle):
 func _physics_process(delta: float) -> void:
 	if Scoreboard.paused or not is_visible_in_tree() or not Map.current_info: return
 	
-	transform.origin += speed * delta * transform.basis.z
-	var rz := global_transform.origin.dot(transform.basis.z)
+	transform.origin += speed * delta * transform.basis.orthonormalized().z
+	var rz := global_transform.origin.dot(transform.basis.orthonormalized().z)
 	
 	if rz > -3.0:
 		set_collision_disabled(false)
