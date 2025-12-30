@@ -188,7 +188,11 @@ var small: bool:
 	set(value):
 		small = value
 		set_and_emit(&"small", value)
-
+var last_map: String:
+	set(value):
+		last_map = value
+		set_and_emit(&"last_map", value)
+	
 func _ready() -> void:
 	DirAccess.make_dir_recursive_absolute(Constants.CONFIG_ROOT_PATH)
 
@@ -252,6 +256,7 @@ var default_values = {
 	health_mode = false,
 	arrows_enabled = true,
 	small = false,
+	last_map = "",
 	claws = false
 }
 

@@ -125,7 +125,8 @@ func _sort_songs() -> void:
 	if do_map != null:
 		for i in range(_currently_selected_songlist_ref.size()):
 			if _currently_selected_songlist_ref[i] == do_map:
-				_select_song(i)
+				songs_menu.select(i)
+				#_select_song(i)
 				_select_difficulty(do_difficulty)
 	
 func _load_playlists() -> void:
@@ -425,6 +426,13 @@ func _ready() -> void:
 	$version.text = beepsaber_game.version
 	if OS.get_name() == &"Web":
 		$Exit_Button.hide()
+		
+	if current_selected < 0:
+		for i in range(_currently_selected_songlist_ref.size()):
+			vr.log_info(_currently_selected_songlist_ref[i].filepath)
+			if _currently_selected_songlist_ref[i].filepath == Settings.last_map:
+				songs_menu.select(i)
+				break
 
 func on_settings_changed(key: StringName) -> void:
 	match key:
@@ -432,13 +440,15 @@ func on_settings_changed(key: StringName) -> void:
 			song_preview.pitch_scale = Settings.music_speed / 100.
 
 func difficulty_modifier_changed() -> void:
-	pass
-			
+	pass			
 
 func _on_Play_Button_pressed() -> void:
-	song_preview.stop()
-	Settings.save()
-	_load_map_and_start(_currently_selected_songlist_ref[current_selected])
+	if current_selected >= 0:
+		var map := _currently_selected_songlist_ref[current_selected]
+		Settings.last_map = map.filepath
+		song_preview.stop()
+		Settings.save()
+		_load_map_and_start(map)
 
 func _on_Exit_Button_pressed() -> void:
 	get_tree().quit()

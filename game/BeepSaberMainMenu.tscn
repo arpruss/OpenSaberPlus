@@ -2,7 +2,7 @@
 
 [ext_resource type="Theme" uid="uid://dvcjel72een6o" path="res://OQ_Toolkit/OQ_UI2D/theme/oq_ui2d_standard.theme" id="1"]
 [ext_resource type="FontFile" uid="uid://cdsnr8tscm8y6" path="res://OQ_Toolkit/OQ_UI2D/theme/Roboto-Medium.ttf" id="2"]
-[ext_resource type="Script" path="res://game/BeepSaberMainMenu.gd" id="3"]
+[ext_resource type="Script" uid="uid://cbe53qn50sjl7" path="res://game/BeepSaberMainMenu.gd" id="3"]
 [ext_resource type="Texture2D" uid="uid://cviyxvrpvyr0g" path="res://game/data/beepsaber_logo.png" id="3_wpmn0"]
 [ext_resource type="FontFile" uid="uid://01k27lk2a4bw" path="res://OQ_Toolkit/OQ_UI2D/theme/RobotoMono-Medium.ttf" id="5"]
 [ext_resource type="PackedScene" uid="uid://dtipmx5ep1dkk" path="res://game/vr_slider.tscn" id="6"]
@@ -16,8 +16,8 @@ border_width_right = 8
 border_width_bottom = 8
 border_color = Color(1, 1, 1, 1)
 
-[sub_resource type="StyleBoxFlat" id="2"]
-bg_color = Color(0.14902, 0.14902, 0.14902, 1)
+[sub_resource type="StyleBoxFlat" id="4"]
+bg_color = Color(0, 0, 0, 1)
 border_width_left = 5
 border_width_top = 5
 border_width_right = 5
@@ -32,8 +32,8 @@ border_width_right = 5
 border_width_bottom = 5
 border_color = Color(1, 1, 1, 1)
 
-[sub_resource type="StyleBoxFlat" id="4"]
-bg_color = Color(0, 0, 0, 1)
+[sub_resource type="StyleBoxFlat" id="2"]
+bg_color = Color(0.14902, 0.14902, 0.14902, 1)
 border_width_left = 5
 border_width_top = 5
 border_width_right = 5
@@ -106,15 +106,15 @@ default_font_size = 20
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t5flx"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qax3j"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bhima"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kdryv"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3ptxp"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qhkdt"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3ptxp"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kdryv"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bhima"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qax3j"]
 
 [node name="BeepSaberMainMenu" type="Panel"]
 offset_right = 1408.0
@@ -157,6 +157,7 @@ offset_right = 127.0
 offset_bottom = 54.0
 item_count = 4
 popup/item_0/text = "Stretch 100%"
+popup/item_0/id = 0
 popup/item_1/text = "Stretch 125%"
 popup/item_1/id = 1
 popup/item_2/text = "Stretch 150%"
@@ -191,6 +192,7 @@ offset_right = 103.0
 offset_bottom = 54.0
 item_count = 4
 popup/item_0/text = "Stretch 100%"
+popup/item_0/id = 0
 popup/item_1/text = "Stretch 125%"
 popup/item_1/id = 1
 popup/item_2/text = "Stretch 150%"
@@ -205,6 +207,7 @@ offset_right = 127.0
 offset_bottom = 54.0
 item_count = 4
 popup/item_0/text = "Stretch 100%"
+popup/item_0/id = 0
 popup/item_1/text = "Stretch 125%"
 popup/item_1/id = 1
 popup/item_2/text = "Stretch 150%"
@@ -218,9 +221,9 @@ offset_left = 293.0
 offset_top = 576.0
 offset_right = 849.0
 offset_bottom = 624.0
-theme_override_styles/hover = SubResource("2")
-theme_override_styles/pressed = SubResource("3")
 theme_override_styles/normal = SubResource("4")
+theme_override_styles/pressed = SubResource("3")
+theme_override_styles/hover = SubResource("2")
 text = "Play!"
 
 [node name="Delete_Button" type="Button" parent="."]
@@ -229,10 +232,10 @@ offset_left = 864.0
 offset_top = 521.0
 offset_right = 1040.0
 offset_bottom = 569.0
-theme_override_styles/disabled = SubResource("5")
-theme_override_styles/hover = SubResource("2")
-theme_override_styles/pressed = SubResource("3")
 theme_override_styles/normal = SubResource("4")
+theme_override_styles/pressed = SubResource("3")
+theme_override_styles/hover = SubResource("2")
+theme_override_styles/disabled = SubResource("5")
 disabled = true
 text = "Delete"
 
@@ -242,9 +245,9 @@ offset_left = 1265.0
 offset_top = 576.0
 offset_right = 1390.0
 offset_bottom = 624.0
-theme_override_styles/hover = SubResource("2")
-theme_override_styles/pressed = SubResource("3")
 theme_override_styles/normal = SubResource("4")
+theme_override_styles/pressed = SubResource("3")
+theme_override_styles/hover = SubResource("2")
 text = "Exit"
 
 [node name="Settings_Button" type="Button" parent="."]
@@ -253,9 +256,9 @@ offset_left = 1265.0
 offset_top = 520.0
 offset_right = 1390.0
 offset_bottom = 568.0
-theme_override_styles/hover = SubResource("2")
-theme_override_styles/pressed = SubResource("3")
 theme_override_styles/normal = SubResource("4")
+theme_override_styles/pressed = SubResource("3")
+theme_override_styles/hover = SubResource("2")
 text = "Settings"
 
 [node name="Licenses" type="Button" parent="."]
@@ -264,9 +267,9 @@ offset_left = 1265.0
 offset_top = 464.0
 offset_right = 1390.0
 offset_bottom = 512.0
-theme_override_styles/hover = SubResource("2")
-theme_override_styles/pressed = SubResource("3")
 theme_override_styles/normal = SubResource("4")
+theme_override_styles/pressed = SubResource("3")
+theme_override_styles/hover = SubResource("2")
 text = "Licenses"
 
 [node name="Search_Button" type="Button" parent="."]
@@ -276,9 +279,9 @@ offset_top = 13.0
 offset_right = 131.0
 offset_bottom = 56.0
 pivot_offset = Vector2(-937.032, -176)
-theme_override_styles/hover = SubResource("2")
-theme_override_styles/pressed = SubResource("3")
 theme_override_styles/normal = SubResource("4")
+theme_override_styles/pressed = SubResource("3")
+theme_override_styles/hover = SubResource("2")
 text = "Search"
 
 [node name="Label" type="Label" parent="Search_Button"]
@@ -344,9 +347,9 @@ offset_left = 16.0
 offset_top = 576.0
 offset_right = 283.0
 offset_bottom = 624.0
-theme_override_styles/hover = SubResource("2")
-theme_override_styles/pressed = SubResource("3")
 theme_override_styles/normal = SubResource("4")
+theme_override_styles/pressed = SubResource("3")
+theme_override_styles/hover = SubResource("2")
 text = "Refresh Songs/Playlists"
 
 [node name="upload_url" type="Label" parent="."]
@@ -422,11 +425,11 @@ offset_right = 1386.0
 offset_bottom = -546.0
 grow_vertical = 0
 theme_override_font_sizes/font_size = 75
-theme_override_styles/focus = SubResource("StyleBoxEmpty_qax3j")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_bhima")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_kdryv")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_qhkdt")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_3ptxp")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_qhkdt")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_kdryv")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_bhima")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_qax3j")
 text = "X"
 
 [connection signal="toggled" from="Modifiers/Health" to="." method="_on_health_toggled"]
