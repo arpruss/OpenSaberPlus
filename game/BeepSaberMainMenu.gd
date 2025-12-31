@@ -125,9 +125,16 @@ func _sort_songs() -> void:
 	if do_map != null:
 		for i in range(_currently_selected_songlist_ref.size()):
 			if _currently_selected_songlist_ref[i] == do_map:
-				songs_menu.select(i)
-				#_select_song(i)
+				#songs_menu.select(i)
+				_select_song(i)
 				_select_difficulty(do_difficulty)
+
+	if current_selected < 0:
+		for i in range(_currently_selected_songlist_ref.size()):
+			if _currently_selected_songlist_ref[i].filepath == Settings.last_map:
+				songs_menu.select(i)
+				_select_song(i)
+				break
 	
 func _load_playlists() -> void:
 	#copy sample songs to main playlist folder on first run
@@ -187,12 +194,13 @@ func _discover_all_songs(seek_path: String) -> void:
 	emit_signal("song_list_changed")
 
 func _set_cur_playlist(songs: Array[MapInfo]) -> void:
+	var current_map : MapInfo
+	current_map = null
+	if current_selected >= 0:
+		current_map = _currently_selected_songlist_ref[current_selected]
 	_currently_selected_songlist_ref = songs
-	var current_id := songs_menu.get_selected_items()
-	
 	songs_menu.clear()
 	
-	var song_count := songs.size()
 	var map_index := 0
 	for map in songs:
 		@warning_ignore("return_value_discarded")
@@ -200,12 +208,15 @@ func _set_cur_playlist(songs: Array[MapInfo]) -> void:
 		songs_menu.set_item_custom_fg_color(map_index, Color.YELLOW if PlayCount.is_favorite(map) else Color.WHITE)
 		_bg_img_loader.load_texture(map.filepath, map.cover_image_filename, _on_cover_loaded, false, map_index)
 		map_index += 1
-	
-	if current_id.size() > 0:
-		var selected_id := current_id[0]
-		if selected_id >= song_count:
-			selected_id = song_count - 1
-		_select_song(selected_id)
+		
+	if current_map != null:
+		current_selected = -1
+		for i in range(songs.size()):
+			if songs[i] == current_map:
+				songs_menu.select(i)
+				_select_song(i)
+		if current_selected == -1:
+			songs_menu.select(-1)
 
 var default_song_icon := preload("res://game/data/beepsaber_logo.png")
 
@@ -259,7 +270,9 @@ func play_preview(buffer: PackedByteArray, start_time: float = 0.0, duration: fl
 		($song_prev/stop_prev as Timer).start(duration)
 
 func _select_song(id: int) -> void:
-	current_selected = id
+	current_selected = id 
+	if id < 0:
+		return
 	songs_menu.ensure_current_is_visible()
 	delete_button.disabled = false
 	favorite_button.show()
@@ -427,13 +440,6 @@ func _ready() -> void:
 	if OS.get_name() == &"Web":
 		$Exit_Button.hide()
 		
-	if current_selected < 0:
-		for i in range(_currently_selected_songlist_ref.size()):
-			vr.log_info(_currently_selected_songlist_ref[i].filepath)
-			if _currently_selected_songlist_ref[i].filepath == Settings.last_map:
-				songs_menu.select(i)
-				break
-
 func on_settings_changed(key: StringName) -> void:
 	match key:
 		&"music_speed":
