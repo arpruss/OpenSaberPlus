@@ -57,7 +57,7 @@ func _update_buttons_and_sticks() -> void:
 	trigger_last_frame = trigger
 	ax = is_button_pressed(&"ax_button")
 	by = is_button_pressed(&"by_button")
-	trigger = is_button_pressed(&"trigger")
+	trigger = is_button_pressed(&"trigger") or is_button_pressed(&"select_button")
 	menu = is_button_pressed(&"menu_button")
 
 func _update_movement_aabb() -> void:
