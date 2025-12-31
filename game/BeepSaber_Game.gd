@@ -477,3 +477,24 @@ func recenter():
 	var xr_camera := $XROrigin3D/XRCamera3D as XRCamera3D
 	xr_origin.rotation.y -= xr_camera.global_rotation.y
 	xr_origin.position -= (xr_camera.global_position * Vector3(1,0,1)) - Vector3(0,0,1)
+
+func _set_hand(right: bool, hand: bool) -> void:
+	var angle_offset := -90. if hand else 0.
+	if right:
+		right_saber.offset_rot.x=angle_offset
+		right_saber._update_size_and_angle()
+	else:
+		left_saber.offset_rot.x=angle_offset
+		left_saber._update_size_and_angle()
+
+func _on_right_controller_profile_changed(role: String) -> void:
+	if role.ends_with("/simple_controller"):
+		_set_hand(true, true)
+	else:
+		_set_hand(true, false)
+
+func _on_left_controller_profile_changed(role: String) -> void:
+	if role.ends_with("/simple_controller"):
+		_set_hand(false, true)
+	else:
+		_set_hand(false, false)
