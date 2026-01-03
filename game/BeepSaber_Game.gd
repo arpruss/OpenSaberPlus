@@ -479,6 +479,8 @@ func recenter():
 	xr_origin.position -= (xr_camera.global_position * Vector3(1,0,1)) - Vector3(0,0,1)
 
 func _set_hand(right: bool, hand: bool) -> void:
+	return
+	vr.log_info("ARP profile "+str(right)+" "+str(hand))
 	var angle_offset := -90. if hand else 0.
 	if right:
 		right_saber.offset_rot.x=angle_offset
