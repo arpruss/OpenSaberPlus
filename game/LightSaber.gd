@@ -21,6 +21,7 @@ class_name LightSaber
 @export var offset_rot := Vector3.ZERO
 var extra_offset_pos := Vector3.ZERO
 var extra_offset_rot := Vector3.ZERO
+var second_extra_offset_rot := Vector3.ZERO
 
 var saber_end := Vector3.ZERO
 var saber_end_past := Vector3.ZERO
@@ -186,7 +187,7 @@ func _update_scores() -> void:
 			
 func _physics_process(delta: float) -> void:
 	position = offset_pos + extra_offset_pos
-	rotation_degrees = offset_rot + extra_offset_rot
+	rotation_degrees = offset_rot + extra_offset_rot + second_extra_offset_rot
 	saber_end_past = saber_end
 	saber_end = saber_visual.tip.global_transform.origin
 	var time := Time.get_ticks_msec()

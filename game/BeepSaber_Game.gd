@@ -5,7 +5,7 @@
 extends Node3D
 class_name BeepSaber_Game
 
-var version := "0.7.53"
+var version := "0.7.54"
 
 var gamestate_bootup := GameState.new()
 var gamestate_mapcomplete := GameStateMapComplete.new()
@@ -479,14 +479,12 @@ func recenter():
 	xr_origin.position -= (xr_camera.global_position * Vector3(1,0,1)) - Vector3(0,0,1)
 
 func _set_hand(right: bool, hand: bool) -> void:
-	return
-	vr.log_info("ARP profile "+str(right)+" "+str(hand))
-	var angle_offset := -90. if hand else 0.
+	var angle_offset := -45. if hand else 0.
 	if right:
-		right_saber.offset_rot.x=angle_offset
+		right_saber.second_extra_offset_rot.x=angle_offset
 		right_saber._update_size_and_angle()
 	else:
-		left_saber.offset_rot.x=angle_offset
+		left_saber.second_extra_offset_rot.x=angle_offset
 		left_saber._update_size_and_angle()
 
 func _on_right_controller_profile_changed(role: String) -> void:
