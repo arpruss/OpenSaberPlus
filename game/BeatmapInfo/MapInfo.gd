@@ -99,7 +99,7 @@ static func new_v4(info_dict: Dictionary, load_path: String) -> MapInfo:
 		Utils.get_str(song_dict, "subTitle", ""),
 		Utils.get_str(song_dict, "author", ""),
 		", ".join(level_mappers),
-		Utils.get_float(audio_dict, "bmp", 60.0),
+		Utils.get_float(audio_dict, "bmp", Utils.get_float(audio_dict, "bpm", 60.0)),
 		Utils.get_float(audio_dict, "previewStartTime", 0.0),
 		Utils.get_float(audio_dict, "previewDuration", 0.0),
 		Utils.get_str(audio_dict, "songFilename", ""),
